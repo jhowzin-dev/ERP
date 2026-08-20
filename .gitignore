@@ -1,0 +1,49 @@
+# --- Java / Maven (backend) ---
+backend/target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+
+# --- Node (frontend) ---
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+
+# --- Go (ingestion) ---
+ingestion/bin/
+ingestion/coverage.out
+
+# --- Terraform (infra) ---
+infra/terraform/.terraform/
+infra/terraform/*.tfstate
+infra/terraform/*.tfstate.*
+infra/terraform/*.tfvars
+infra/terraform/.terraform.lock.hcl
+infra/terraform/crash.log
+
+# --- IDE / editors ---
+.idea/
+*.iml
+.vscode/*.json.user
+.vscode/tasks.json
+
+# --- Env / secrets ---
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.pfx
+
+# --- OS ---
+Thumbs.db
+.DS_Store
+
+# --- Logs ---
+*.log
+
+# --- Docs ---
+DOCS/SISTEMA DE GESTAO/*
+!DOCS/SISTEMA DE GESTAO/AGENTES/
+.obsidian/

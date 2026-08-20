@@ -1,0 +1,15 @@
+{
+  "recommendations": [
+    "vscjava.vscode-java-pack",
+    "vmware.vscode-spring-boot",
+    "golang.go",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "ms-azuretools.vscode-docker",
+    "hashicorp.terraform",
+    "eamodio.gitlens",
+    "formulahendry.auto-rename-tag",
+    "yzhang.markdown-all-in-one"
+  ]
+}

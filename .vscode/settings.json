@@ -1,0 +1,18 @@
+{
+  "files.eol": "\n",
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "editor.rulers": [120],
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.compile.nullAnalysis.mode": "automatic",
+  "maven.executable.path": "C:\\Program Files\\MAVEN\\apache-maven-4.0.0-rc-4\\bin\\mvn.cmd",
+  "go.gopath": "",
+  "terraform.languageServer.enabled": true,
+  "[terraform]": {
+    "editor.defaultFormatter": "hashicorp.terraform",
+    "editor.formatOnSave": true
+  },
+  "[markdown]": {
+    "editor.formatOnSave": false
+  }
+}
