@@ -11,7 +11,8 @@
 3. Dev Front (DEV_FRONT.md) — camada visual (frontend/)
    Dev Back (DEV_BACK.md)  — servidor (backend/ + ingestion/)
 4. QA (QA.md)            — gate: harness + critérios de aceite → PASS/FAIL
-5. DOCS (DOCS.md)        — documentação: clareza, estrutura, links (sob demanda)
+5. DEVOPS (DEVOPS.md)    — gate: terraform plan, security, CI/CD, secrets, observabilidade → PASS/FAIL
+6. DOCS (DOCS.md)        — documentação: clareza, estrutura, links (sob demanda)
 ```
 
 ## Sequência operacional
@@ -48,20 +49,28 @@
 1. Roda o harness completo na raiz (`harness.ps1` / `harness.sh`).
 2. Confere critérios de aceite item a item e o escopo dos arquivos alterados.
 3. Emite veredito:
-   - **PASS** → entrega ao PO.
+   - **PASS** → handoff para DevOps.
    - **FAIL** → relatório com evidência → dev responsável faz retrabalho →
      QA revalida (loop até PASS).
 
-### Etapa 5 — PO (encerramento)
+### Etapa 5 — DevOps Review
 
-1. Recebe o PASS do QA.
+1. Operador gera `terraform plan -out=tfplan` em `infra/terraform/`.
+2. DevOps lê o plan + código Terraform + workflows + Dockerfiles.
+3. Emite relatório (formato em `DEVOPS.md`):
+   - **PASS** → operador executa `terraform apply tfplan` + deploy.
+   - **FAIL** → relatório com bloqueadores → operador corrige Terraform → volta ao passo 1.
+
+### Etapa 6 — PO (encerramento)
+
+1. Recebe o PASS do DevOps (deploy concluído em staging/prod).
 2. Decide: aceitar a entrega e (se aplicável) atualizar documentação
    (requisitos, pendencias) e **mover o card no kanban**
    (`15-Desenvolvimento/Kanban-Desenvolvimento.kanban.md`) para o status
    correspondente.
 3. Atualiza o log de handoff em `tarefa.md`.
 
-### Etapa 6 — DOCS (sob demanda)
+### Etapa 7 — DOCS (sob demanda)
 
 1. Operador pede melhoria de documentação (seção ou tema).
 2. DOCS lê a seção completa, diagnostica (clareza/estrutura/links/consistência).
@@ -96,3 +105,6 @@
 | Build ingestion | `go build ./...` | `ingestion/` | Dev Back + harness |
 | Testes ingestion | `go test ./...` | `ingestion/` | Dev Back + harness |
 | Harness completo | `.\harness.ps1` / `./harness.sh` | raiz do repo | QA |
+| Terraform plan review | `terraform plan -out=tfplan` | `infra/terraform/` | DevOps |
+| Security/naming review | (análise estática) | `infra/terraform/` | DevOps |
+| CI/CD review | (análise workflows) | `.github/workflows/` | DevOps |

@@ -29,6 +29,7 @@ Você (pedido de doc) ──► DOCS.md ──► melhora a documentação do va
 | [DEV_FRONT.md](DEV_FRONT.md) | Dev Frontend — UI, componentes e páginas (só `frontend/`) | ✅ Sim |
 | [DEV_BACK.md](DEV_BACK.md) | Dev Backend — APIs, banco e regras no servidor (`backend/` + `ingestion/`) | ✅ Sim |
 | [QA.md](QA.md) | QA / Gate de qualidade — valida build, testes e critérios de aceite | ❌ Não |
+| [DEVOPS.md](DEVOPS.md) | DevOps Review Gate — valida terraform plan, security, CI/CD, secrets, observabilidade (read-only) | ❌ Não |
 | [DOCS.md](DOCS.md) | Documentador / Technical Writer — melhora clareza, estrutura e links da doc | ❌ Não |
 | [mapa-projeto.md](mapa-projeto.md) | Mapa de rotas rápidas do vault (o que o PO lê primeiro) | ❌ Não |
 | [tarefa.md](tarefa.md) | Template de handoff estruturado entre os agentes | ❌ Não |
