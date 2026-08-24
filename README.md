@@ -6,7 +6,7 @@ Sistema de gestão leve e rápido para **publicação de produtos no Mercado Liv
 
 | Pasta | Conteúdo |
 |-------|----------|
-| `backend/` | Core ERP — Java (JDK 17 atual / 21 alvo) + Spring Boot 4.x + Spring Modulith |
+| `backend/` | Core ERP — Java (JDK 25 LTS) + Spring Boot 4.x + Spring Modulith |
 | `ingestion/` | Ingestão/ETL — Go (Kafka consumer, webhooks ML, sync estoque/preço) |
 | `frontend/` | SPA — React + TypeScript + Vite + Tailwind/shadcn |
 | `infra/` | Docker Compose local + Terraform (AWS) |
@@ -16,7 +16,7 @@ Sistema de gestão leve e rápido para **publicação de produtos no Mercado Liv
 
 ## Começando
 
-Pré-requisitos: JDK 17+, Node 20+, Docker Desktop (Go e Terraform opcionais por enquanto).
+Pré-requisitos: JDK 25+, Node 20+, Docker Desktop (Go e Terraform opcionais por enquanto).
 
 ```bash
 # Backend (Java/Spring) — usar o wrapper do projeto

@@ -40,7 +40,7 @@
 | Pasta | Stack | Comando de validação |
 |---|---|---|
 | `frontend/` | React 19 + TS + Vite + Tailwind/shadcn + react-query/axios | `npm run lint` e `npm run build` |
-| `backend/` | Java (JDK 17 atual / 21 alvo `[VALIDAR]`) + Spring Boot 4.x + Modulith (Maven) | `.\mvnw.cmd test` (Windows) / `./mvnw test` |
+| `backend/` | Java (JDK 25 LTS) + Spring Boot 4.0.7 + Modulith (Maven) | `.\mvnw.cmd test` (Windows) / `./mvnw test` |
 | `ingestion/` | Go (Kafka, webhooks ML, sync) | `go build ./...` e `go test ./...` |
 | `infra/` | Docker Compose + Terraform | `docker compose up -d` |
 

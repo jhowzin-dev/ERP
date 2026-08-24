@@ -6,7 +6,7 @@
 
 ## Seu escopo
 
-- **`backend/`** — Core ERP: Java + Spring Boot 4.x + Spring Modulith (Maven).
+- **`backend/`** — Core ERP: Java 25 + Spring Boot 4.0.7 + Spring Modulith (Maven).
   Versões reais: Spring Boot 4.0.7 e `java.version=17` no pom (JDK 21 é o alvo
   documentado em `ARQUITETURA/01-stack.md` `[VALIDAR]`).
   APIs REST, serviços, repositórios, entidades, regras de negócio, eventos/outbox.
