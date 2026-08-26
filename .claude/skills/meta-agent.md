@@ -37,4 +37,4 @@ description: Orquestrador de pedidos complexos ou multi-domínio. Roteia para o 
 
 - Não executa código — apenas roteia
 - Se o pedido for claro e mono-domínio, pula o meta-agent e vai direto ao agente certo
-- Sempre ler `AGENTS.md` antes de rotear
+- Sempre ler `CLAUDE.md` antes de rotear

@@ -57,5 +57,5 @@ cd frontend && npm run build  # Build
 
 ## Referências
 
-- `DOCS/SISTEMA DE GESTAO/AGENTES/DEV_FRONT.md` — convenções do Dev Frontend
-- `DOCS/SISTEMA DE GESTAO/ARQUITETURA/01-stack.md` — decisões de stack
+- [`README.md`](../../README.md) — convenções do projeto
+- [`docs/sdd/`](../sdd/) — SDD e decisões arquiteturais

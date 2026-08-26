@@ -317,7 +317,7 @@ SG-MULTIDIA/
 ├─ .claude/                # Agents e skills (padrão EmpregaNet)
 │   ├─ agents/             # 8 agents com frontmatter
 │   └─ skills/             # 5 skills
-├─ AGENTS.md               # Guia para agents de IA
+├─ CLAUDE.md               # Contexto rápido para IA
 ├─ harness.ps1             # Validação Windows
 └─ harness.sh              # Validação Linux/macOS
 ```
@@ -1125,10 +1125,10 @@ cd ingestion && go build -o worker ./cmd/worker
 
 | Documento | Caminho | Quando usar |
 | --------- | ------- |-------------|
-| Guia de agents | `AGENTS.md` | Qualquer tarefa de engenharia |
-| Workflow dos agents | `DOCS/agents/README.md` | Pipeline de execução |
-| SDD Orchestrator | `DOCS/sdd/SDD-ORCHESTRATOR.md` | Nova feature (PRD → spec) |
-| ADRs | `DOCS/sdd/adrs/README.md` | Decisões arquiteturais |
-| Feature ML | `DOCS/features/ml-integration/` | Integração Mercado Livre |
-| Feature Dashboard | `DOCS/features/dashboard/` | Dashboard de gestão |
-| Skills | `DOCS/skills/README.md` | Conhecimento especializado |
+| Guia de agents | `CLAUDE.md` | Contexto rápido para IA |
+| Workflow dos agents | `docs/agents/README.md` | Pipeline de execução |
+| SDD Orchestrator | `docs/sdd/SDD-ORCHESTRATOR.md` | Nova feature (PRD → spec) |
+| ADRs | `docs/sdd/adrs/README.md` | Decisões arquiteturais |
+| Feature ML | `docs/features/ml-integration/` | Integração Mercado Livre |
+| Feature Dashboard | `docs/features/dashboard/` | Dashboard de gestão |
+| Skills | `docs/skills/README.md` | Conhecimento especializado |

@@ -44,7 +44,7 @@ backend/src/main/java/com/sgmultidia/backend/
 - Services, repositories, entities ficam em `<modulo>/internal/`
 - Um `package-info.java` em cada pacote para documentação
 - Não introduzir dependências sem aval do Tech Lead
-- Seguir `ARQUITETURA/01-stack.md` para decisões de stack
+- Seguir `README.md` para decisões de stack e convenções
 
 ## Validações
 
@@ -56,6 +56,6 @@ backend/src/main/java/com/sgmultidia/backend/
 
 ## Referências
 
-- `DOCS/SISTEMA DE GESTAO/ARQUITETURA/01-stack.md` — decisões de stack
-- `DOCS/SISTEMA DE GESTAO/ARQUITETURA/02-arquitetura.md` — padrões
-- `DOCS/SISTEMA DE GESTAO/ARQUITETURA/Referencias/bibliotecas.md` — libs
+- [`README.md`](../../README.md) — convenções do projeto
+- [`docs/sdd/adrs/`](../sdd/adrs/) — decisões arquiteturais (ADRs)
+- [`docs/features/`](../features/) — especificações por feature
