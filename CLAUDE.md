@@ -6,7 +6,7 @@ Antes de implementar ou desenhar mudanças significativas, alinha-te à arquitet
 
 | Pasta | Tecnologia |
 |-------|-----------|
-| `backend/` | Java 25, Spring Boot 4.0.7, Spring Modulith (Maven) |
+| `backend/` | Java 21, Spring Boot 4.0.7, Spring Modulith (Maven) |
 | `frontend/` | React 19, Vite 8, Tailwind v4, TypeScript strict |
 | `ingestion/` | Go 1.22, kafka-go (webhooks ML, sync estoque/preço) |
 

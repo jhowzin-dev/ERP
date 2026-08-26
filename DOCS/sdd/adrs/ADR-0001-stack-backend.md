@@ -12,7 +12,7 @@ Java e ecossistema Spring.
 
 ## Decisão
 
-- **Java 25** (JDK 25 LTS) com **Spring Boot 4.0.7**
+- **Java 21** (JDK 21 LTS) com **Spring Boot 4.0.7**
 - **Spring Modulith** para organização modular (pacotes por domínio)
 - **Maven** como build tool
 - **Flyway** para migrations

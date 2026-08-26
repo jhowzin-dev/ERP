@@ -3,7 +3,7 @@
 > Sistema de gestão leve e rápido para **publicação de produtos no Mercado Livre e gestão de catálogo multi-produto**, com integração nativa ao ML.
 > Monorepo com API Java (Spring Boot 4 + Modulith), worker Go (ingestão) e frontend React (Vite + Tailwind).
 
-![Java](https://img.shields.io/badge/Java-25-ED8B00)
+![Java](https://img.shields.io/badge/Java-21-ED8B00)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.7-6DB33F)
 ![React](https://img.shields.io/badge/React-19-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6)
@@ -106,7 +106,7 @@ O repositório é um **monorepo** com três aplicações independentes e uma pas
 
 | Aplicação | Stack | Papel |
 | --------- | ----- | ----- |
-| `backend/` | Java 25 + Spring Boot 4.0.7 + Modulith (Maven) | API REST — domínio, casos de uso, persistência, integração ML |
+| `backend/` | Java 21 + Spring Boot 4.0.7 + Modulith (Maven) | API REST — domínio, casos de uso, persistência, integração ML |
 | `ingestion/` | Go 1.22 + kafka-go | Worker — webhooks ML, sync estoque/preço, consumer Kafka |
 | `frontend/` | React 19 + TypeScript 6 + Vite 8 + Tailwind v4 | SPA — catálogo, dashboard, gestão |
 
@@ -373,7 +373,7 @@ SG-MULTIDIA/
 
 | Tecnologia | Versão | Para que serve |
 | ---------- | ------ | -------------- |
-| Java | 25 (JDK 25 LTS) | Runtime |
+| Java | 21 (JDK 21 LTS) | Runtime |
 | Spring Boot | 4.0.7 | Framework web |
 | Spring Modulith | 2.1.0 | Modularidade (pacotes por domínio) |
 | Spring Data JPA + Hibernate | (via boot) | ORM e persistência |
@@ -909,7 +909,7 @@ flowchart TB
 
 | Ferramenta | Versão | Necessário para |
 | ---------- | ------ | --------------- |
-| JDK | 25+ | Backend |
+| JDK | 21+ | Backend |
 | Node.js | 20+ | Frontend |
 | Go | 1.22+ | Ingestion |
 | Docker + Docker Compose | recente | Stack local |

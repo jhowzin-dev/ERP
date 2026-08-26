@@ -11,7 +11,7 @@ Cada módulo de negócio é um pacote em `backend/src/main/java/com/sgmultidia/b
 
 | Tecnologia | Versão | Uso |
 |-----------|--------|-----|
-| Java | 25 (JDK 25 LTS) | Runtime |
+| Java | 21 (JDK 21 LTS) | Runtime |
 | Spring Boot | 4.0.7 | Framework |
 | Spring Modulith | (via boot) | Modularidade |
 | Spring Data JPA | (via boot) | Persistência |
