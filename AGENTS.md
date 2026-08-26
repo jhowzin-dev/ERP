@@ -4,80 +4,137 @@ Project guide for AI agents. Read this file first, then use the maps below to ju
 
 ## Project Overview
 
-SG-MULTIDIA is a light, fast management system focused on publishing and managing **products on Mercado Livre** (multi-product catalog, multi-segment — e.g. multimedia / visual-communication / print), with native Mercado Livre (ML) integration. All documentation lives under `DOCS/SISTEMA DE GESTAO/` (Obsidian vault). Two areas:
-
-- `DOCS/SISTEMA DE GESTAO/ARQUITETURA/` — stack, architecture, references and diagrams (implementation/tech)
-- `DOCS/SISTEMA DE GESTAO/` (sections `01-…14`) — product requirements (markdown only)
-- `DOCS/SISTEMA DE GESTAO/AGENTES/` — agent runbook (PO, Tech Lead, Devs, QA, DOCS)
+SG-MULTIDIA is a light, fast management system focused on publishing and managing **products on Mercado Livre** (multi-product catalog, multi-segment — e.g. multimedia / visual-communication / print), with native Mercado Livre (ML) integration.
 
 ## Repository Structure
 
-```
-ERP/
-├── AGENTS.md                    ← this file (only guide in the project)
-├── harness.ps1 / harness.sh     validation harness (QA gate)
-├── backend/                     Java + Spring Boot 4.x (core ERP)
-├── frontend/                    React + TS + Vite (SPA)
-├── ingestion/                   Go (ML webhooks, sync, ETL)
-├── infra/                       Docker Compose local + Terraform
-└── DOCS/SISTEMA DE GESTAO/      Obsidian vault
-    ├── 01-Visao-Geral … 14-Pendencias   product sections
-    ├── 15-Desenvolvimento/      Kanban + Analise-Projeto
-    ├── AGENTES/                 agent runbook (6 agents)
-    ├── ARQUITETURA/             stack & architecture (implementation)
-    │   ├── 01-stack.md          stack decisions + RNF matrix
-    │   ├── 02-arquitetura.md    architecture (modular monolith, outbox, events)
-    │   ├── 02-stack-diagrama.excalidraw.md
-    │   ├── 03-arquitetura-diagrama.excalidraw.md
-    │   └── Referencias/
-    │       ├── README.md        index of references
-    │       └── bibliotecas.md   official links per technology/library
-    ├── 09-Fluxos-Sistema/Fluxos-Sistema.excalidraw.md   business process flow
-    └── 15-Desenvolvimento/Kanban-Desenvolvimento.kanban.md  dev board (sprints)
-```
+> Confirma estes paths antes de assumir outros layouts.
+
+| Pasta | Conteúdo típico |
+|-------|-----------------|
+| `backend/` | API principal Java (Spring Boot 4.0.7, JDK 25, Maven, Spring Modulith). Pacotes por domínio: `finance/`, `sales/`, `inventory/`, `customers/`, `production/`, `marketplace/`, `catalog/`, `events/`. Flyway + JPA + Kafka + Security. |
+| `frontend/` | SPA React 19 + TypeScript + Vite + Tailwind v4. Lint: oxlint. State: react-query + axios. Forms: react-hook-form + zod. Routing: react-router-dom v7. i18n: react-i18next. |
+| `ingestion/` | Go (Kafka consumer, webhooks ML, sync estoque/preço). Pacote: `cmd/worker/`, `internal/worker/`, `internal/config/`. Lib: kafka-go. |
+| `docs/` | SDD, ADRs, skills, especificações por feature, agentes. |
+| `.claude/agents/` | Agent files com frontmatter (padrão EmpregaNet). |
+| `.claude/skills/` | Skill files (conhecimento + orquestração). |
+| `harness.ps1` / `harness.sh` | Scripts de validação (QA gate) — lint, build, test por módulo. |
+
+> **`infra/`** ainda não existe como pasta no repo. Dockerfiles estão em `backend/Dockerfile` e `ingestion/Dockerfile`.
+
+## Where to read first
+
+| Prioridade | Documento | Quando |
+|------------|-----------|--------|
+| 1 | `DOCS/agents/README.md` | Workflow completo dos agentes, harness, regras transversais |
+| 2 | `.claude/agents/java-architect.md` | Convenções de implementação, arquitetura, stack |
+| 3 | `.claude/agents/java-implementer.md` | Convenções backend (Java/Spring/Modulith) |
+| 4 | `.claude/agents/frontend-engineer.md` | Convenções frontend (React/Vite/Tailwind) |
+| 5 | `.claude/skills/backend-skill.md` | Convenções Java/Spring/Modulith |
+
+## Agents
+
+> Invocáveis pelo nome. Padrão de escrita e separação de responsabilidades: `DOCS/agents/README.md`.
+
+| Agente | Responsabilidade | Escrita? |
+| ------ | ---------------- | -------- |
+| [`java-architect`](.claude/agents/java-architect.md) | Fronteiras de camada, forma da API, estrutura de módulos | Não — read-only |
+| [`java-implementer`](.claude/agents/java-implementer.md) | Código Java de produção, com build e testes | Sim |
+| [`frontend-engineer`](.claude/agents/frontend-engineer.md) | UI React, com lint, testes e build | Sim |
+| [`test-engineer`](.claude/agents/test-engineer.md) | Testes automatizados (xUnit, Cucumber) | Sim, só testes |
+| [`code-reviewer`](.claude/agents/code-reviewer.md) | Revisão de diff: corretude, segurança, fronteiras | Não — read-only |
+| [`debug-specialist`](.claude/agents/debug-specialist.md) | Causa raiz e correção mínima verificada | Sim |
+| [`performance-optimizer`](.claude/agents/performance-optimizer.md) | Gargalos medidos e otimização verificada | Sim |
+| [`e2e-qa-engineer`](.claude/agents/e2e-qa-engineer.md) | Regressão pela UI real, via Browser pane | Não altera código |
+
+Orquestração **não** é agente: vive como skill — ver [`DOCS/skills/README.md`](DOCS/skills/README.md).
+
+## Skills
+
+> Carregadas automaticamente pela description, ou invocadas por `/<nome>`.
+
+| Skill | Tipo | Uso rápido |
+|-------|------|-----------|
+| `backend-skill` | Conhecimento | Convenções Java/Spring/Modulith |
+| `frontend-skill` | Conhecimento | Convenções React/Vite/Tailwind |
+| `meta-agent` | Orquestração | Roteia pedido vago ou multi-domínio |
+| `sdd-orchestrator` | Orquestração | PRD → design → spec/tasks com gate |
+| `e2e-qa-skill` | Conhecimento | Metodologia E2E pela UI real |
+
+## Separação de responsabilidades
+
+| Preocupação | Onde vive |
+| ----------- | --------- |
+| **Orquestração** | skills `meta-agent`, `sdd-orchestrator` |
+| **Conhecimento** | skills `backend-skill`, `frontend-skill`, `e2e-qa-skill` |
+| **Execução** | agents `java-implementer`, `frontend-engineer`, `test-engineer`, `debug-specialist`, `performance-optimizer` |
+| **Validação** | agents `code-reviewer`, `java-architect`, `e2e-qa-engineer` |
 
 ## Documentation Map
 
-| Path | Purpose | When to use |
-|------|---------|-------------|
-| `DOCS/SISTEMA DE GESTAO/ARQUITETURA/01-stack.md` | Stack decisions, layer-by-layer, RNF→tech matrix | Any stack/tech question |
-| `DOCS/SISTEMA DE GESTAO/ARQUITETURA/02-arquitetura.md` | Architecture: modular monolith, outbox, events, retry | Architecture/patterns questions |
-| `DOCS/SISTEMA DE GESTAO/ARQUITETURA/02-stack-diagrama.excalidraw.md` | Stack overview diagram | Visual stack context |
-| `DOCS/SISTEMA DE GESTAO/ARQUITETURA/03-arquitetura-diagrama.excalidraw.md` | Block view of the architecture | Visual architecture context |
-| `DOCS/SISTEMA DE GESTAO/ARQUITETURA/Referencias/bibliotecas.md` | Official links, versions, where each lib is used | Doubt about a library/technology |
-| `DOCS/SISTEMA DE GESTAO/ARQUITETURA/Referencias/README.md` | Index of references + account setup links | Setup accounts, navigate references |
-| `DOCS/SISTEMA DE GESTAO/09-Fluxos-Sistema/Fluxos-Sistema.excalidraw.md` | End-to-end business process flow (no tech) | Process/business flow questions |
-| `DOCS/SISTEMA DE GESTAO/15-Desenvolvimento/Kanban-Desenvolvimento.kanban.md` | Dev backlog, sprints, priorities, status | Dev status, what's planned/in progress |
-| `DOCS/SISTEMA DE GESTAO/14-Pendencias/Pendencias.md` | Open decisions `[A DEFINIR]`, validations `[VALIDAR]` | Pending decisions/risks |
-| `DOCS/SISTEMA DE GESTAO/0X-*/…` | Vault sections: Escopo, Módulos, RF, RNF, RN, Casos de Uso, Dashboards, Matriz, etc. | Product requirements detail |
+| Path | Conteúdo | Quando usar |
+|------|----------|-------------|
+| `DOCS/agents/README.md` | Índice dos agentes, harness, regras transversais | Qualquer tarefa de engenharia |
+| `DOCS/sdd/SDD-ORCHESTRATOR.md` | Fluxo PRD → design → spec/tasks; gate antes de código | Nova feature SDD |
+| `DOCS/sdd/adrs/README.md` | ADRs transversais (índice dos existentes) | Decisões arquiteturais |
+| `DOCS/features/README.md` | Convenção de specs por feature | Criar nova feature spec |
+| `DOCS/features/ml-integration/` | Integração Mercado Livre: publicação, sync, webhooks | MVP — marketplace |
+| `DOCS/features/dashboard/` | Dashboard de gestão: KPIs, indicadores, resumo | MVP — dashboard |
+| `DOCS/skills/README.md` | Índice de skills | Invocar skill |
 
 ## Quick Decision Table
 
-| User asks about… | Open directly |
+| Usuário pergunta sobre… | Abrir direto |
 |---|---|
-| Stack, technologies, why X | `DOCS/SISTEMA DE GESTAO/ARQUITETURA/01-stack.md` |
-| Doubt about a library / official docs | `DOCS/SISTEMA DE GESTAO/ARQUITETURA/Referencias/bibliotecas.md` |
-| Architecture, patterns (outbox, events, retry) | `DOCS/SISTEMA DE GESTAO/ARQUITETURA/02-arquitetura.md` |
-| Business process / end-to-end flow | `DOCS/SISTEMA DE GESTAO/09-Fluxos-Sistema/Fluxos-Sistema.excalidraw.md` |
-| Dev status, sprint, tasks | `DOCS/SISTEMA DE GESTAO/15-Desenvolvimento/Kanban-Desenvolvimento.kanban.md` |
-| Requirements (RF), non-functional (RNF), rules (RN) | `DOCS/SISTEMA DE GESTAO/05-Requisitos-Funcionais/` `06-Requisitos-Nao-Funcionais/` `07-Regras-Negocio/` |
-| Mercado Livre integration details | `DOCS/SISTEMA DE GESTAO/11-Integracao-Mercado-Livre/Integracao-Mercado-Livre.md` |
-| Pending decisions / open points | `DOCS/SISTEMA DE GESTAO/14-Pendencias/Pendencias.md` |
+| Pipeline de agentes / como começar | `DOCS/agents/README.md` |
+| Arquitetura / padrões | `.claude/agents/java-architect.md` |
+| Implementação backend | `.claude/agents/java-implementer.md` |
+| Implementação frontend | `.claude/agents/frontend-engineer.md` |
+| Validação / QA | `.claude/agents/e2e-qa-engineer.md` |
+| Revisão de código | `.claude/agents/code-reviewer.md` |
+| Debug | `.claude/agents/debug-specialist.md` |
+| Performance | `.claude/agents/performance-optimizer.md` |
+| SDD / fluxo de specs | `DOCS/sdd/SDD-ORCHESTRATOR.md` |
+| Integração ML (MVP) | `DOCS/features/ml-integration/` |
+| Dashboard (MVP) | `DOCS/features/dashboard/` |
+| Convenções backend | `.claude/skills/backend-skill.md` |
+| Convenções frontend | `.claude/skills/frontend-skill.md` |
 
 ## Navigation Rules
 
 - Read this file, then jump directly to the target artifact from the map/table above.
 - Do not scan the whole documentation set before responding — go straight to the relevant file.
-- If the target is an Excalidraw file (`.excalidraw.md`), read the `## Text Elements` section for content; the JSON drawing is inside the `Drawing` code block.
-- If the target is a Kanban file (`.kanban.md`), columns are `## ` headings and cards are `- [ ]` items with `label::`/`priority::` metadata.
 - Mark unknown or unconfirmed items with `[A DEFINIR]` (blocks) or `[VALIDAR]` (risk) — never invent requirements.
+- **Modo rápido**: perguntas informativas ou pequenos ajustes de doc não passam pelo pipeline — responder direto.
+
+## Useful commands
+
+> Comandos de verificação local. Rodar na raiz do repositório.
+
+```bash
+# Backend (exige Postgres rodando: docker compose up -d em infra/)
+.\mvnw.cmd test              # Windows
+./mvnw test                  # Linux/macOS
+
+# Frontend
+cd frontend && npm run lint && npm run build
+
+# Ingestion
+cd ingestion && go build ./... && go test ./...
+
+# Harness completo (QA gate)
+.\harness.ps1                # Windows (todos os módulos)
+.\harness.ps1 backend        # Windows (só backend)
+./harness.sh                 # Linux/macOS
+```
 
 ## Maintenance Rules
 
-- **ARQUITETURA/**: implementation/tech docs — stack, architecture, references, diagrams. Keep diagrams as `.excalidraw.md` (native plugin format) and update the markdown docs alongside.
-- **SISTEMA DE GESTAO/**: product-only docs (what the system does, not how it's built). No architecture, DB, APIs, infra, or deploy details here.
-- **AGENTES/**: runbook of the 6 specialized agents (PO, Tech Lead, Devs, QA, DOCS) + navigation map (`mapa-projeto.md`). Read `AGENTES/README.md` for the workflow.
-- Preserve existing `.excalidraw.md` and `.kanban.md` files — do not convert them to plain markdown.
-- When updating a diagram, keep the `excalidraw-plugin: parsed` frontmatter and the `## Drawing` code block intact.
-- When adding references, use official links and record version + where it is used.
+- **Agent files**: follow pattern in `DOCS/agents/README.md` (frontmatter + body sections).
+- **Preservar** arquivos `.excalidraw.md` (frontmatter `excalidraw-plugin: parsed` + bloco `## Drawing`) e `.kanban.md` (frontmatter + blocos `%% kanban:settings %%`).
+- **Não inventar requisitos**: itens novos exigem `[A DEFINIR]` (bloqueia) ou `[VALIDAR]` (risco).
 - Keep this file small — it is loaded on every session start.
+
+## Secrets & templates
+
+Sem secrets no repo. Copie templates e preencha localmente; em produção, use variáveis de ambiente. Nunca commite chaves, tokens ou senhas.
