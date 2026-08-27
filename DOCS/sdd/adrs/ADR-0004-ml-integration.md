@@ -1,4 +1,4 @@
-# ADR 0004: Integração Mercado Livre — Webhooks + API REST
+﻿# ADR 0004: Integração Mercado Livre — Webhooks + API REST
 
 **Status**: proposto
 **Data**: 2026-08-26
@@ -6,7 +6,7 @@
 
 ## Contexto
 
-O MVP do SG-MULTIDIA é publicar produtos no Mercado Livre e trazer dados
+O MVP do OminiCore é publicar produtos no Mercado Livre e trazer dados
 de pedidos/estoque para o dashboard. A integração é o core do produto.
 
 ## Decisão
@@ -30,3 +30,4 @@ de pedidos/estoque para o dashboard. A integração é o core do produto.
 - **Polling**: latência alta, desperdício de resources
 - **SDK oficial do ML**: não existe para Java/Go nativamente
 - **Integração direta no backend**: acoplaria o core ao ML (dificultaria trocar marketplace)
+

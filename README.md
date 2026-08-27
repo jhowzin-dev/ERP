@@ -1,4 +1,4 @@
-# SG-MULTIDIA
+﻿# OminiCore
 
 > Sistema de gestão leve e rápido para **publicação de produtos no Mercado Livre e gestão de catálogo multi-produto**, com integração nativa ao ML.
 > Monorepo com API Java (Spring Boot 4 + Modulith), worker Go (ingestão) e frontend React (Vite + Tailwind).
@@ -43,7 +43,7 @@
 
 ### Objetivo de negócio
 
-O SG-MULTIDIA é um ERP leve focado em **publicar e gerenciar produtos no Mercado Livre** (catálogo multi-produto, multi-segmento — ex.: multimídia, comunicação visual, impressão), com integração nativa ao ML. O MVP combina publicação automatizada de produtos, sync de estoque/preço via Kafka e um dashboard de gestão.
+O OminiCore é um ERP leve focado em **publicar e gerenciar produtos no Mercado Livre** (catálogo multi-produto, multi-segmento — ex.: multimídia, comunicação visual, impressão), com integração nativa ao ML. O MVP combina publicação automatizada de produtos, sync de estoque/preço via Kafka e um dashboard de gestão.
 
 ### Problemas que resolve
 
@@ -114,7 +114,7 @@ O repositório é um **monorepo** com três aplicações independentes e uma pas
 
 ```mermaid
 flowchart TB
-    ROOT["com.sgmultidia.backend"]
+    ROOT["com.ominicore.backend"]
 
     subgraph catalog["📦 catalog"]
         C_API["api/"]
@@ -308,7 +308,7 @@ flowchart TB
 ### Raiz do monorepo
 
 ```
-SG-MULTIDIA/
+OminiCore/
 ├─ .github/workflows/      # CI/CD: build+testes, Docker build, deploy
 ├─ backend/                # API Java (Spring Boot + Modulith)
 ├─ frontend/               # SPA React (Vite + Tailwind)
@@ -920,7 +920,7 @@ flowchart TB
 **1. Clonar**
 
 ```bash
-git clone <url-do-repositorio> && cd SG-MULTIDIA
+git clone <url-do-repositorio> && cd OminiCore
 ```
 
 **2. Subir infraestrutura**
@@ -968,9 +968,9 @@ go run ./cmd/worker
 
 | Variável | Default | Descrição |
 |----------|---------|-----------|
-| `spring.datasource.url` | `jdbc:postgresql://localhost:5432/sgmultidia` | URL do banco |
-| `spring.datasource.username` | `sgmultidia` | Usuário do banco |
-| `spring.datasource.password` | `sgmultidia` | Senha do banco |
+| `spring.datasource.url` | `jdbc:postgresql://localhost:5432/ominicore` | URL do banco |
+| `spring.datasource.username` | `ominicore` | Usuário do banco |
+| `spring.datasource.password` | `ominicore` | Senha do banco |
 | `spring.kafka.bootstrap-servers` | `localhost:9092` | Kafka brokers |
 | `SENTRY_DSN` | (vazio) | DSN do Sentry |
 | `SENTRY_ENV` | `dev` | Ambiente |
@@ -1132,3 +1132,5 @@ cd ingestion && go build -o worker ./cmd/worker
 | Feature ML | `docs/features/ml-integration/` | Integração Mercado Livre |
 | Feature Dashboard | `docs/features/dashboard/` | Dashboard de gestão |
 | Skills | `docs/skills/README.md` | Conhecimento especializado |
+
+

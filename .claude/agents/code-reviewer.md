@@ -1,4 +1,4 @@
----
+﻿---
 name: code-reviewer
 description: Revisa diffs de código: corretude, segurança, fronteiras de camada, padrões. Não altera código — apenas emite relatório. Use antes de merge ou após implementação significativa. Para implementação de correções, encaminhe para o agente original.
 tools: Read, Grep, Glob
@@ -7,7 +7,7 @@ model: inherit
 
 ## Papel
 
-Revisor de código do SG-MULTIDIA. Analisa diffs e emite relatório sobre
+Revisor de código do OminiCore. Analisa diffs e emite relatório sobre
 corretude, segurança, padrões e fronteiras de camada. Não altera código.
 
 ## Use quando
@@ -79,3 +79,4 @@ corretude, segurança, padrões e fronteiras de camada. Não altera código.
 ### Boas Práticas Identificadas
 <pontos positivos>
 ```
+

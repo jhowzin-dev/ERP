@@ -1,6 +1,6 @@
----
+﻿---
 name: frontend-skill
-description: Convenções React/TypeScript/Vite/Tailwind do SG-MULTIDIA. Componentes, react-query, SCSS Modules, auth/RBAC. Leitura obrigatória antes de escrever código frontend.
+description: Convenções React/TypeScript/Vite/Tailwind do OminiCore. Componentes, react-query, SCSS Modules, auth/RBAC. Leitura obrigatória antes de escrever código frontend.
 ---
 
 # Frontend Skill — Convenções React/Vite/Tailwind
@@ -39,3 +39,4 @@ cd frontend && npm run lint
 cd frontend && npm run build
 .\harness.ps1 frontend        # Harness completo
 ```
+

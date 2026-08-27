@@ -1,6 +1,6 @@
-# ADRs — Architecture Decision Records
+﻿# ADRs — Architecture Decision Records
 
-> Índice das decisões arquiteturais do SG-MULTIDIA. Cada ADR documenta:
+> Índice das decisões arquiteturais do OminiCore. Cada ADR documenta:
 > contexto, decisão, consequências e data.
 
 ## Formato
@@ -47,3 +47,4 @@ Onde `NNNN` é um número sequencial (zero-padded) e `titulo-curto` usa kebab-ca
 - Toda decisão estrutural nova gera um ADR antes do código
 - ADRs são **append-only** — nunca editar um aceito; criar novo com `substituído por`
 - Decisões de produto (regras de negócio) vão no vault (`14-Pendencias`), não aqui
+

@@ -1,4 +1,4 @@
-# ADR 0001: Stack Backend — Java + Spring Boot + Modulith
+﻿# ADR 0001: Stack Backend — Java + Spring Boot + Modulith
 
 **Status**: aceito
 **Data**: 2026-08-01
@@ -6,7 +6,7 @@
 
 ## Contexto
 
-O SG-MULTIDIA precisa de uma API robusta para gerenciar catálogo de produtos,
+O OminiCore precisa de uma API robusta para gerenciar catálogo de produtos,
 estoque, pedidos e integração com Mercado Livre. O time tem experiência com
 Java e ecossistema Spring.
 
@@ -32,3 +32,4 @@ Java e ecossistema Spring.
 - **Quarkus**: mais leve, mas menos maturidade no time
 - **.NET**: experiência menor no time, ecossistema diferente
 - **Node.js/NestJS**: inadequado para cargas de processamento pesado
+

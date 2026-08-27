@@ -1,7 +1,7 @@
-function App() {
+﻿function App() {
   return (
     <div>
-      <h1>SG-MULTIDIA</h1>
+      <h1>OminiCore</h1>
     </div>
   );
 }

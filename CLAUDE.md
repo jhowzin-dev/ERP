@@ -1,4 +1,4 @@
-# SG-MULTIDIA — Contexto de desenvolvimento
+﻿# OminiCore — Contexto de desenvolvimento
 
 Antes de implementar ou desenhar mudanças significativas, alinha-te à arquitetura descrita no repositório.
 
@@ -75,3 +75,4 @@ cd ingestion && go build ./... && go test ./...
 ```
 
 Sem secrets no repo. Copie templates e preencha localmente; em produção, use variáveis de ambiente.
+

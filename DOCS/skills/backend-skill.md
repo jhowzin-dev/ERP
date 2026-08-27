@@ -1,11 +1,11 @@
-# Backend Skill — Convenções Java/Spring/Modulith
+﻿# Backend Skill — Convenções Java/Spring/Modulith
 
 > Skill de conhecimento para o Dev Backend. Ler antes de escrever código no `backend/`.
 
 ## Contexto obrigatório
 
 O backend é um monolito modular com Spring Boot 4.0.7 + Spring Modulith.
-Cada módulo de negócio é um pacote em `backend/src/main/java/com/sgmultidia/backend/`.
+Cada módulo de negócio é um pacote em `backend/src/main/java/com/ominicore/backend/`.
 
 ## Stack
 
@@ -23,7 +23,7 @@ Cada módulo de negócio é um pacote em `backend/src/main/java/com/sgmultidia/b
 ## Estrutura de pacotes
 
 ```
-backend/src/main/java/com/sgmultidia/backend/
+backend/src/main/java/com/ominicore/backend/
 ├── finance/          # Financeiro
 │   ├── api/          # Controllers
 │   ├── internal/     # Services, repositories, entities
@@ -59,3 +59,4 @@ backend/src/main/java/com/sgmultidia/backend/
 - [`README.md`](../../README.md) — convenções do projeto
 - [`docs/sdd/adrs/`](../sdd/adrs/) — decisões arquiteturais (ADRs)
 - [`docs/features/`](../features/) — especificações por feature
+

@@ -1,4 +1,4 @@
----
+﻿---
 name: debug-specialist
 description: Identifica causa raiz de bugs e aplica correção mínima verificada. Use quando o problema for desconhecido ou a causa raiz não está clara. Para implementação de features novas, encaminhe para `java-implementer` ou `frontend-engineer`.
 tools: Read, Write, Edit, Grep, Glob, Bash
@@ -7,7 +7,7 @@ model: inherit
 
 ## Papel
 
-Especialista em debug do SG-MULTIDIA. Identifica causa raiz de bugs e aplica
+Especialista em debug do OminiCore. Identifica causa raiz de bugs e aplica
 correção mínima e verificada. Foco em resolver o problema com o menor footprint
 possível.
 
@@ -87,3 +87,4 @@ Confirmar que o bug original sumiu e que não houve regressão.
 ### Resultado dos comandos
 <output das validações>
 ```
+

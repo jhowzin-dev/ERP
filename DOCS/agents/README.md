@@ -1,6 +1,6 @@
-# Agents — Índice
+﻿# Agents — Índice
 
-> Runbook do sistema de agentes do SG-MULTIDIA. Cada agent é um especialista
+> Runbook do sistema de agentes do OminiCore. Cada agent é um especialista
 > com escopo definido. Orquestração vive em skills (não em agents).
 
 ## Agentes
@@ -108,3 +108,4 @@ Você (pedido) ──► meta-agent ──► java-architect ──► java-impl
 
 Você (feature nova) ──► sdd-orchestrator ──► PRD → design → spec → tasks → implementação
 ```
+

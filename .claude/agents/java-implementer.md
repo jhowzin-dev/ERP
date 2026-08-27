@@ -1,4 +1,4 @@
----
+﻿---
 name: java-implementer
 description: Escreve código Java de produção com Spring Boot/Modulith, incluindo build e testes. Use para implementar APIs, serviços, repositórios, regras de negócio e integrações backend. Para planejamento arquitetural, encaminhe para `java-architect`.
 tools: Read, Write, Edit, Grep, Glob, Bash
@@ -7,7 +7,7 @@ model: inherit
 
 ## Papel
 
-Desenvolvedor backend do SG-MULTIDIA. Implementa código Java de produção:
+Desenvolvedor backend do OminiCore. Implementa código Java de produção:
 APIs, serviços, repositórios, entidades, regras de negócio, integrações e testes.
 Trabalha em `backend/` e `ingestion/`.
 
@@ -91,3 +91,4 @@ Todos devem terminar sem erro.
 ### Pendências
 <[VALIDAR] quando houver>
 ```
+

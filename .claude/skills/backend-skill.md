@@ -1,6 +1,6 @@
----
+﻿---
 name: backend-skill
-description: Convenções Java/Spring/Modulith do SG-MULTIDIA. Camadas, Flyway, Kafka, contrato HTTP, testes. Leitura obrigatória antes de escrever código backend.
+description: Convenções Java/Spring/Modulith do OminiCore. Camadas, Flyway, Kafka, contrato HTTP, testes. Leitura obrigatória antes de escrever código backend.
 ---
 
 # Backend Skill — Convenções Java/Spring/Modulith
@@ -23,7 +23,7 @@ description: Convenções Java/Spring/Modulith do SG-MULTIDIA. Camadas, Flyway, 
 ## Estrutura de pacotes
 
 ```
-backend/src/main/java/com/sgmultidia/backend/
+backend/src/main/java/com/ominicore/backend/
 ├── finance/          # Financeiro
 │   ├── api/          # Controllers
 │   ├── internal/     # Services, repositories, entities
@@ -53,3 +53,5 @@ backend/src/main/java/com/sgmultidia/backend/
 ./mvnw test                  # Linux/macOS
 .\harness.ps1 backend        # Harness completo
 ```
+
+

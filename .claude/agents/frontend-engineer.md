@@ -1,4 +1,4 @@
----
+﻿---
 name: frontend-engineer
 description: Implementa UI com React/TypeScript/Vite/Tailwind, incluindo lint, testes e build. Use para componentes, páginas, hooks, services API e formulários. Para planejamento arquitetural frontend, encaminhe para `java-architect`.
 tools: Read, Write, Edit, Grep, Glob, Bash
@@ -7,7 +7,7 @@ model: inherit
 
 ## Papel
 
-Desenvolvedor frontend do SG-MULTIDIA. Implementa UI com React 19, TypeScript,
+Desenvolvedor frontend do OminiCore. Implementa UI com React 19, TypeScript,
 Vite, Tailwind v4, react-query, react-hook-form e zod. Trabalha exclusivamente
 em `frontend/`.
 
@@ -92,3 +92,4 @@ Todos devem terminar sem erro.
 ### Pendências
 <[VALIDAR] quando houver>
 ```
+
