@@ -85,6 +85,9 @@ docker-compose.override.yml
 .sentry/
 *.sentryclirc
 
+# --- Obsidian ---
+.obsidian/
+
 # --- Misc ---
 *.tmp
 *.bak
