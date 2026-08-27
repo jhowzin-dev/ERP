@@ -8,11 +8,11 @@
 
 | Skill | Tipo | Arquivo | Uso rápido |
 |-------|------|---------|-----------|
-| `backend-skill` | Conhecimento | [`backend-skill.md`](../../.claude/skills/backend-skill.md) | Convenções Java/Spring/Modulith: camadas, Flyway, Kafka, contrato HTTP, testes |
-| `frontend-skill` | Conhecimento | [`frontend-skill.md`](../../.claude/skills/frontend-skill.md) | Convenções React/Vite/Tailwind: componentes, react-query, SCSS, auth/RBAC |
-| `meta-agent` | Orquestração | [`meta-agent.md`](../../.claude/skills/meta-agent.md) | Roteia pedido vago ou multi-domínio para o especialista certo |
-| `sdd-orchestrator` | Orquestração | [`sdd-orchestrator.md`](../../.claude/skills/sdd-orchestrator.md) | PRD → design → spec/tasks com gate humano por fase |
-| `e2e-qa-skill` | Conhecimento | [`e2e-qa-skill.md`](../../.claude/skills/e2e-qa-skill.md) | Metodologia de testes E2E pela UI real |
+| `backend-skill` | Conhecimento | [`backend-skill/SKILL.md`](../../.claude/skills/backend-skill/SKILL.md) | Convenções Java/Spring/Modulith: camadas, Flyway, Kafka, contrato HTTP, testes |
+| `frontend-skill` | Conhecimento | [`frontend-skill/SKILL.md`](../../.claude/skills/frontend-skill/SKILL.md) | Convenções React/Vite/Tailwind: componentes, react-query, SCSS, auth/RBAC |
+| `meta-agent` | Orquestração | [`meta-agent/SKILL.md`](../../.claude/skills/meta-agent/SKILL.md) | Roteia pedido vago ou multi-domínio para o especialista certo |
+| `sdd-orchestrator` | Orquestração | [`sdd-orchestrator/SKILL.md`](../../.claude/skills/sdd-orchestrator/SKILL.md) | PRD → design → spec/tasks com gate humano por fase |
+| `e2e-qa-skill` | Conhecimento | [`e2e-qa-skill/SKILL.md`](../../.claude/skills/e2e-qa-skill/SKILL.md) | Metodologia de testes E2E pela UI real |
 
 ## Como funcionam
 

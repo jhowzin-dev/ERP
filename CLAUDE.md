@@ -14,7 +14,8 @@ Mapa completo de pastas e comandos de build: [`docs/README.md`](docs/README.md)
 
 ## Fonte principal — Arquitetura
 
-- **Leia primeiro:** [`README.md`](README.md) — arquitetura, diagramas, fluxos, setup, convenções.
+- **Leia primeiro:** [`docs/sdd/OMINICORE-SDD.md`](docs/sdd/OMINICORE-SDD.md) — SDD completo: filosofia, visão do sistema, pipeline, convenções.
+- **Mapa do monorepo:** [`README.md`](README.md) — arquitetura, diagramas, fluxos, setup.
 - **ADRs:** [`docs/sdd/adrs/`](docs/sdd/adrs/) — decisões estruturais duradouras.
 - **Features:** [`docs/features/`](docs/features/) — specs por feature (ML, Dashboard).
 

@@ -29,9 +29,10 @@ docs/
 | Prioridade | Documento | Quando |
 |------------|-----------|--------|
 | 1 | `../CLAUDE.md` | Visão geral do projeto, stack, navegação |
-| 2 | `agents/README.md` | Workflow completo dos agentes, harness, regras transversais |
-| 3 | `../.claude/skills/backend-skill.md` | Convenções Java/Spring/Modulith |
-| 4 | `sdd/SDD-ORCHESTRATOR.md` | Fluxo SDD para features novas |
+| 2 | `sdd/OMINICORE-SDD.md` | SDD completo: filosofia, visão, pipeline, convenções |
+| 3 | `agents/README.md` | Workflow completo dos agentes, harness, regras transversais |
+| 4 | `../.claude/skills/backend-skill/SKILL.md` | Convenções Java/Spring/Modulith |
+| 5 | `sdd/SDD-ORCHESTRATOR.md` | Fluxo SDD para features novas |
 
 ## SDD e especificações por feature
 

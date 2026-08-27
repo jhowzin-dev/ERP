@@ -2,6 +2,8 @@
 
 > Runbook do sistema de agentes do OminiCore. Cada agent é um especialista
 > com escopo definido. Orquestração vive em skills (não em agents).
+>
+> **SDD:** Fluxo completo em `../sdd/OMINICORE-SDD.md`. Agents participam nas fases B-E.
 
 ## Agentes
 
