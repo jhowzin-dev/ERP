@@ -317,7 +317,7 @@ OminiCore/
 ├─ .claude/                # Agents e skills (padrão EmpregaNet)
 │   ├─ agents/             # 8 agents com frontmatter
 │   └─ skills/             # 5 skills
-├─ CLAUDE.md               # Contexto rápido para IA
+├─ AGENTS.md               # Contexto rápido para IA
 ├─ harness.ps1             # Validação Windows
 └─ harness.sh              # Validação Linux/macOS
 ```
@@ -1125,7 +1125,7 @@ cd ingestion && go build -o worker ./cmd/worker
 
 | Documento | Caminho | Quando usar |
 | --------- | ------- |-------------|
-| Guia de agents | `CLAUDE.md` | Contexto rápido para IA |
+| Guia de agents | `AGENTS.md` | Contexto rápido para IA |
 | Workflow dos agents | `docs/agents/README.md` | Pipeline de execução |
 | SDD Orchestrator | `docs/sdd/SDD-ORCHESTRATOR.md` | Nova feature (PRD → spec) |
 | ADRs | `docs/sdd/adrs/README.md` | Decisões arquiteturais |

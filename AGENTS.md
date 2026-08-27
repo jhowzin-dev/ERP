@@ -17,11 +17,10 @@ Mapa completo de pastas e comandos de build: [`docs/README.md`](docs/README.md)
 - **Especificação do produto:** [`docs/sdd/OMINICORE-SDD.md`](docs/sdd/OMINICORE-SDD.md) - princípios, camadas, fases A–E, gates de verificação.
 - **Fluxo por feature:** [`docs/sdd/SDD-ORCHESTRATOR.md`](docs/sdd/SDD-ORCHESTRATOR.md) e [`docs/sdd/SDD-USAGE-GUIDE.md`](docs/sdd/SDD-USAGE-GUIDE.md). Artefactos em `docs/features/<feature-id>/`.
 - **ADRs:** [`docs/sdd/adrs/`](docs/sdd/adrs/) - decisões estruturais duradouras.
-- **Backlog:** [`docs/sdd/FEATURES-BACKLOG.md`](docs/sdd/FEATURES-BACKLOG.md) (quando existir).
 
 ## Agentes especialistas (`.claude/agents/`)
 
-Invoca pelo **nome** com a ferramenta Agent (`subagent_type`). Cada agente já traz a sua allowlist de
+Invoca pelo **nome** com a ferramenta Agent. Cada agente já traz a sua allowlist de
 ferramentas e lê a skill correspondente no arranque — não copies convenções para o prompt de delegação.
 Índice e padrão de escrita: [`docs/agents/README.md`](docs/agents/README.md).
 
@@ -40,16 +39,16 @@ Orquestração mínima: um especialista quando bastar; cadeias curtas só quando
 
 ## Skills (`.claude/skills/`)
 
-Carregadas automaticamente quando a situação encaixa, ou por `/<nome>`. Índice e padrão:
+Carregadas automaticamente quando a situação encaixa. Índice e padrão:
 [`docs/skills/README.md`](docs/skills/README.md).
 
 | Área | Skill |
 |------|-------|
 | Convenções backend Java/Spring (conhecimento) | `backend-skill` |
 | Convenções frontend React/Vite/Tailwind (conhecimento) | `frontend-skill` |
-| Pedido vago ou multi-domínio → rotear e encadear | `/meta-agent` |
-| Especificar feature antes de código (gate por fase) | `/sdd-orchestrator` |
-| Regressão E2E pela UI real | `/e2e-qa-skill` |
+| Pedido vago ou multi-domínio → rotear e encadear | `meta-agent` |
+| Especificar feature antes de código (gate por fase) | `sdd-orchestrator` |
+| Regressão E2E pela UI real | `e2e-qa-skill` |
 
 Orquestração é skill, não agente: um subagente não tem a ferramenta Agent e por isso só conseguiria
 recomendar, não delegar.

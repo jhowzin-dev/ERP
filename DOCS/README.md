@@ -1,6 +1,6 @@
 # Docs — Processo de Engenharia
 
-> Índice canônico para IA e equipe alinharem ao produto neste monorepo. O contexto sempre aplicável está em [`../CLAUDE.md`](../CLAUDE.md), na raiz do repositório.
+> Índice canônico para IA e equipe alinharem ao produto neste monorepo. O contexto sempre aplicável está em [`../AGENTS.md`](../AGENTS.md), na raiz do repositório.
 
 Esta pasta cobre **processo** (SDD, ADRs, agentes, skills, especificações por feature).
 
@@ -28,7 +28,7 @@ docs/
 
 | Prioridade | Documento | Quando |
 |------------|-----------|--------|
-| 1 | `../CLAUDE.md` | Visão geral do projeto, stack, navegação |
+| 1 | `../AGENTS.md` | Visão geral do projeto, stack, navegação |
 | 2 | `sdd/OMINICORE-SDD.md` | SDD completo: filosofia, visão, pipeline, convenções |
 | 3 | `agents/README.md` | Workflow completo dos agentes, harness, regras transversais |
 | 4 | `../.claude/skills/backend-skill/SKILL.md` | Convenções Java/Spring/Modulith |

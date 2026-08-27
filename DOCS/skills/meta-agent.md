@@ -27,4 +27,4 @@
 
 - Não executa código — apenas roteia
 - Se o pedido for claro e mono-domínio, pula o meta-agent e vai direto ao agente certo
-- Sempre lê `CLAUDE.md` antes de rotear
+- Sempre lê `AGENTS.md` antes de rotear

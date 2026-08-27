@@ -87,7 +87,7 @@ description: Roteador de pedidos vagos, ambíguos ou multi-domínio. Analisa o p
 | ----- | ------- |
 | **Não executar código** | Meta-agent apenas roteia, nunca implementa |
 | **Se claro, pular** | Se o pedido é mono-domínio e claro, não usar meta-agent |
-| **Ler CLAUDE.md** | Contexto obrigatório antes de rotear |
+| **Ler AGENTS.md** | Contexto obrigatório antes de rotear |
 | **Sequencial** | Multi-domínio: um agent de cada vez, encadeando resultados |
 | **Contexto mínimo** | Passar ao agent apenas o que ele precisa saber |
 | **Human-in-the-loop** | Decisões de risco ficam com o humano |
@@ -101,7 +101,7 @@ description: Roteador de pedidos vagos, ambíguos ou multi-domínio. Analisa o p
 | Rotear pedidos claros e mono-domínio | Overhead desnecessário |
 | Executar código dentro do meta-agent | Violação de responsabilidade |
 | Paralelizar agents | Risco de conflitos; preferir sequencial |
-| Não ler CLAUDE.md antes de rotear | Falta de contexto |
+| Não ler AGENTS.md antes de rotear | Falta de contexto |
 | Passar contexto excessivo ao agent | Poluição de memória |
 
 ---
