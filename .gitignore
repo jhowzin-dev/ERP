@@ -87,6 +87,7 @@ docker-compose.override.yml
 
 # --- Obsidian ---
 .obsidian/
+docs/sprints/
 
 # --- Misc ---
 *.tmp
