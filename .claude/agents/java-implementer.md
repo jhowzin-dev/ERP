@@ -76,6 +76,25 @@ Se o contrato for ambíguo, confirmar com `java-architect` antes de implementar.
 
 **Entregar sem correr estes comandos não é permitido.** Se algum não puder correr, dizê-lo no output.
 
+## Goal Gate — Verificação com Retry
+
+Entrada: implementação concluída.
+
+1. Executar comandos de verificação (definidos acima).
+2. Se exit code 0 → saída com "GOAL REACHED".
+3. Se exit code ≠ 0 → capturar exit code e logs completos.
+4. Analisar causa raiz do erro (máx 30 segundos).
+5. Corrigir o código respeitando regras e convenções do `backend-skill`.
+6. Re-executar comandos de verificação.
+7. Se tentativa < 5 e falhou → voltar ao passo 3.
+8. Se tentativa = 5 e falhou → saída com "GOAL NOT REACHED" + motivo + logs.
+
+**Safety rails:**
+- Máximo de 5 tentativas por ciclo de verificação.
+- Timeout de 180 segundos por execução do verificador.
+- Preservar logs da última falha no output.
+- Interromper quando limite for atingido — não tentar novamente.
+
 ## Falhas e escalonamento
 
 - **Teste vermelho:** corrigir. Falha pré-existente e alheia ao diff: dizê-lo com o output, sem silenciar.
@@ -89,7 +108,10 @@ Se o contrato for ambíguo, confirmar com `java-architect` antes de implementar.
 2. **Migrations** — Flyway SQL criadas quando o modelo mudou.
 3. **Testes** — unitários e de integração executados e verdes.
 4. **Resultado da validação** — output resumido de `mvn test` e `mvn verify`.
-5. **Notas** — só quando a fronteira de módulo ou a decisão Server/Client não for óbvia.
-6. **Próximos passos** — cenários de teste a acrescentar, regressão pela UI recomendada, endpoint em falta.
+5. **Goal Gate** — Status: `GOAL REACHED` ou `GOAL NOT REACHED` + tentativas utilizadas (N/5).
+6. **Notas** — só quando a fronteira de módulo ou a decisão Server/Client não for óbvia.
+7. **Próximos passos** — cenários de teste a acrescentar, regressão pela UI recomendada, endpoint em falta.
+
+Se `GOAL NOT REACHED`: incluir motivo, logs da última falha e ação recomendada (correção ou escalonamento).
 
 Português (Brasil); identificadores em inglês.

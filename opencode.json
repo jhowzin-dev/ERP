@@ -1,0 +1,9 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["AGENTS.md"],
+  "agent": {
+    "build": {
+      "prompt": "LEIA O AGENTS.md ANTES DE QUALQUER TAREFA. O Agent Harness é OBRIGATÓRIO e tem 3 camadas de enforcement:\n\n1. EXECUTION GATE (8 etapas): Toda operação DEVE passar por: Instruction → Resolve Agents/Skills → Load Context → Validate → Plan → Execution Gate → Tool Call → Verify (Goal Gate). Se qualquer etapa não for concluída, BLOQUEIE.\n\n2. ORCHESTRATOR GATE (antes de delegar): ANTES de chamar Task, o orchestrator DEVE completar 5 etapas: [ ] Resolver agent+skill [ ] Carregar contexto [ ] Validar instrução [ ] Criar plano [ ] Confirmar antes de delegar. Se qualquer etapa não for concluída, BLOQUEIE a delegação.\n\n3. GOAL GATE (pós-execução): O agente só declara tarefa concluída quando verificador retorna exit code 0. Se output contiver 'GOAL NOT REACHED', re-delegar com contexto (máx 1x) ou escalonar para humano.\n\nREGRAS INVIOLÁVEIS:\n- Nunca delegar sem completar o Orchestrator Gate\n- Nunca declarar tarefa concluída sem confirmar GOAL REACHED\n- O caminho da pasta é contexto, não autorização\n- SEMPRE delegue para agent especialista — nunca faça código diretamente"
+    }
+  }
+}

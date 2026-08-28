@@ -94,6 +94,27 @@ cd frontend && npm run build
 
 Comparar métricas antes vs depois. Se não houver ganho, reverter.
 
+## Goal Gate — Verificação com Retry
+
+Entrada: optimização implementada.
+
+1. Executar comandos de verificação (definidos acima).
+2. Se exit code 0 E métrica melhorou → saída com "GOAL REACHED".
+3. Se exit code 0 E métrica não melhorou → reverter mudança e sair com "GOAL NOT REACHED".
+4. Se exit code ≠ 0 → capturar exit code e logs completos.
+5. Analisar causa raiz do erro (máx 30 segundos).
+6. Corrigir a optimização mantendo o ganho de performance.
+7. Re-executar comandos de verificação.
+8. Se tentativa < 5 e falhou → voltar ao passo 4.
+9. Se tentativa = 5 e falhou → reverter e sair com "GOAL NOT REACHED" + motivo + logs.
+
+**Safety rails:**
+- Máximo de 5 tentativas por ciclo de verificação.
+- Timeout de 180 segundos (backend) / 60 segundos (frontend) por execução.
+- Preservar logs da última falha no output.
+- Interromper quando limite for atingido — não tentar novamente.
+- **Revert obrigatório:** se a optimização não mostrar ganho mensurável após 5 tentativas, reverter todas as mudanças.
+
 ## Falhas e escalonamento
 
 - **Sem métricas:** não optimizar; pedir dados primeiro.
@@ -120,6 +141,12 @@ Comparar métricas antes vs depois. Se não houver ganho, reverter.
 ### Métrica depois
 
 - Comparação antes vs depois com ganho percentual.
+
+### Goal Gate
+
+Status: `GOAL REACHED` ou `GOAL NOT REACHED` + tentativas utilizadas (N/5).
+
+Se `GOAL NOT REACHED`: incluir motivo, logs da última falha, se houve revert e métrica final (sem ganho).
 
 ### Próximos passos
 

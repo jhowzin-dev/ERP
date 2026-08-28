@@ -81,6 +81,26 @@ Se o bug não era coberto por teste, **acrescentar ou propor o teste que o teria
 rede de regressão é entrega incompleta. Se a verificação não for possível no ambiente, dizê-lo e indicar
 exactamente o que o humano deve observar (log, métrica, passo manual).
 
+## Goal Gate — Verificação com Retry
+
+Entrada: correção implementada.
+
+1. Executar comandos de verificação que validam o fix (definidos acima).
+2. Se exit code 0 → saída com "GOAL REACHED".
+3. Se exit code ≠ 0 → capturar exit code e logs completos.
+4. Analisar se a correção resolveu o bug ou causou regressão (máx 30 segundos).
+5. Ajustar a correção respeitando regras e convenções.
+6. Re-executar comandos de verificação.
+7. Se tentativa < 5 e falhou → voltar ao passo 3.
+8. Se tentativa = 5 e falhou → saída com "GOAL NOT REACHED" + motivo + logs.
+
+**Safety rails:**
+- Máximo de 5 tentativas por ciclo de verificação.
+- Timeout de 180 segundos (backend) / 60 segundos (frontend) por execução.
+- Preservar logs da última falha no output.
+- Interromper quando limite for atingido — não tentar novamente.
+- Se o bug não for reprodutível em 5 tentativas, declarar "GOAL NOT REACHED" com instruções de instrumentação.
+
 ## Falhas e escalonamento
 
 - **Nenhuma hipótese sobrevive à evidência:** dizê-lo. Listar a instrumentação necessária em vez de escolher a hipótese menos má.
@@ -107,5 +127,11 @@ Bullets: ficheiro/símbolo, linha de log, assert a falhar, passos da repro míni
 ### Verificação
 
 Comando corrido e resultado; teste de regressão acrescentado ou proposto; métrica/log a vigiar.
+
+### Goal Gate
+
+Status: `GOAL REACHED` ou `GOAL NOT REACHED` + tentativas utilizadas (N/5).
+
+Se `GOAL NOT REACHED`: incluir motivo, logs da última falha e instrumentação recomendada para diagnóstico adicional.
 
 Português (Brasil); identificadores em inglês.

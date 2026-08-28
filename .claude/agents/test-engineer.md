@@ -88,6 +88,25 @@ cd frontend && npm run test
 
 **Entregar sem correr estes comandos não é permitido.** Se algum não puder correr, dizê-lo no output.
 
+## Goal Gate — Verificação com Retry
+
+Entrada: testes implementados.
+
+1. Executar comandos de verificação (definidos acima).
+2. Se exit code 0 → saída com "GOAL REACHED".
+3. Se exit code ≠ 0 → capturar exit code e logs completos.
+4. Analisar causa raiz do erro (máx 30 segundos).
+5. Corrigir o teste ou o código testado respeitando regras e convenções.
+6. Re-executar comandos de verificação.
+7. Se tentativa < 5 e falhou → voltar ao passo 3.
+8. Se tentativa = 5 e falhou → saída com "GOAL NOT REACHED" + motivo + logs.
+
+**Safety rails:**
+- Máximo de 5 tentativas por ciclo de verificação.
+- Timeout de 180 segundos (backend) / 60 segundos (frontend) por execução.
+- Preservar logs da última falha no output.
+- Interromper quando limite for atingido — não tentar novamente.
+
 ## Falhas e escalonamento
 
 - **Teste vermelho pré-existente:** corrigir se for do diff; se não for, reportar com output.
@@ -98,7 +117,10 @@ cd frontend && npm run test
 
 1. **Testes** — aplicados nos ficheiros, seguindo convenções existentes.
 2. **Resultado da validação** — output resumido de `mvn test` ou `npm run test`.
-3. **Cobertura** — módulos cobertos, riscos restantes.
-4. **Próximos passos** — cenários a acrescentar, refactor para testabilidade.
+3. **Goal Gate** — Status: `GOAL REACHED` ou `GOAL NOT REACHED` + tentativas utilizadas (N/5).
+4. **Cobertura** — módulos cobertos, riscos restantes.
+5. **Próximos passos** — cenários a acrescentar, refactor para testabilidade.
+
+Se `GOAL NOT REACHED`: incluir motivo, logs da última falha e ação recomendada (correção ou escalonamento).
 
 Português (Brasil); identificadores em inglês.

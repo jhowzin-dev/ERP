@@ -75,6 +75,25 @@ cd frontend && npm run build
 
 **Entregar sem correr estes comandos não é permitido.** Se algum não puder correr, dizê-lo no output.
 
+## Goal Gate — Verificação com Retry
+
+Entrada: implementação concluída.
+
+1. Executar comandos de verificação (definidos acima).
+2. Se exit code 0 → saída com "GOAL REACHED".
+3. Se exit code ≠ 0 → capturar exit code e logs completos.
+4. Analisar causa raiz do erro (máx 30 segundos).
+5. Corrigir o código respeitando regras e convenções do `frontend-skill`.
+6. Re-executar comandos de verificação.
+7. Se tentativa < 5 e falhou → voltar ao passo 3.
+8. Se tentativa = 5 e falhou → saída com "GOAL NOT REACHED" + motivo + logs.
+
+**Safety rails:**
+- Máximo de 5 tentativas por ciclo de verificação.
+- Timeout de 60 segundos por execução do verificador.
+- Preservar logs da última falha no output.
+- Interromper quando limite for atingido — não tentar novamente.
+
 ## Falhas e escalonamento
 
 - **Lint/test/build vermelhos:** corrigir. Falha pré-existente e alheia ao diff: dizê-lo com o output, sem silenciar.
@@ -85,7 +104,10 @@ cd frontend && npm run build
 
 1. **Código** — aplicado nos ficheiros, alinhado a nomes, pastas e SCSS Modules do repositório.
 2. **Resultado da validação** — output resumido de lint/test/build.
-3. **Notas** — só quando a fronteira de estado, o split de componentes ou decisão não for óbvia.
-4. **Próximos passos** — cenários de teste a acrescentar, regressão pela UI recomendada, endpoint em falta.
+3. **Goal Gate** — Status: `GOAL REACHED` ou `GOAL NOT REACHED` + tentativas utilizadas (N/5).
+4. **Notas** — só quando a fronteira de estado, o split de componentes ou decisão não for óbvia.
+5. **Próximos passos** — cenários de teste a acrescentar, regressão pela UI recomendada, endpoint em falta.
+
+Se `GOAL NOT REACHED`: incluir motivo, logs da última falha e ação recomendada (correção ou escalonamento).
 
 Português (Brasil); identificadores em inglês.
