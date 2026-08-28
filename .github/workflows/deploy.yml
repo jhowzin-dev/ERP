@@ -15,23 +15,34 @@ jobs:
     if: github.repository_owner == 'sgmultidia'
     steps:
       - uses: actions/checkout@v4
-      - uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.8.5
+        - uses: hashicorp/setup-terraform@v3
+          with:
+            terraform_version: 1.8.5
 
-      - name: Terraform Init
-        run: terraform init
-        working-directory: infra/terraform
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        - name: Check Terraform directory
+          id: check_tf_dir
+          run: |
+            if [ -d infra/terraform ]; then
+              echo "exists=true" >> $GITHUB_OUTPUT
+            else
+              echo "exists=false" >> $GITHUB_OUTPUT
+            fi
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve -var db_password="${{ secrets.DB_PASSWORD }}"
-        working-directory: infra/terraform
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        - name: Terraform Init
+          if: ${{ steps.check_tf_dir.outputs.exists == 'true' }}
+          run: terraform init
+          working-directory: infra/terraform
+          env:
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+        - name: Terraform Apply
+          if: ${{ steps.check_tf_dir.outputs.exists == 'true' }}
+          run: terraform apply -auto-approve -var db_password="${{ secrets.DB_PASSWORD }}"
+          working-directory: infra/terraform
+          env:
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   images:
     runs-on: ubuntu-latest
