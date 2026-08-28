@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+set -u
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+# Detect changed modules from staged files
+CHANGED=$(git diff --name-only --cached HEAD 2>/dev/null || git diff --name-only HEAD 2>/dev/null)
+
+RUN_BACKEND=false
+RUN_FRONTEND=false
+RUN_INGESTION=false
+
+if echo "$CHANGED" | grep -qE "^(backend/|harness\.|AGENTS\.md)"; then
+  RUN_BACKEND=true
+fi
+if echo "$CHANGED" | grep -qE "^frontend/"; then
+  RUN_FRONTEND=true
+fi
+if echo "$CHANGED" | grep -qE "^ingestion/"; then
+  RUN_INGESTION=true
+fi
+
+# If no recognized module changed, run full harness
+if [ "$RUN_BACKEND" = false ] && [ "$RUN_FRONTEND" = false ] && [ "$RUN_INGESTION" = false ]; then
+  echo "==> Nenhum módulo específico detectado — executando harness completo"
+  bash harness.sh all
+  exit $?
+fi
+
+FAILED=0
+
+if [ "$RUN_BACKEND" = true ]; then
+  echo "==> Pre-commit: verificando backend..."
+  bash harness.sh backend || FAILED=1
+fi
+
+if [ "$RUN_FRONTEND" = true ]; then
+  echo "==> Pre-commit: verificando frontend..."
+  bash harness.sh frontend || FAILED=1
+fi
+
+if [ "$RUN_INGESTION" = true ]; then
+  echo "==> Pre-commit: verificando ingestion..."
+  bash harness.sh ingestion || FAILED=1
+fi
+
+if [ "$FAILED" -ne 0 ]; then
+  echo ""
+  echo "HARNESS FALHOU — commit bloqueado. Corrija os erros antes de fazer commit."
+  exit 1
+fi
+
+echo "HARNESS OK — commit autorizado."
+exit 0

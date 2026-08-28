@@ -20,6 +20,7 @@
 | "Desenha a feature X", "valida fronteiras/modulith" | Delegar | `java-architect` + `backend-skill` |
 | "Implementa X" (backend Java/Spring) | Delegar | `java-implementer` + `backend-skill` |
 | "Implementa X" (frontend React/Vite) | Delegar | `frontend-engineer` + `frontend-skill` |
+| "Implementa X" (ingestion/Go) | Delegar | `go-implementer` + `go-skill` |
 | "Escreve testes para X" | Delegar | `test-engineer` |
 | "Debug X", "por que falha?", "causa raiz" | Delegar | `debug-specialist` |
 | "Melhora performance de X" | Delegar | `performance-optimizer` |
@@ -266,6 +267,7 @@ Após o agent retornar resultado, o orchestrator DEVE:
 | "Desenha a feature X" | Não | Delegar | `java-architect` + `backend-skill` |
 | "Implementa X" (backend) | `backend/...` | Delegar | `java-implementer` + `backend-skill` |
 | "Implementa X" (frontend) | `frontend/...` | Delegar | `frontend-engineer` + `frontend-skill` |
+| "Implementa X" (ingestion/Go) | `ingestion/...` | Delegar | `go-implementer` + `go-skill` |
 | "Escreve testes para X" | Sim/Não | Delegar | `test-engineer` |
 | "Debug X" | Sim/Não | Delegar | `debug-specialist` |
 | "Melhora performance de X" | Sim/Não | Delegar | `performance-optimizer` |

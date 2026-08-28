@@ -1,4 +1,4 @@
-﻿# Backend Skill — Convenções Java/Spring/Modulith
+# Backend Skill — Convenções Java/Spring/Modulith
 
 > Skill de conhecimento para o Dev Backend. Ler antes de escrever código no `backend/`.
 

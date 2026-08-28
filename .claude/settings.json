@@ -1,6 +1,26 @@
 {
   "permissions": {
     "allow": [],
-    "deny": []
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ~)",
+      "Bash(dd *)",
+      "Bash(mkfs *)",
+      "Bash(sudo *)",
+      "Bash(chmod 777 *)",
+      "Bash(chown *)",
+      "Bash(git push --force *)",
+      "Bash(git push --all *)",
+      "Bash(git push --tags *)",
+      "Bash(kill -9 *)",
+      "Bash(:(){ :|:& };:)",
+      "Read(/etc/shadow)",
+      "Read(/etc/passwd)",
+      "Read(/etc/*)",
+      "Read(/root/.env)",
+      "Read(/home/*/.env)",
+      "Read(C:\\Windows\\System32\\config\\*)"
+    ]
   }
 }
