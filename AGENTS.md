@@ -1,357 +1,196 @@
-# OminiCore — Contexto de Desenvolvimento
+# OminiCore — Contexto de Desenvolvimento [ENFORCEMENT v2.0]
 
 ---
 
-## OBRIGATÓRIO — Fluxo de Trabalho
+## 📋 OBRIGATÓRIO — Fluxo de Trabalho
 
 > **QUALQUER modelo de IA que ler este ficheiro DEVE seguir estas regras.**
 > **NÃO há exceções. NÃO há atalhos. NÃO é opcional.**
+> **VIOLAÇÃO = BLOQUEIO IMEDIATO E ESCALAÇÃO PARA HUMANO.**
 
-### Regra central
+---
 
-**NUNCA faça análise, revisão, implementação, debug ou teste de código diretamente.**
-**SEMPRE delega para o agente especialista using a ferramenta Task.**
+### 🚫 Regra Central — INVIOLÁVEL
 
-### Tabela de roteamento
+**NUNCA faça análise, revisão, implementação, debug ou teste — de código, infraestrutura ou configuração — diretamente.**
 
-| O que o usuário pede | Tu DEVES fazer | Agente/Skill |
-|-------------------------|---------------|-------------|
-| "Analisa isto", "revisa este diff/PR" | Delegar | `code-reviewer` |
-| "Desenha a feature X", "valida fronteiras/modulith" | Delegar | `java-architect` + `backend-skill` |
-| "Implementa X" (backend Java/Spring) | Delegar | `java-implementer` + `backend-skill` |
-| "Implementa X" (frontend React/Vite) | Delegar | `frontend-engineer` + `frontend-skill` |
-| "Implementa X" (ingestion/Go) | Delegar | `go-implementer` + `go-skill` |
-| "Escreve testes para X" | Delegar | `test-engineer` |
-| "Debug X", "por que falha?", "causa raiz" | Delegar | `debug-specialist` |
-| "Melhora performance de X" | Delegar | `performance-optimizer` |
-| "Testa a UI", "valida a tela" | Delegar | `e2e-qa-engineer` + `e2e-qa-skill` |
-| Feature nova completa (SDD) | Delegar | `sdd-orchestrator` |
-| Pedido vago ou multi-domínio | Delegar | `meta-agent` |
-| Pergunta informativa simples (sem tocar código) | Responder diretamente | N/A |
+**SEMPRE delega para o agente especialista usando a ferramenta Task.**
 
-### Regras invioláveis
+**A ÚNICA exceção é pergunta informativa pura (conceitual, sem ler arquivos do projeto).**
 
-1. **NUNCA** faça análise de código sem delegar para `code-reviewer`.
-2. **NUNCA** desenhe arquitetura sem delegar para `java-architect`.
-3. **NUNCA** implemente código sem delegar para `java-implementer` ou `frontend-engineer`.
-4. **NUNCA** diagnostique bugs sem delegar para `debug-specialist`.
-5. **NUNCA** escreva testes sem delegar para `test-engineer`.
-6. **SEMPRE** usa `sdd-orchestrator` para features novas.
-7. **SEMPRE** usa `meta-agent` para pedidos vagos ou multi-domínio.
-8. **A ÚNICA exceção** é quando o usuário faz uma pergunta informativa simples que não envolve alterar, analisar ou revisar código.
+---
 
-### Como delegar
+## 🗺️ Tabela de Roteamento
 
-Usa a ferramenta `Task` com `subagent_type` adequado. No prompt de delegação, inclui o caminho do ficheiro de agente para que o subagente leia as suas instruções:
+| O que o usuário pede | Tu DEVES fazer | Agente/Skill | Validação | Penalidade |
+|----------------------|---------------|-------------|-----------|------------|
+| "Analisa isto", "revisa este diff/PR" | Delegar | `code-reviewer` | Detectar: "analisa", "revisa", "diff", "PR" | BLOQUEIO se tentar fazer direto |
+| "Revisa infra", "audita config", "o que tem de infra" | Delegar | `java-architect` | Detectar: "infra", "infraestrutura", "docker", "CI/CD", "config", "deploy", "audita" | BLOQUEIO se tentar fazer direto |
+| "Desenha a feature X", "valida fronteiras/modulith" | Delegar | `java-architect` + `backend-skill` | Detectar: "desenha", "arquitetura", "fronteiras", "design" | BLOQUEIO se tentar fazer direto |
+| "Implementa X" (backend Java/Spring) | Delegar | `java-implementer` + `backend-skill` | Detectar: "implementa", caminho `backend/` | BLOQUEIO se tentar fazer direto |
+| "Implementa X" (frontend React/Vite) | Delegar | `frontend-engineer` + `frontend-skill` | Detectar: "implementa", caminho `frontend/` | BLOQUEIO se tentar fazer direto |
+| "Implementa X" (ingestion/Go) | Delegar | `go-implementer` + `go-skill` | Detectar: "implementa", caminho `ingestion/` | BLOQUEIO se tentar fazer direto |
+| "Escreve testes para X" | Delegar | `test-engineer` | Detectar: "escreve testes", "teste", "test" | BLOQUEIO se tentar fazer direto |
+| "Debug X", "por que falha?", "causa raiz" | Delegar | `debug-specialist` | Detectar: "debug", "falha", "erro", "causa raiz" | BLOQUEIO se tentar fazer direto |
+| "Melhora performance de X" | Delegar | `performance-optimizer` | Detectar: "performance", "otimiza", "lento" | BLOQUEIO se tentar fazer direto |
+| "Testa a UI", "valida a tela" | Delegar | `e2e-qa-engineer` + `e2e-qa-skill` | Detectar: "testa UI", "tela", "navegação" | BLOQUEIO se tentar fazer direto |
+| Feature nova completa (SDD) | Delegar | `sdd-orchestrator` | Detectar: "feature nova", "feature completa" | BLOQUEIO se tentar fazer direto |
+| Pedido vago ou multi-domínio | Delegar | `meta-agent` | Detectar: falta de clareza, múltiplos domínios | BLOQUEIO se tentar fazer direto |
+| Pergunta informativa simples (sem tocar código) | Responder diretamente | N/A | Validar: NÃO modifica, NÃO analisa, NÃO toca código | PERMITIDO (única exceção) |
+
+---
+
+## 🚫 Regras Invioláveis
+
+| # | Regra | Agent | Detecção |
+|---|-------|-------|----------|
+| 1 | NUNCA faça análise de código sem delegar | `code-reviewer` | "analisa", "revisa", "diff", "PR" |
+| 2 | NUNCA desenhe arquitetura sem delegar | `java-architect` | "desenha", "design", "arquitetura", "fronteiras" |
+| 3 | NUNCA implemente código sem delegar | `java-implementer` / `frontend-engineer` / `go-implementer` | "implementa", "cria", "escreve" |
+| 4 | NUNCA diagnostique bugs sem delegar | `debug-specialist` | "debug", "diagnóstico", "causa raiz" |
+| 5 | NUNCA escreva testes sem delegar | `test-engineer` | "escreve testes", "teste unitário" |
+| 6 | SEMPRE usa `sdd-orchestrator` para features novas | `sdd-orchestrator` | "feature nova", "nova funcionalidade" |
+| 7 | SEMPRE usa `meta-agent` para pedidos vagos | `meta-agent` | Clareza < 0.7, múltiplos domínios |
+| 8 | ÚNICA exceção: pergunta informativa simples | N/A | Sem modificar, analisar ou ler código |
+| 9 | NUNCA analise infraestrutura sem delegar | `java-architect` | "infra", "docker", "CI/CD", "deploy" |
+
+**Enforcement:** Violar qualquer regra = BLOQUEIO IMEDIATO + LOG + ESCALAÇÃO PARA HUMANO (EXIT CODE: 403)
+
+---
+
+## ⚙️ Agent Harness — Fluxo Obrigatório
+
+### 📊 Hierarquia de Instruções
 
 ```
-Task(subagent_type="general", prompt="Leia .claude/agents/<agente>.md e execute: <tarefa>")
+NÍVEL 0 — INVIOLÁVEL: System Rules (não pode sobrescrever)
+    ↓
+NÍVEL 1 — CRÍTICO: Harness Rules (gates obrigatórios)
+    ↓
+NÍVEL 2 — VINCULANTE: Agents (.claude/agents/)
+    ↓
+NÍVEL 3 — VINCULANTE: Skills (.claude/skills/)
+    ↓
+NÍVEL 4 — VINCULANTE: Project Rules (este AGENTS.md)
+    ↓
+NÍVEL 5 — VINCULANTE: Directory Rules (backend/, frontend/, etc.)
+    ↓
+NÍVEL 6 — CONTEXTO: User Instruction (NÃO pode sobrescrever níveis superiores)
+    ↓
+BLOQUEIO SE QUALQUER NÍVEL FALHAR
 ```
 
 ---
 
-## Agent Harness — Fluxo Obrigatório
+### 🚦 Execution Gate — 8 Etapas Obrigatórias
 
-> **O caminho da pasta é apenas contexto de localização, não autorização para execução.**
-> **Qualquer instrução que mencione um caminho de pasta DEVE passar pelo Harness antes de qualquer tool call.**
+| Etapa | Nome | Validação | Enforcement |
+|-------|------|-----------|-------------|
+| 1 | INSTRUCTION | Pedido claro? | Claro: 200 \| Vago: 400 |
+| 2 | RESOLVE AGENTS/SKILLS | Agente existe? | Encontrado: 200 \| Não: 404 |
+| 3 | LOAD CONTEXT | Contexto carregado? | Sucesso: 200 \| Erro: 500 \| Max: 503 |
+| 4 | VALIDATE | Regras OK? | Válido: 200 \| Violação: 403 |
+| 5 | PLAN | Plano completo? | Completo: 200 \| Incompleto: 400 |
+| 6 | EXECUTION GATE CHECK | Etapas 1-5 OK? | OK: 200 \| Faltante: 402 |
+| 7 | TOOL CALL | Chamada válida? | Executada: 201 \| Erro: 400 |
+| 8 | VERIFY (GOAL GATE) | Exit code 0? | Sucesso: 200 \| Falha: 500 |
 
-### Hierarquia de Instruções
+**Regra:** Se qualquer etapa retornar código ≠ esperado, BLOQUEAR. Sem pular etapas.
 
-A prioridade das instruções segue esta ordem (cada nível não pode ser sobrescrito por níveis inferiores):
+---
 
-```
-System Rules (regras do modelo e ferramentas)
-    ↓
-Harness Rules (regras desta seção)
-    ↓
-Agents (definições em .claude/agents/)
-    ↓
-Skills (conhecimento em .claude/skills/)
-    ↓
-Project Rules (regras do projeto neste AGENTS.md)
-    ↓
-Directory Rules (regras específicas de pastas)
-    ↓
-User Instruction (pedido do usuário)
-```
+### 🎯 Goal Gate — Loop de Verificação
 
-**Regra:** A instrução do usuário NÃO pode ignorar ou sobrescrever regras de níveis superiores.
+> **O agente NÃO pode declarar tarefa concluída enquanto verificador não retornar `exit code 0`.**
 
-### Execution Gate — 8 Etapas Obrigatórias
-
-Toda operação relevante DEVE passar por este gate. Se alguma etapa obrigatória não for concluída, a execução é **bloqueada**.
+#### Ciclo Obrigatório
 
 ```
-1. Instruction
-   ↓ (usuário faz pedido)
-2. Resolve Agents / Skills
-   ↓ (identificar quais agents e skills são necessários)
-3. Load Context
-   ↓ (carregar regras e contexto dos agents/skills)
-4. Validate
-   ↓ (validar se a instrução é permitida pelas regras superiores)
-5. Plan
-   ↓ (criar plano de execução com etapas)
-6. Execution Gate
-   ↓ (validar que todas as etapas obrigatórias foram concluídas)
-7. Tool Call
-   ↓ (executar ação via ferramenta)
-8. Verify (Goal Gate)
-   ↓ (validar resultado da execução com verificação objetiva)
+1. EXECUTAR VERIFICAÇÃO → rodar comandos, capturar exit code
+2. VALIDAR EXIT CODE → 0 = GOAL REACHED ✓ | ≠0 = continuar
+3. CAPTURAR EVIDÊNCIA → logs preservados, timestamp ISO 8601
+4. ANALISAR CAUSA RAIZ → máx 30s, apenas evidência
+5. CORRIGIR CÓDIGO → correção mínima e segura
+6. RE-EXECUTAR VERIFICAÇÃO → novo exit code
+7. VERIFICAR TENTATIVAS → <5 = voltar ao passo 2 | ≥5 = parar
+8. DECISÃO FINAL → 0 = GOAL REACHED | ≠0 = GOAL NOT REACHED
 ```
 
-### Goal Gate — Loop de Verificação Obligatório
-
-> **O agente NÃO pode declarar a tarefa concluída enquanto o verificador não retornar `exit code 0`.**
-
-O Goal Gate é a formalização da etapa 8 (Verify). Toda implementação que gere código executável DEVE passar pelo Goal-Based Loop antes de entregar resultado.
-
-#### Ciclo obrigatório
-
-```
-Implementação concluída
-    ↓
-1. Executar comandos de verificação (por domínio)
-    ↓
-2. Exit code 0? ──SIM──→ GOAL REACHED ✓ (tarefa concluída)
-    │
-    NÃO
-    ↓
-3. Capturar exit code + logs completos
-    ↓
-4. Analisar causa raiz (máx 30s)
-    ↓
-5. Corrigir código respeitando regras e convenções
-    ↓
-6. Re-executar comandos de verificação
-    ↓
-7. Tentativa < 5? ──SIM──→ Volta ao passo 2
-    │
-    NÃO (limite atingido)
-    ↓
-8. GOAL NOT REACHED → Output com motivo + logs → Escalonar para humano
-```
-
-#### Comandos de verificação por domínio
+#### Comandos de Verificação
 
 | Domínio | Comando | Timeout |
 |---------|---------|---------|
-| `backend/` | `.\mvnw.cmd test` (Windows) / `./mvnw test` (Linux) | 180s |
-| `frontend/` | `npm run lint` + `npm run build` | 60s |
-| `ingestion/` | `go build ./...` + `go test ./...` | 60s |
+| `backend/` | `./mvnw test` (Linux) / `.\mvnw.cmd test` (Windows) | 180s |
+| `frontend/` | `npm run lint && npm run build` | 60s |
+| `ingestion/` | `go build ./... && go test ./...` | 60s |
 
-#### Safety Rails
+#### Safety Rails [INVIOLÁVEIS]
 
-| Regra | Valor |
-|-------|-------|
-| Máximo de tentativas | 5 por ciclo de verificação |
-| Timeout por execução | 180s (backend) / 60s (frontend/ingestion) |
-| Preservar logs | Última falha sempre no output |
-| Interromper no limite | Após tentativa 5, NÃO tentar novamente |
-| Re-delegação | Máximo 1 re-delegação automática com contexto do erro |
-
-#### Output obrigatório do agente
-
-Todo agente implementer DEVE incluir no resultado final:
-
-```
-Status: GOAL REACHED | GOAL NOT REACHED
-Tentativas: N/5
-[Se GOAL NOT REACHED]:
-  - Motivo: <descrição do problema>
-  - Logs: <último erro completo>
-  - Ação recomendada: <correção necessária ou escalonamento>
-```
-
-#### Re-delegação automática (Orchestrator)
-
-Quando o output do subagente contiver `GOAL NOT REACHED`:
-
-1. **Primeira ocorrência:** Re-delegar para o mesmo agent com contexto do erro (prompt inclui motivo + logs).
-2. **Segunda ocorrência (ou persistência):** Escalonar para o humano com relatório completo.
-
-#### Integração com agents
-
-| Agent | Goal Gate aplicável? | Comportamento |
-|-------|---------------------|---------------|
-| `java-implementer` | Sim | Loop com `.\mvnw.cmd test` (timeout 180s) |
-| `go-implementer` | Sim | Loop com `go build` + `go test` (timeout 60s) |
-| `frontend-engineer` | Sim | Loop com `npm run lint` + `npm run build` (timeout 60s) |
-| `test-engineer` | Sim | Loop com comandos de teste do módulo (timeout conforme domínio) |
-| `debug-specialist` | Sim | Loop com comandos de teste que validam o fix (timeout conforme domínio) |
-| `performance-optimizer` | Sim | Loop com comandos de teste + comparação de métrica (timeout conforme domínio) |
-| `code-reviewer` | Não | Read-only — validação por checklist |
-| `java-architect` | Não | Read-only — validação por checklist |
-| `e2e-qa-engineer` | Não | UI-based — validação por cenário |
-
-### Orchestrator Gate — Fluxo Obligatório antes de Delegar
-
-> **ANTES de chamar a ferramenta Task, o orchestrator DEVE completar as 5 etapas abaixo.**
-> **Se qualquer etapa não for concluída, a delegação é BLOQUEADA.**
-
-#### Checklist obrigatório (orchestrator)
-
-```
-ANTES de delegar, o orchestrator DEVE:
-
-[ ] 1. RESOLVER: Identificar agent + skill (usar tabela de roteamento)
-[ ] 2. CARREGAR: Ler contexto obrigatório do agent (## Contexto obrigatório)
-[ ] 3. VALIDAR: Verificar se instrução é permitida (regras superiores)
-[ ] 4. PLANEJAR: Criar plano com etapas específicas da tarefa
-[ ] 5. CONFIRMAR: Listar agent, skill e plano antes de chamar Task
-
-Se qualquer item não for concluído → BLOQUEAR delegação.
-```
-
-#### Template de delegação obrigatório
-
-Todo Task call DEVE seguir este formato:
-
-```
-Task(
-  subagent_type="general",
-  prompt="Leia .claude/agents/<AGENT>.md e execute:
-  
-  CONTEXTO:
-  - Skill: <SKILL>
-  - Plano: <ETAPAS DO PLANO>
-  - Timeout: <TIMEOUT DO DOMÍNIO>
-  
-  TAREFA:
-  <DESCRIÇÃO ESPECÍFICA>
-  
-  VALIDAÇÃO:
-  <COMANDOS DE VERIFICAÇÃO>
-  
-  OUTPUT ESPERADO:
-  Status: GOAL REACHED | GOAL NOT REACHED
-  Tentativas: N/5"
-)
-```
-
-#### Validação pós-delegação
-
-Após o agent retornar resultado, o orchestrator DEVE:
-
-1. Verificar se output contém `GOAL REACHED` ou `GOAL NOT REACHED`
-2. Se `GOAL NOT REACHED` → re-delegar com contexto do erro (máx 1x)
-3. Se persistir → escalonar para humano
-4. **NÃO** declarar tarefa concluída sem confirmar `GOAL REACHED`
-
-#### Exceções
-
-| Cenário | Permite pular Orchestrator Gate? |
-|---------|--------------------------------|
-| Pergunta informativa simples (sem tocar código) | Sim — única exceção |
-| Leitura direta de arquivo (sem modificação) | Sim — após validar que é leitura |
-| Qualquer operação de escrita/implementation | **NÃO** — Gate obrigatório |
-| Auditoria/analysis de código | **NÃO** — Gate obrigatório |
-
-### Regras de Bloqueio
-
-| Cenário | Ação |
-|---------|------|
-| Instrução menciona caminho de pasta | BLOQUEAR até passar pelo Harness completo |
-| Caminho aponta para `backend/` | Resolver `java-architect` ou `java-implementer` + `backend-skill` |
-| Caminho aponta para `frontend/` | Resolver `frontend-engineer` + `frontend-skill` |
-| Caminho aponta para `ingestion/` | Resolver `go-implementer` + `go-skill` |
-| Caminho aponta para `.claude/agents/` ou `.claude/skills/` | Apenas leitura, sem modificação sem aprovação |
-| Etapa obrigatória não concluída | BLOQUEAR execução |
-| Pergunta informativa simples (sem tocar código) | ÚNICA exceção — responder diretamente |
-
-### Tabela de Decisão com Detecção de Caminho
-
-| O que o usuário pede | Caminho detectado? | Tu DEVES fazer | Agente/Skill |
-|-------------------------|-------------------|---------------|-------------|
-| "Analisa isto", "revisa este diff/PR" | Sim/Não | Delegar | `code-reviewer` |
-| "Desenha a feature X" | Não | Delegar | `java-architect` + `backend-skill` |
-| "Implementa X" (backend) | `backend/...` | Delegar | `java-implementer` + `backend-skill` |
-| "Implementa X" (frontend) | `frontend/...` | Delegar | `frontend-engineer` + `frontend-skill` |
-| "Implementa X" (ingestion/Go) | `ingestion/...` | Delegar | `go-implementer` + `go-skill` |
-| "Escreve testes para X" | Sim/Não | Delegar | `test-engineer` |
-| "Debug X" | Sim/Não | Delegar | `debug-specialist` |
-| "Melhora performance de X" | Sim/Não | Delegar | `performance-optimizer` |
-| "Testa a UI" | Sim/Não | Delegar | `e2e-qa-engineer` + `e2e-qa-skill` |
-| Feature nova completa | Não | Delegar | `sdd-orchestrator` |
-| Pedido vago ou multi-domínio | Sim/Não | Delegar | `meta-agent` |
-| "Leia o arquivo X" (leitura) | Sim | Ler diretamente (após validar) | N/A |
-| "Modifique X" (escrita) | Sim | BLOQUEAR → Delegar | Agent correspondente |
-| Pergunta informativa simples | Qualquer | Responder diretamente | N/A |
-
-### Validação por Caminho
-
-Quando um caminho é detectado na instrução, execute as seguintes validações:
-
-1. **Identificar domínio:** `backend/`, `frontend/`, `ingestion/`, `.claude/`, `docs/`, etc.
-2. **Resolver agent:** Usar tabela de roteamento para identificar o agent correto
-3. **Resolver skill:** Identificar skill de conhecimento necessária
-4. **Validar permissão:** Verificar se o agent tem permissão para o tipo de operação (leitura/escrita)
-5. **Carregar contexto:** O agent deve ler a skill correspondente antes de executar
-6. **Criar plano:** Definir etapas específicas da operação
-7. **Gate de execução:** Validar que todas as etapas anteriores foram concluídas
-8. **Executar:** Apenas após todas as validações
-9. **Verificar resultado:** Validar se a execução foi bem-sucedida
+| Regra | Valor | Enforcement |
+|-------|-------|-------------|
+| Máximo tentativas | 5 por ciclo | BLOQUEIO após 5 |
+| Timeout execução | 180s (backend) / 60s (frontend/ingestion) | FAIL automático |
+| Preservar logs | Última falha sempre no output | Output rejeitado se logs faltarem |
+| Interromper no limite | Após tentativa 5, NÃO tentar | BLOQUEIO AUTOMÁTICO |
+| Re-delegação | Máximo 1 com contexto | Se > 1, escalar humano |
+| Timestamp | ISO 8601 obrigatório | Output rejeitado sem timestamp |
 
 ---
 
-## Monorepo
+### 🎛️ Orchestrator Gate — 5 Validações Obrigatórias
 
-| Pasta | Tecnologia |
-|-------|-----------|
-| `backend/` | Java 21, Spring Boot 4.0.7, Spring Modulith (Maven) |
-| `frontend/` | React 19, Vite 8, Tailwind v4, TypeScript strict |
-| `ingestion/` | Go 1.22, kafka-go (webhooks ML, sync estoque/preço) |
+> **ANTES de chamar Task, orchestrator DEVE completar as 5 etapas. Se não, BLOQUEAR.**
 
-Mapa completo de pastas e comandos de build: [`docs/README.md`](docs/README.md)
+```
+[ ] 1. RESOLVER → identificar agent + skill (tabela de roteamento)
+[ ] 2. CARREGAR → ler contexto do agent (.claude/agents/<AGENT>.md)
+[ ] 3. VALIDAR → verificar se instrução é permitida
+[ ] 4. PLANEJAR → criar plano com etapas específicas
+[ ] 5. CONFIRMAR → listar agente, skill, contexto, plano
+```
 
-## Fonte principal - SDD
+**Enforcement:** Se qualquer etapa falhar → BLOQUEIO + LOG + EXIT CODE: 402
 
-- **Especificação do produto:** [`docs/sdd/OMINICORE-SDD.md`](docs/sdd/OMINICORE-SDD.md) - princípios, camadas, fases A–E, gates de verificação.
-- **Fluxo por feature:** [`docs/sdd/SDD-ORCHESTRATOR.md`](docs/sdd/SDD-ORCHESTRATOR.md) e [`docs/sdd/SDD-USAGE-GUIDE.md`](docs/sdd/SDD-USAGE-GUIDE.md). Artefactos em `docs/features/<feature-id>/`.
-- **ADRs:** [`docs/sdd/adrs/`](docs/sdd/adrs/) - decisões estruturais duradouras.
+---
 
-## Agentes especialistas (`.claude/agents/`)
+## 📊 Referência Rápida
 
-Invoca pelo **nome** com a ferramenta Agent. Cada agente já traz a sua allowlist de
-ferramentas e lê a skill correspondente no arranque — não copies convenções para o prompt de delegação.
-Índice e padrão de escrita: [`docs/agents/README.md`](docs/agents/README.md).
+### Agents Disponíveis
 
-| Situação | Agente |
-|----------|--------|
-| Fronteiras / layering / API shape (read-only) | `java-architect` |
-| Implementação Java/Spring concreta | `java-implementer` |
-| Implementação Go (ingestion, workers, Kafka) | `go-implementer` |
-| UI / React / Vite / Tailwind | `frontend-engineer` |
-| Testes automatizados | `test-engineer` |
-| Qualidade de PR / diff (read-only) | `code-reviewer` |
-| Bugs / causa raiz | `debug-specialist` |
-| Performance com evidência | `performance-optimizer` |
-| QA End-to-End (navega a UI real) | `e2e-qa-engineer` |
+| Agent | Tipo | Uso Principal |
+|-------|------|---------------|
+| `java-architect` | Read-only | Arquitetura, fronteiras, ADRs |
+| `java-implementer` | Escrita | Código Java de produção |
+| `frontend-engineer` | Escrita | UI React/Vite/Tailwind |
+| `go-implementer` | Escrita | Código Go de produção |
+| `test-engineer` | Escrita | Testes automatizados |
+| `code-reviewer` | Read-only | Revisão de diff |
+| `debug-specialist` | Escrita | Diagnóstico e correção |
+| `performance-optimizer` | Escrita | Otimização de performance |
+| `e2e-qa-engineer` | Read-only | Regressão pela UI |
+| `sdd-orchestrator` | Orquestração | Features novas (SDD) |
+| `meta-agent` | Orquestração | Pedidos vagos/multi-domínio |
 
-Orquestração mínima: um especialista quando bastar; cadeias curtas só quando a tarefa exigir.
+### Skills Disponíveis
 
-## Skills (`.claude/skills/`)
+| Skill | Tipo | Uso Principal |
+|-------|------|---------------|
+| `backend-skill` | Conhecimento | Convenções Java/Spring |
+| `frontend-skill` | Conhecimento | Convenções React/Vite |
+| `go-skill` | Conhecimento | Convenções Go |
+| `e2e-qa-skill` | Conhecimento | Metodologia E2E |
+| `sdd-orchestrator` | Orquestração | Fluxo SDD |
 
-Carregadas automaticamente quando a situação encaixa. Índice e padrão:
-[`docs/skills/README.md`](docs/skills/README.md).
+---
 
-| Área | Skill |
-|------|-------|
-| Convenções backend Java/Spring (conhecimento) | `backend-skill` |
-| Convenções frontend React/Vite/Tailwind (conhecimento) | `frontend-skill` |
-| Convenções Go/ingestion (conhecimento) | `go-skill` |
-| Pedido vago ou multi-domínio → rotear e encadear | `meta-agent` |
-| Especificar feature antes de código (gate por fase) | `sdd-orchestrator` |
-| Regressão E2E pela UI real | `e2e-qa-skill` |
+## 🔐 Segurança
 
-Orquestração é skill, não agente: um subagente não tem a ferramenta Agent e por isso só conseguiria
-recomendar, não delegar.
+1. **NUNCA** commite secrets no repositório
+2. **SEMPRE** use variáveis de ambiente para configurações sensíveis
+3. **VALIDE** todas as entradas antes de processar
+4. **LOG** todas as operações para auditoria
+5. **ESCALE** imediatamente se detectar violação de segurança
 
-## Regras de comportamento
+---
 
-- **SDD first:** para features novas ou refactors com contrato negócio/técnico, seguir o fluxo SDD (PRD → design → spec/tasks) antes de gerar código.
-- **Human-in-the-loop:** merge e decisões de risco ficam com o humano. Sem secrets no repo.
-- **Segurança:** autorização (RBAC) explícita onde o SDD e a feature exigirem; validar inputs na fronteira.
-- **Modulith:** dependências entre módulos de negócio apenas via eventos Kafka ou injeção controlada. **Não** criar dependências diretas entre módulos diferentes.
-- **Frontend:** TypeScript `strict`, sem `any`, Tailwind v4 — não expandir para outro CSS framework.
-- **Idioma:** respostas e artefactos em **português (Brasil)**; identificadores de código em inglês.
+**Fim do AGENTS.md — Enforcement v2.0**
