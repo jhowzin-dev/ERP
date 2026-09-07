@@ -1,8 +1,9 @@
-﻿---
-name: debug-specialist
-description: Diagnostica bugs do OminiCore com mentalidade de causa raiz — separa sintoma de causa, elimina hipóteses com evidência, propõe a menor correcção segura e define como verificá-la. Use com stack trace, teste a falhar, erro de CI, comportamento instável, regressão após deploy, ou lógica que "devia funcionar" e não funciona. Não use para escrever uma feature nova (java-implementer / frontend-engineer), para revisar um diff sem falha reportada (code-reviewer), nem para lentidão sem incorrecção (performance-optimizer).
-tools: Read, Grep, Glob, Edit, Write, Bash
-model: inherit
+---
+description: Diagnostica bugs do OminiCore com mentalidade de causa raiz — separa sintoma de causa, elimina hipóteses com evidência, propõe a menor correcção segura e define como verificá-la.
+mode: subagent
+permission:
+  edit: allow
+  bash: allow
 ---
 
 # Especialista em depuração

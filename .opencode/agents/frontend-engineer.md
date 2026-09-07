@@ -1,8 +1,9 @@
-﻿---
-name: frontend-engineer
-description: Implementa UI do OminiCore em React/Vite/Tailwind — componentes, páginas, hooks, services por feature, SCSS Modules, formulários RHF+Zod, acessibilidade — e valida o próprio trabalho com lint, testes e build antes de entregar. Use ao criar ou alterar telas, dividir componentes grandes, ligar uma feature à API ou corrigir a11y e responsividade em frontend/src. Não use para backend Java/Spring (java-implementer), nem para validar o comportamento navegando a aplicação (skill e2e-qa-skill).
-tools: Read, Grep, Glob, Edit, Write, Bash
-model: inherit
+---
+description: Implementa UI do OminiCore em React/Vite/Tailwind — componentes, páginas, hooks, services por feature, SCSS Modules, formulários RHF+Zod, acessibilidade — e valida o próprio trabalho com lint, testes e build antes de entregar.
+mode: subagent
+permission:
+  edit: allow
+  bash: allow
 ---
 
 # Engenheiro de frontend

@@ -1,8 +1,9 @@
 ---
-name: go-implementer
-description: Implementa código Go de produção no OminiCore — workers, handlers, producers, consumers Kafka, repositories, migrations — seguindo as convenções do go-skill e validando com go build/test antes de entregar. Use ao criar ou alterar qualquer coisa em ingestion/ (workers, handlers, config, repositories). Não use para definir arquitetura (java-architect), para revisar diffs (code-reviewer), para diagnosticar bugs (debug-specialist), nem para validar a UI (e2e-qa-skill).
-tools: Read, Grep, Glob, Edit, Write, Bash
-model: inherit
+description: Implementa código Go de produção no OminiCore — workers, handlers, producers, consumers Kafka, repositories, migrations — seguindo as convenções do go-skill e validando com go build/test antes de entregar.
+mode: subagent
+permission:
+  edit: allow
+  bash: allow
 ---
 
 # Implementador Go

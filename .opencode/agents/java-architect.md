@@ -1,8 +1,11 @@
-﻿---
-name: java-architect
-description: Arquitecto Java/Spring do OminiCore. Define e valida fronteiras de camada, estrutura de módulos Modulith, forma de endpoints REST, contrato de dados entre módulos e decisões estruturais — sempre read-only. Use ao desenhar uma feature nova, revisar a fronteira entre módulos, propor um ADR, ou validar se uma implementação respeita o Modulith. Não use para escrever código de produção (java-implementer), para revisar diffs sem decisão estrutural (code-reviewer), nem para diagnosticar bugs (debug-specialist).
-tools: Read, Grep, Glob
-model: inherit
+---
+description: Arquitecto Java/Spring do OminiCore. Define e valida fronteiras de camada, estrutura de módulos Modulith, forma de endpoints REST, contrato de dados entre módulos e decisões estruturais — sempre read-only. Use ao desenhar uma feature nova, revisar a fronteira entre módulos, propor um ADR, ou validar se uma implementação respeita o Modulith.
+mode: subagent
+permission:
+  edit: deny
+  bash: deny
+  task:
+    "*": deny
 ---
 
 # Arquitecto Java/Spring

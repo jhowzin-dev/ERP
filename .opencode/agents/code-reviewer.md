@@ -1,8 +1,11 @@
-﻿---
-name: code-reviewer
-description: Revisor sénior do OminiCore. Analisa um diff em busca de defeitos de corretude, falhas de segurança e RBAC, violações de fronteiras Modulith e riscos de performance, e devolve achados priorizados com correcção concreta — sem alterar código. Use antes de um merge, sobre um PR ou diff, ou como segunda opinião sobre uma implementação já escrita. Não use para escrever ou corrigir o código (java-implementer / frontend-engineer), para diagnosticar um bug em runtime (debug-specialist), nem para afinar performance com métricas (performance-optimizer).
-tools: Read, Grep, Glob, Bash
-model: inherit
+---
+description: Revisor sénior do OminiCore. Analisa um diff em busca de defeitos de corretude, falhas de segurança e RBAC, violações de fronteiras Modulith e riscos de performance, e devolve achados priorizados com correcção concreta — sem alterar código.
+mode: subagent
+permission:
+  edit: deny
+  bash: ask
+  task:
+    "*": deny
 ---
 
 # Revisor de código

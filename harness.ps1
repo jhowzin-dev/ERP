@@ -3,7 +3,7 @@ param(
   [string]$Module = "all"
 )
 
-$ErrorActionPreference = "Continue"
+$ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
 $failures = @()
 
@@ -14,21 +14,30 @@ function Invoke-Step {
     [string]$Cmd
   )
   Write-Host "==> $Name" -ForegroundColor Cyan
-  Push-Location (Join-Path $root $Dir)
+
+  $targetDir = Join-Path $root $Dir
+  if (-not (Test-Path $targetDir)) {
+    Write-Host "    FAIL: $Name (diretorio nao encontrado: $targetDir)" -ForegroundColor Red
+    $script:failures += $Name
+    return
+  }
+
+  Push-Location $targetDir
   try {
-    $global:LASTEXITCODE = 0
-    try {
-      Invoke-Expression $Cmd 2>&1 | ForEach-Object { Write-Host $_ }
-    } catch {
-      Write-Host "    $($_.Exception.Message)" -ForegroundColor Yellow
-      $global:LASTEXITCODE = 1
-    }
-    if ($LASTEXITCODE -ne 0) {
-      Write-Host "    FAIL: $Name (exit $LASTEXITCODE)" -ForegroundColor Red
+    $output = & cmd.exe /c "$Cmd 2>&1"
+    $code = $LASTEXITCODE
+
+    $output | ForEach-Object { Write-Host $_ }
+
+    if ($code -ne 0) {
+      Write-Host "    FAIL: $Name (exit $code)" -ForegroundColor Red
       $script:failures += $Name
     } else {
       Write-Host "    OK: $Name" -ForegroundColor Green
     }
+  } catch {
+    Write-Host "    FAIL: $Name (excecao: $($_.Exception.Message))" -ForegroundColor Red
+    $script:failures += $Name
   } finally {
     Pop-Location
   }

@@ -1,8 +1,12 @@
-﻿---
-name: e2e-qa-engineer
-description: Executa regressão End-to-End do OminiCore pela UI real (Browser pane), módulo a módulo, seguindo a metodologia canónica da skill e2e-qa-skill. Navega a aplicação como um utilizador real, valida cenários, regista defeitos e consolida relatório versionado. Use quando a skill e2e-qa-skill delega a execução de um módulo específico, ou quando o utilizador pede para "testar a tela X" ou "validar o fluxo Y antes de mergear". Não use para testes unitários/integração (test-engineer), para revisão estática de diff (code-reviewer), nem para diagnóstico de causa raiz (debug-specialist).
-tools: Read, Grep, Glob, Bash
-model: sonnet
+---
+description: Executa regressão End-to-End do OminiCore pela UI real (Browser pane), módulo a módulo, seguindo a metodologia canónica da skill e2e-qa-skill.
+mode: subagent
+model: anthropic/claude-sonnet-4-20250514
+permission:
+  edit: deny
+  bash: ask
+  task:
+    "*": deny
 ---
 
 # QA End-to-End

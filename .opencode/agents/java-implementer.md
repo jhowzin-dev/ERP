@@ -1,8 +1,9 @@
-﻿---
-name: java-implementer
-description: Implementa código Java de produção no OminiCore — controllers, services, repositories, entities, migrations Flyway, eventos Kafka — seguindo as convenções do backend-skill e validando com mvn test/verify antes de entregar. Use ao criar ou alterar qualquer coisa em backend/src (controllers, services, repositories, entities, migrations, eventos). Não use para definir arquitetura (java-architect), para revisar diffs (code-reviewer), para diagnosticar bugs (debug-specialist), nem para validar a UI (e2e-qa-skill).
-tools: Read, Grep, Glob, Edit, Write, Bash
-model: inherit
+---
+description: Implementa código Java de produção no OminiCore — controllers, services, repositories, entities, migrations Flyway, eventos Kafka — seguindo as convenções do backend-skill e validando com mvn test/verify antes de entregar.
+mode: subagent
+permission:
+  edit: allow
+  bash: allow
 ---
 
 # Implementador Java/Spring

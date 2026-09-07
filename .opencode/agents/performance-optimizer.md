@@ -1,8 +1,9 @@
-﻿---
-name: performance-optimizer
-description: Diagnostica e optimiza performance do OminiCore com evidência — profiling, métricas, análise de queries — e propõe a menor mudança que reduz o impacto mensurável. Use quando há suspeita de lentidão, gargalos medidos, picos de CPU/memória, queries lentas, timeouts, ou frontend com bundle oversized. Não use para bugs de corretude (debug-specialist), para escrever features novas (java-implementer / frontend-engineer), nem para revisão estática de diff (code-reviewer).
-tools: Read, Grep, Glob, Edit, Write, Bash
-model: inherit
+---
+description: Diagnostica e optimiza performance do OminiCore com evidência — profiling, métricas, análise de queries — e propõe a menor mudança que reduz o impacto mensurável.
+mode: subagent
+permission:
+  edit: allow
+  bash: allow
 ---
 
 # Optimizador de performance

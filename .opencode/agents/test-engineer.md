@@ -1,8 +1,9 @@
-﻿---
-name: test-engineer
-description: Cria e mantém testes automatizados do OminiCore — unitários (JUnit 5/Mockito), de integração (Spring Boot Test + H2) e frontend (Vitest/React Testing Library) — com foco em risco, manutenibilidade e cobertura real. Use ao escrever testes para código novo, aumentar cobertura de um módulo crítico, criar cenários de integração que valem a pena manter, ou corrigir testes quebrados. Não use para escrever código de produção (java-implementer / frontend-engineer), para revisar diffs sem teste (code-reviewer), nem para testes E2E pela UI real (skill e2e-qa-skill).
-tools: Read, Grep, Glob, Edit, Write, Bash
-model: inherit
+---
+description: Cria e mantém testes automatizados do OminiCore — unitários (JUnit 5/Mockito), de integração (Spring Boot Test + H2) e frontend (Vitest/React Testing Library) — com foco em risco, manutenibilidade e cobertura real.
+mode: subagent
+permission:
+  edit: allow
+  bash: allow
 ---
 
 # Engenheiro de testes

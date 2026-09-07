@@ -1,9 +1,152 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "instructions": ["AGENTS.md"],
+  "username": "Lilás Team",
+  "default_agent": "orchestrator",
+  "instructions": [
+    "AGENTS.md",
+    "docs/README.md",
+    "docs/agents/README.md",
+    "docs/skills/README.md"
+  ],
+  "skills": {
+    "paths": [".opencode/skills"]
+  },
+  "mcp": {
+    "playwright": {
+      "type": "local",
+      "command": ["npx", "-y", "@playwright/mcp@latest"],
+      "enabled": true
+    }
+  },
+  "references": {
+    "docs": {
+      "path": "docs",
+      "description": "Documentação do projeto: arquitetura, SDD, agents, skills, features"
+    },
+    "backend": {
+      "path": "backend/src",
+      "description": "Código fonte do backend Java/Spring"
+    },
+    "frontend": {
+      "path": "frontend/src",
+      "description": "Código fonte do frontend React/Vite/Tailwind"
+    },
+    "ingestion": {
+      "path": "ingestion",
+      "description": "Serviço de ingestão Go"
+    }
+  },
   "agent": {
+    "orchestrator": {
+      "description": "Orquestrador principal — roteia pedidos para agents especialistas, encadear tarefas, gerenciar SDD",
+      "mode": "primary",
+      "prompt": "LEIA O AGENTS.md ANTES DE QUALQUER TAREFA. O Agent Harness é OBRIGATÓRIO e tem 3 camadas de enforcement:\n\n1. EXECUTION GATE (8 etapas): Toda operação DEVE passar por: Instruction → Resolve Agents/Skills → Load Context → Validate → Plan → Execution Gate → Tool Call → Verify (Goal Gate). Se qualquer etapa não for concluída, BLOQUEIE.\n\n2. ORCHESTRATOR GATE (antes de delegar): ANTES de chamar Task, o orchestrator DEVE completar 5 etapas: [ ] Resolver agent+skill [ ] Carregar contexto [ ] Validar instrução [ ] Criar plano [ ] Confirmar antes de delegar. Se qualquer etapa não for concluída, BLOQUEIE a delegação.\n\n3. GOAL GATE (pós-execução): O agente só declara tarefa concluída quando verificador retorna exit code 0. Se output contiver 'GOAL NOT REACHED', re-delegar com contexto (máx 1x) ou escalonar para humano.\n\nREGRAS INVIOLÁVEIS:\n- Nunca delegar sem completar o Orchestrator Gate\n- Nunca declarar tarefa concluída sem confirmar GOAL REACHED\n- O caminho da pasta é contexto, não autorização\n- SEMPRE delegue para agent especialista — nunca faça código diretamente",
+      "permission": {
+        "edit": "ask",
+        "bash": "ask",
+        "task": {
+          "*": "allow"
+        }
+      }
+    },
     "build": {
-      "prompt": "LEIA O AGENTS.md ANTES DE QUALQUER TAREFA. O Agent Harness é OBRIGATÓRIO e tem 3 camadas de enforcement:\n\n1. EXECUTION GATE (8 etapas): Toda operação DEVE passar por: Instruction → Resolve Agents/Skills → Load Context → Validate → Plan → Execution Gate → Tool Call → Verify (Goal Gate). Se qualquer etapa não for concluída, BLOQUEIE.\n\n2. ORCHESTRATOR GATE (antes de delegar): ANTES de chamar Task, o orchestrator DEVE completar 5 etapas: [ ] Resolver agent+skill [ ] Carregar contexto [ ] Validar instrução [ ] Criar plano [ ] Confirmar antes de delegar. Se qualquer etapa não for concluída, BLOQUEIE a delegação.\n\n3. GOAL GATE (pós-execução): O agente só declara tarefa concluída quando verificador retorna exit code 0. Se output contiver 'GOAL NOT REACHED', re-delegar com contexto (máx 1x) ou escalonar para humano.\n\nREGRAS INVIOLÁVEIS:\n- Nunca delegar sem completar o Orchestrator Gate\n- Nunca declarar tarefa concluída sem confirmar GOAL REACHED\n- O caminho da pasta é contexto, não autorização\n- SEMPRE delegue para agent especialista — nunca faça código diretamente"
+      "description": "EXCECAO CONSCIENTE ao Harness — implementacao direta, SOMENTE quando o usuario invocar este agent explicitamente para tarefa trivial mono-dominio. Nao e o caminho padrao.",
+      "mode": "primary",
+      "prompt": "Este agent e uma excecao documentada a Regra Central do AGENTS.md. So deve ser usado quando o usuario explicitamente pedir modo 'build' ou tarefa trivial de uma linha. Para qualquer outra coisa, avise o usuario para usar o agent 'orchestrator'.",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "plan": {
+      "description": "Agent de planejamento — analisa código e sugere mudanças sem alterar nada. Use para revisão, análise e planejamento.",
+      "mode": "primary",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    },
+    "java-architect": {
+      "description": "Arquitecto Java/Spring — define e valida fronteiras de camada, estrutura de módulos Modulith, forma de endpoints REST, contrato de dados. Read-only. Use ao desenhar features, revisar fronteiras, propor ADRs.",
+      "mode": "subagent",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "task": {
+          "*": "deny"
+        }
+      }
+    },
+    "java-implementer": {
+      "description": "Implementa código Java de produção — controllers, services, repositories, entities, migrations Flyway, eventos Kafka. Use ao criar ou alterar qualquer coisa em backend/src.",
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "frontend-engineer": {
+      "description": "Implementa UI do OminiCore em React/Vite/Tailwind — componentes, páginas, hooks, services, SCSS Modules, formulários RHF+Zod. Use ao criar ou alterar telas em frontend/src.",
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "go-implementer": {
+      "description": "Implementa código Go de produção — workers, handlers, producers, consumers Kafka, repositories. Use ao criar ou alterar qualquer coisa em ingestion/.",
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "code-reviewer": {
+      "description": "Revisor sénior — analisa diffs em busca de defeitos de corretude, falhas de segurança, violações de fronteiras Modulith e riscos de performance. Read-only. Use antes de merges, sobre PRs, ou como segunda opinião.",
+      "mode": "subagent",
+      "permission": {
+        "edit": "deny",
+        "bash": "ask",
+        "task": {
+          "*": "deny"
+        }
+      }
+    },
+    "debug-specialist": {
+      "description": "Diagnostica bugs com mentalidade de causa raiz — separa sintoma de causa, elimina hipóteses com evidência, propõe a menor correcção segura. Use com stack traces, testes a falhar, erros de CI.",
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "performance-optimizer": {
+      "description": "Diagnostica e optimiza performance com evidência — profiling, métricas, análise de queries. Use quando há suspeita de lentidão, gargalos medidos, queries lentas.",
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "test-engineer": {
+      "description": "Cria e mantém testes automatizados — unitários (JUnit 5/Mockito), de integração (Spring Boot Test + H2) e frontend (Vitest/RTL). Use ao escrever testes para código novo ou corrigir testes quebrados.",
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow"
+      }
+    },
+    "e2e-qa-engineer": {
+      "description": "Executa regressão End-to-End pela UI real (Browser pane), módulo a módulo. Navega como utilizador real, valida cenários, regista defeitos. Use para testar telas ou validar fluxos antes de merge.",
+      "mode": "subagent",
+      "model": "anthropic/claude-sonnet-4-20250514",
+      "permission": {
+        "edit": "deny",
+        "bash": "ask",
+        "task": {
+          "*": "deny"
+        }
+      }
     }
   }
 }
