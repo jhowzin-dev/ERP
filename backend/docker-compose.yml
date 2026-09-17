@@ -1,16 +1,20 @@
+name: ominicore
+
 services:
   postgres:
     image: postgres:16-alpine
     container_name: ominicore-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER:-ERP}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me_in_production}
+      POSTGRES_DB: ${POSTGRES_DB:-app_db}
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -92,11 +96,64 @@ services:
     environment:
       KAFKA_BROKERCONNECT: kafka:29092
     healthcheck:
-      test: ["CMD-SHELL", "curl -s http://localhost:9000/healthz || exit 1"]
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:9000/healthz || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.5"
+    networks:
+      - ominicore-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ominicore-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-app_db}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-ERP}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-change_me_in_production}
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/8080'"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: "1.0"
+    networks:
+      - ominicore-network
+
+  ingestion:
+    build:
+      context: ../ingestion
+      dockerfile: Dockerfile
+    container_name: ominicore-ingestion
+    restart: unless-stopped
+    depends_on:
+      kafka:
+        condition: service_healthy
+    ports:
+      - "8081:8081"
+    environment:
+      KAFKA_BROKERS: kafka:29092
     deploy:
       resources:
         limits:

@@ -1,0 +1,29 @@
+# Build artifacts
+bin/
+dist/
+coverage.out
+*.test
+
+# IDE
+.idea/
+.vscode/
+
+# Git
+.git/
+.gitignore
+
+# Env / secrets
+.env
+.env.*
+
+# Go
+vendor/
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
