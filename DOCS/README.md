@@ -64,7 +64,7 @@ docs/
 ## Comandos úteis
 
 ```bash
-# Backend (exige Postgres rodando: docker compose up -d)
+# Backend (testes usam H2 in-memory — NÃO exigem Postgres)
 .\mvnw.cmd test              # Windows
 ./mvnw test                  # Linux/macOS
 
@@ -78,6 +78,9 @@ cd ingestion && go build ./... && go test ./...
 .\harness.ps1                # Windows (todos os módulos)
 ./harness.sh                 # Linux/macOS
 ```
+
+> Compose de DEV (Postgres, Kafka+Zookeeper, Kafdrop): `backend/docker-compose.yml`.
+> Compose de PROD (VPS, Caddy + imagens GHCR): `infra/docker-compose.prod.yml` — ver ADR-0005.
 
 ## Maintenance Rules
 

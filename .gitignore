@@ -1,4 +1,3 @@
-# --- Java / Maven (backend) ---
 backend/target/
 *.class
 *.jar
@@ -7,7 +6,6 @@ backend/target/
 !.mvn/wrapper/maven-wrapper.jar
 !.mvn/wrapper/maven-wrapper.properties
 
-# --- Node (frontend) ---
 frontend/node_modules/
 frontend/dist/
 frontend/.vite/
@@ -18,13 +16,11 @@ yarn-error.log*
 pnpm-debug.log*
 .pnpm-store/
 
-# --- Go (ingestion) ---
 ingestion/bin/
 ingestion/coverage.out
 ingestion/*.test
 ingestion/*.prof
 
-# --- Terraform (infra) ---
 infra/terraform/.terraform/
 infra/terraform/*.tfstate
 infra/terraform/*.tfstate.*
@@ -32,7 +28,6 @@ infra/terraform/*.tfvars
 infra/terraform/.terraform.lock.hcl
 infra/terraform/crash.log
 
-# --- IDE / editors ---
 .idea/
 *.iml
 .vscode/*.json.user
@@ -44,52 +39,42 @@ infra/terraform/crash.log
 .classpath
 .settings/
 
-# --- Env / secrets ---
 .env
 .env.*
-!.env.example
 *.pem
 *.p12
 *.pfx
 *.key
 *.cert
 
-# --- OS ---
 Thumbs.db
 ehthumbs.db
 Desktop.ini
 .DS_Store
 ._*
 
-# --- Logs ---
 *.log
 logs/
 npm-debug.log*
 
-# --- Test / Coverage ---
 coverage/
 *.coverage
 *.coveragexml
 test-results/
 
-# --- Build artifacts ---
 build/
 out/
 *.egg-info/
 dist/
 
-# --- Docker ---
 docker-compose.override.yml
 
-# --- Observabilidade ---
 .sentry/
 *.sentryclirc
 
-# --- Obsidian ---
 .obsidian/
 docs/sprints/
 
-# --- Misc ---
 *.tmp
 *.bak
 *.orig

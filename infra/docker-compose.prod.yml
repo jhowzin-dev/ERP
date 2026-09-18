@@ -1,0 +1,165 @@
+#
+# Uso na VPS:
+
+# Topologia: so o Caddy publica portas (80/443). Postgres, Kafka, backend e
+# ingestion ficam APENAS na rede interna "ominicore" (sem ports:).
+#
+# Imagens aplicadas com `pull_policy: always` — o deploy (F4) e apenas
+# `docker compose pull && docker compose up -d` apos o CI publicar em GHCR.
+
+name: ominicore
+
+services:
+  # --- Edge: reverse proxy + TLS automatico ---
+  caddy:
+    image: caddy:2-alpine
+    container_name: ominicore-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp" # HTTP/3
+    environment:
+      DOMAIN: ${DOMAIN} # consumido pelo Caddyfile via {$DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    depends_on:
+      frontend: { condition: service_healthy }
+      backend: { condition: service_healthy }
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+    networks:
+      - ominicore
+
+  # --- SPA React (nginx interno, servida pelo Caddy) ---
+  frontend:
+    image: ghcr.io/${GHCR_OWNER}/ominicore-frontend:latest
+    pull_policy: always
+    container_name: ominicore-frontend
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+    networks:
+      - ominicore
+
+  # --- API Spring Boot (somente rede interna; nao publica porta) ---
+  backend:
+    image: ghcr.io/${GHCR_OWNER}/ominicore-backend:latest
+    pull_policy: always
+    container_name: ominicore-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      # [VALIDAR] sem migrations ainda — ver nota no cabecalho e ADR-0005
+      JPA_DDL_AUTO: ${JPA_DDL_AUTO:-create}
+      FLYWAY_ENABLED: ${FLYWAY_ENABLED:-false}
+      SENTRY_DSN: ${SENTRY_DSN}
+      SENTRY_ENV: ${SENTRY_ENV:-prod}
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/8080'"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+    networks:
+      - ominicore
+
+  # --- Worker Go de ingestao (consumer Kafka) ---
+  ingestion:
+    image: ghcr.io/${GHCR_OWNER}/ominicore-ingestion:latest
+    pull_policy: always
+    container_name: ominicore-ingestion
+    restart: unless-stopped
+    depends_on:
+      kafka:
+        condition: service_healthy
+    environment:
+      # unica env obrigatoria (config.go); KAFKA_TOPICS/KAFKA_GROUP_ID/HEALTH_ADDR
+      # usam os defaults do codigo (ml.orders,ml.inventory / ingestion-ml / :8081)
+      KAFKA_BROKERS: kafka:9092
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    networks:
+      - ominicore
+
+  # --- Banco relacional (fonte de verdade) ---
+  postgres:
+    image: postgres:16-alpine
+    container_name: ominicore-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    networks:
+      - ominicore
+
+  # --- Kafka em KRaft single-node (sem Zookeeper) ---
+  kafka:
+    image: apache/kafka:3.8.0
+    container_name: ominicore-kafka
+    restart: unless-stopped
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics.sh --bootstrap-server localhost:9092 --list"]
+      interval: 10s
+      timeout: 10s
+      retries: 6
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+    networks:
+      - ominicore
+
+volumes:
+  caddy_data:
+  postgres_data:
+  kafka_data:
+
+networks:
+  ominicore:
+    driver: bridge

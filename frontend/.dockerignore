@@ -1,16 +1,9 @@
+# Dependencies (installed via npm ci inside the image)
+node_modules/
+
 # Build artifacts
-bin/
 dist/
-tmp/
-coverage.out
-*.test
-
-# Docs (not needed inside the image)
-*.md
-
-# IDE
-.idea/
-.vscode/
+coverage/
 
 # Git
 .git/
@@ -20,8 +13,9 @@ coverage.out
 .env
 .env.*
 
-# Go
-vendor/
+# IDE
+.idea/
+.vscode/
 
 # Logs
 *.log

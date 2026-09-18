@@ -1,0 +1,21 @@
+# OminiCore — reverse proxy + TLS automatico (Caddy 2)
+# DOMAIN vem do ambiente (infra/.env). Em prod: <ip>.sslip.io (ver ADR-0005).
+#
+# Rotas:
+#   /api/*  -> backend:8080  (convencao backend-skill: /api/{modulo}/{recurso})
+#   demais  -> frontend:8080   (SPA React servida por nginx)
+#
+# NOTA: o actuator NAO e exposto pelo Caddy. O smoke test de prod
+# (/actuator/health) roda DENTRO da rede: docker compose exec backend ...
+
+{$DOMAIN} {
+	encode zstd gzip
+
+	handle /api/* {
+		reverse_proxy backend:8080
+	}
+
+	handle {
+		reverse_proxy frontend:8080
+	}
+}

@@ -1,4 +1,4 @@
-﻿# ADR 0001: Stack Backend — Java + Spring Boot + Modulith
+# ADR 0001: Stack Backend — Java + Spring Boot + Modulith
 
 **Status**: aceito
 **Data**: 2026-08-01

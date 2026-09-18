@@ -1024,26 +1024,29 @@ Acesse: `http://localhost:5173`
 
 ### Pipeline de build
 
+Cada módulo tem seu próprio workflow com CI nativo + publicação de imagem Docker:
+
 ```mermaid
 flowchart LR
-    PUSH["push em main<br/>ou workflow_dispatch"] --> CI
+    PUSH["push / pull_request"] --> W
 
-    subgraph CI["build-and-test.yml"]
-        C1["setup-java 25"] --> C2["mvn clean verify"]
+    subgraph W["backend.yml · frontend.yml · ingestion.yml"]
+        T["job de teste nativo<br/>mvnw test / npm lint+build / go test"] --> IMG["job image<br/>somente push em main<br/>buildx amd64+arm64"]
     end
 
-    CI --> DOCKER
+    IMG --> GHCR["GHCR<br/>ghcr.io/&lt;owner&gt;/ominicore-*:latest + :sha-&lt;commit&gt;"]
 
-    subgraph DOCKER["docker-build.yml"]
-        D1["docker build<br/>backend/Dockerfile"] --> D2["docker push<br/>GitHub Container Registry"]
-    end
-
-    DOCKER --> DEPLOY
-
-    subgraph DEPLOY["deploy.yml"]
-        E1["SSH / SSM"] --> E2["docker pull"] --> E3["docker stop/rm"] --> E4["docker run -d"]
-    end
+    DISPATCH["workflow_dispatch manual"] --> DEPLOY["deploy.yml<br/>legado desativado — reescrita na F4 (ADR-0005)"]
 ```
+
+| Workflow | Gatilho | O que faz |
+| -------- | ------- | --------- |
+| `backend.yml` | push/PR em `backend/**` | Testes Maven nativos; em `main`, publica `ominicore-backend` no GHCR |
+| `frontend.yml` | push/PR em `frontend/**` | Lint + build nativos; em `main`, publica `ominicore-frontend` no GHCR |
+| `ingestion.yml` | push/PR em `ingestion/**` | Build + testes Go; em `main`, publica `ominicore-ingestion` no GHCR |
+| `deploy.yml` | apenas `workflow_dispatch` | Deploy legado desativado; será reescrito na F4 — ver [ADR-0005](docs/sdd/adrs/ADR-0005-infra-cicd-docker-terraform.md) |
+
+> O workflow `harness.yml` foi aposentado na F2 (redundante com os 3 workflows por módulo); o harness **local** (`harness.ps1`/`harness.sh`) permanece. Stack de produção: `infra/docker-compose.prod.yml` (ver ADR-0005).
 
 ### Harness de validação
 

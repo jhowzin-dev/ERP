@@ -41,6 +41,7 @@ Onde `NNNN` é um número sequencial (zero-padded) e `titulo-curto` usa kebab-ca
 | [ADR-0002](ADR-0002-stack-frontend.md) | Stack frontend: React + Vite + Tailwind | aceito | 2026-08-01 |
 | [ADR-0003](ADR-0003-ingestion-go.md) | Ingestão: Go com Kafka | aceito | 2026-08-01 |
 | [ADR-0004](ADR-0004-ml-integration.md) | Integração Mercado Livre: webhooks + API REST | proposto | 2026-08-26 |
+| [ADR-0005](ADR-0005-infra-cicd-docker-terraform.md) | Infra: CI/CD Docker, GHCR, Terraform, VPS Oracle | aceito (F1+F2) · F3–F5 pendentes | 2026-09-17 |
 
 ## Regras
 

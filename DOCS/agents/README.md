@@ -95,8 +95,9 @@ Scripts executáveis na raiz do repositório:
 Uso: `.\harness.ps1` (todos) ou `.\harness.ps1 frontend` / `backend` / `ingestion`.
 Sai com exit code `0` se tudo passou, `1` se alguma etapa falhou, `2` se o módulo for inválido.
 
-**Ambiente antes de rodar:** backend testa contra Postgres real — subir
-`docker compose up -d` em `infra/`; `ingestion` exige Go instalado.
+**Ambiente antes de rodar:** backend usa H2 in-memory nos testes (não exige Postgres;
+compose de DEV em `backend/docker-compose.yml`, compose de PROD em `infra/`);
+`ingestion` exige Go instalado.
 
 ---
 
