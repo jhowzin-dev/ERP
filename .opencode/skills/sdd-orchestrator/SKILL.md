@@ -20,6 +20,8 @@ description: Executor do fluxo Spec-Driven Development (PRD → design → spec 
 | Melhoria de performance pontual | **Não** — usar [`performance-optimizer`](../performance-optimizer/SKILL.md) |
 | Pedido claro e mono-domínio | **Não** — usar agent específico |
 
+**Nota**: Fase E pode rodar em paralelo se sem sobreposição de arquivos. Fases A–D: sempre sequencial.
+
 ---
 
 ## 2. Ligações
@@ -32,6 +34,10 @@ description: Executor do fluxo Spec-Driven Development (PRD → design → spec 
 | Features ativas | [`docs/features/`](../../../docs/features/) |
 | Backend (convenções) | [`backend-skill`](../backend-skill/SKILL.md) |
 | Frontend (convenções) | [`frontend-skill`](../frontend-skill/SKILL.md) |
+
+## 2.1 Ownership do state.md
+
+Apenas sdd-orchestrator escreve state.md. Implementers reportam ao orchestrator.
 
 ---
 
@@ -88,6 +94,13 @@ Cada feature vive em `docs/features/<feature-id>/`:
 - [ ] Estimativas presentes
 - [ ] Validação do harness definida por tarefa
 
+### Gate E (Entrega)
+- [ ] Testes passando (contra spec.md)
+- [ ] Code-reviewer validou vs spec
+- [ ] E2E-QA passou
+- [ ] PR aprovada
+- [ ] state.md: "ENTREGUE"
+
 ---
 
 ## 6. Processo
@@ -137,7 +150,9 @@ Spec em docs/features/<feature-id>/spec.md. Crie tasks.md.
 
 ---
 
-## 8. state.md — Status vivo
+## 8. state.md — Status vivo e Propriedade
+
+Apenas sdd-orchestrator escreve state.md. Implementers reportam progresso ao orchestrator para atualização.
 
 Atualizar sempre que:
 - Uma fase é concluída (gate passou).
