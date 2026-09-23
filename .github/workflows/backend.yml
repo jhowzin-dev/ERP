@@ -27,9 +27,13 @@ jobs:
           java-version: "21"
           cache: maven
 
-      - name: Tests
-        run: ./mvnw test
-        working-directory: backend
+       - name: Make mvnw executable
+         run: chmod +x backend/mvnw
+
+       - name: Tests
+         run: ./mvnw test
+         working-directory: backend
+
 
   # Publica a imagem multi-arch no GHCR apenas apos testes verdes 
   image:

@@ -64,8 +64,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       # [VALIDAR] sem migrations ainda — ver nota no cabecalho e ADR-0005
-      JPA_DDL_AUTO: ${JPA_DDL_AUTO:-create}
-      FLYWAY_ENABLED: ${FLYWAY_ENABLED:-false}
+      JPA_DDL_AUTO: ${JPA_DDL_AUTO:-validate}
+      FLYWAY_ENABLED: ${FLYWAY_ENABLED:-true}
       SENTRY_DSN: ${SENTRY_DSN}
       SENTRY_ENV: ${SENTRY_ENV:-prod}
     healthcheck:
