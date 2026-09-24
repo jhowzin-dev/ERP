@@ -4,6 +4,11 @@
 name: deploy
 
 on:
+<<<<<<< Updated upstream
+=======
+  push:
+    branches: [main]
+>>>>>>> Stashed changes
   workflow_dispatch:
 
 permissions:
