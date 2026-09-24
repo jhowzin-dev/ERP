@@ -28,4 +28,3 @@ COPY --from=build /out/worker /app/worker
 USER nonroot:nonroot
 EXPOSE 8081
 ENTRYPOINT ["/app/worker"]
-

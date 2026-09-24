@@ -1,10 +1,9 @@
-# será reescrito (Terraform + pull de imagens GHCR). Deploy legado
-# (git pull + build na VPS) desativado — ver docs/sdd/adrs/ADR-0005-infra-cicd-docker-terraform.md.
-# NÃO execute manualmente sem a VPS provisionada.
 name: deploy
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
 
 permissions:
   contents: read
