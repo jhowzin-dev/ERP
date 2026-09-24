@@ -1,7 +1,6 @@
 # Build artifacts
 bin/
 dist/
-<<<<<<< Updated upstream
 tmp/
 coverage.out
 *.test
@@ -9,11 +8,6 @@ coverage.out
 # Docs (not needed inside the image)
 *.md
 
-=======
-coverage.out
-*.test
-
->>>>>>> Stashed changes
 # IDE
 .idea/
 .vscode/
