@@ -27,17 +27,18 @@
 5. [Estrutura de pastas](#5-estrutura-de-pastas)
 6. [Tecnologias utilizadas](#6-tecnologias-utilizadas)
 7. [Padrões arquiteturais adotados](#7-padrões-arquiteturais-adotados)
-8. [Modelo de dados](#8-modelo-de-dados)
-9. [Fluxo de integração ML](#9-fluxo-de-integração-ml)
-10. [Fluxo de navegação](#10-fluxo-de-navegação)
-11. [Fluxo de requisições HTTP](#11-fluxo-de-requisições-http)
-12. [Gerenciamento de estado](#12-gerenciamento-de-estado)
-13. [Estratégia de cache e eventos](#13-estratégia-de-cache-e-eventos)
-14. [Tratamento de erros](#14-tratamento-de-erros)
-15. [Configurando o ambiente](#15-configurando-o-ambiente)
-16. [Executando o projeto](#16-executando-o-projeto)
-17. [Build e CI/CD](#17-build-e-cicd)
-18. [Convenções do projeto](#18-convenções-do-projeto)
+8. [Orquestração de IA e Quality Harness](#8-orquestração-de-ia-e-quality-harness)
+9. [Modelo de dados](#9-modelo-de-dados)
+10. [Fluxo de integração ML](#10-fluxo-de-integração-ml)
+11. [Fluxo de navegação](#11-fluxo-de-navegação)
+12. [Fluxo de requisições HTTP](#12-fluxo-de-requisições-http)
+13. [Gerenciamento de estado](#13-gerenciamento-de-estado)
+14. [Estratégia de cache e eventos](#14-estratégia-de-cache-e-eventos)
+15. [Tratamento de erros](#15-tratamento-de-erros)
+16. [Configurando o ambiente](#16-configurando-o-ambiente)
+17. [Executando o projeto](#17-executando-o-projeto)
+18. [Build e CI/CD](#18-build-e-cicd)
+19. [Convenções do projeto](#19-convenções-do-projeto)
 
 ---
 
@@ -255,7 +256,7 @@ flowchart TB
 | Worker Go | ML API | HTTPS/JSON | OAuth 2.0 |
 | Worker Go | Kafka | TCP (kafka-go) | SASL (produção) |
 | Worker Go | PostgreSQL | TCP (lib pg) | Connection string |
-| ML API | Worker Go | HTTPS (webhooks, via Caddy `/webhooks/*`) | Validação da notificação (ver [9.2](#92-recebimento-de-webhook-pedido-ml)) |
+| ML API | Worker Go | HTTPS (webhooks, via Caddy `/webhooks/*`) | Validação da notificação (ver [10.2](#102-recebimento-de-webhook-pedido-ml)) |
 | Internet | Caddy | HTTPS 443 (TLS automático) | Certificado via ACME |
 | Caddy | Frontend / Backend / Worker | HTTP na rede interna `ominicore` | — |
 
@@ -517,7 +518,57 @@ OminiCore/
 
 ---
 
-## 8. Modelo de dados
+## 8. Orquestração de IA e Quality Harness
+
+O OminiCore não é apenas desenvolvido por humanos, mas por um ecossistema de agentes de IA especializados, orquestrados por um **Agent Harness** rigoroso para garantir que a automação não comprometa a qualidade.
+
+### 8.1 Workflow de Desenvolvimento
+
+O fluxo de trabalho é dividido entre a criação de novas funcionalidades e a manutenção do sistema:
+
+```mermaid
+flowchart TD
+    START([Pedido do Usuário]) --> TYPE{Tipo de Pedido?}
+    
+    TYPE -- "Nova Feature" --> SDD[sdd-orchestrator]
+    TYPE -- "Bug / Ajuste" --> META[meta-agent]
+    
+    subgraph SDD_Process [Spec-Driven Development]
+        SDD --> PRD[PRD] --> DES[Design] --> SPEC[Spec] --> TASK[Tasks]
+    end
+    
+    SPEC --> IMP[Implementação Especializada]
+    TASK --> IMP
+    META --> IMP
+    
+    IMP --> REV[Code Reviewer]
+    REV --> HARN[Harness de Validação]
+    
+    HARN -- "Fail (Exit != 0)" --> LOOP[Loop de Correção]
+    LOOP --> IMP
+    HARN -- "Pass (Exit 0)" --> DONE([Tarefa Concluída ✅])
+```
+
+### 8.2 Os Pilares da Orquestração
+
+| Componente | Papel | Responsabilidade |
+| :--- | :--- | :--- |
+| **Meta-Agent** | Roteador | Analisa pedidos vagos e delega para o especialista correto. |
+| **Specialists** | Executores | Agentes focados (`java-implementer`, `frontend-engineer`, `go-implementer`). |
+| **Architect** | Guardião | Garante que a implementação respeite a arquitetura Modulith. |
+| **Code Reviewer**| Auditor | Analisa diffs em busca de bugs, falhas de segurança ou RBAC. |
+
+### 8.3 O Goal Gate (Loop de Verificação)
+
+A regra fundamental do projeto é que **nenhuma tarefa é considerada concluída sem prova técnica**. O loop funciona assim:
+1. **Implementação** $\rightarrow$ 2. **Execução do Harness** $\rightarrow$ 3. **Validação do Exit Code**.
+   - Se `exit code != 0`: A IA entra em loop de análise de logs e correção automática (máx. 5 tentativas).
+   - Se `exit code == 0`: A tarefa é marcada como `GOAL REACHED`.
+
+---
+
+## 9. Modelo de dados
+
 
 ### Fluxo de dados
 
@@ -676,9 +727,9 @@ stateDiagram-v2
 
 ---
 
-## 9. Fluxo de integração ML
+## 10. Fluxo de integração ML
 
-### 9.1 Publicação de produto no ML
+### 10.1 Publicação de produto no ML
 
 ```mermaid
 sequenceDiagram
@@ -699,7 +750,7 @@ sequenceDiagram
     BE-->>FE: Confirmação
 ```
 
-### 9.2 Recebimento de webhook (pedido ML)
+### 10.2 Recebimento de webhook (pedido ML)
 
 ```mermaid
 sequenceDiagram
@@ -728,7 +779,7 @@ sequenceDiagram
 - **Resposta rápida:** o worker só valida e publica no Kafka; o processamento pesado acontece no backend.
 - **Falha no backend:** o evento fica retido no Kafka e é reprocessado quando o consumer voltar.
 
-### 9.3 Sync de estoque
+### 10.3 Sync de estoque
 
 ```mermaid
 sequenceDiagram
@@ -752,7 +803,7 @@ sequenceDiagram
 
 > O `PUT` envia a quantidade **absoluta** (não um delta), então reprocessar o mesmo `StockChanged` é seguro.
 
-### 9.4 Fluxo de dados completo
+### 10.4 Fluxo de dados completo
 
 ```mermaid
 flowchart LR
@@ -784,7 +835,7 @@ flowchart LR
 
 ---
 
-## 10. Fluxo de navegação
+## 11. Fluxo de navegação
 
 ```mermaid
 flowchart TD
@@ -825,9 +876,9 @@ flowchart TD
 
 ---
 
-## 11. Fluxo de requisições HTTP
+## 12. Fluxo de requisições HTTP
 
-### 11.1 Mutação autenticada (publicação de produto)
+### 12.1 Mutação autenticada (publicação de produto)
 
 ```mermaid
 sequenceDiagram
@@ -862,7 +913,7 @@ sequenceDiagram
     Q->>U: Toast de sucesso
 ```
 
-### 11.2 Leitura pública (catálogo de produtos)
+### 12.2 Leitura pública (catálogo de produtos)
 
 O frontend é uma **SPA (Vite + React Router)**: o HTML é estático e os dados vêm da API no navegador, via TanStack Query.
 
@@ -891,7 +942,7 @@ sequenceDiagram
 
 ---
 
-## 12. Gerenciamento de estado
+## 13. Gerenciamento de estado
 
 ### Árvore de providers
 
@@ -921,7 +972,7 @@ flowchart TB
 
 ---
 
-## 13. Estratégia de cache e eventos
+## 14. Estratégia de cache e eventos
 
 ### Camadas de cache
 
@@ -980,7 +1031,7 @@ flowchart TB
 
 ---
 
-## 14. Tratamento de erros
+## 15. Tratamento de erros
 
 ### Contrato de erro — formato padronizado
 
@@ -1015,7 +1066,7 @@ flowchart TB
 
 ---
 
-## 15. Configurando o ambiente
+## 16. Configurando o ambiente
 
 ### Pré-requisitos
 
@@ -1116,7 +1167,7 @@ go run ./cmd/worker
 
 ---
 
-## 16. Executando o projeto
+## 17. Executando o projeto
 
 ### Opção A — Docker Compose (stack de desenvolvimento)
 
@@ -1154,7 +1205,7 @@ Produção **não** é operada manualmente: o CI publica as imagens no GHCR e a 
 
 ---
 
-## 17. Build e CI/CD
+## 18. Build e CI/CD
 
 ### Pipeline de build
 
@@ -1329,7 +1380,7 @@ cd ingestion && go build -o worker ./cmd/worker
 
 ---
 
-## 18. Convenções do projeto
+## 19. Convenções do projeto
 
 ### Gerais
 

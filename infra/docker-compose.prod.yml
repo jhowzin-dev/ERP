@@ -1,12 +1,3 @@
-#
-# Uso na VPS:
-
-# Topologia: so o Caddy publica portas (80/443). Postgres, Kafka, backend e
-# ingestion ficam APENAS na rede interna "ominicore" (sem ports:).
-#
-# Imagens aplicadas com `pull_policy: always` — o deploy (F4) e apenas
-# `docker compose pull && docker compose up -d` apos o CI publicar em GHCR.
-
 name: ominicore
 
 services:
