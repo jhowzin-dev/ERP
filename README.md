@@ -3,16 +3,18 @@
 > Sistema de gestão leve e rápido para **publicação de produtos no Mercado Livre e gestão de catálogo multi-produto**, com integração nativa ao ML.
 > Monorepo com API Java (Spring Boot 4 + Modulith), worker Go (ingestão) e frontend React (Vite + Tailwind).
 
-![Java](https://img.shields.io/badge/Java-21-ED8B00)
+![Java](https://img.shields.io/badge/Java-25-ED8B00)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.7-6DB33F)
 ![React](https://img.shields.io/badge/React-19-61DAFB)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6)
 ![Vite](https://img.shields.io/badge/Vite-8-646CFF)
 ![Tailwind](https://img.shields.io/badge/Tailwind%20CSS-v4-06B6D4)
 ![Go](https://img.shields.io/badge/Go-1.22-00ADD8)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-336791)
 ![Kafka](https://img.shields.io/badge/Kafka-Apache-231F20)
 ![Arquitetura](https://img.shields.io/badge/Arquitetura-Modulith-2E8B57)
+
+<!-- VALIDAR: Java 25 e PostgreSQL 16 seguem Dockerfile/CI/compose. Conferir <java.version> no pom.xml e a imagem do postgres nos composes. -->
 
 ---
 
@@ -102,11 +104,11 @@ O OminiCore é um ERP leve focado em **publicar e gerenciar produtos no Mercado 
 
 ## 3. Arquitetura da solução
 
-O repositório é um **monorepo** com três aplicações independentes e uma pasta de documentação (`docs/`).
+O repositório é um **monorepo** com três aplicações independentes, uma pasta de infraestrutura de produção (`infra/`) e uma pasta de documentação (`docs/`).
 
 | Aplicação | Stack | Papel |
 | --------- | ----- | ----- |
-| `backend/` | Java 21 + Spring Boot 4.0.7 + Modulith (Maven) | API REST — domínio, casos de uso, persistência, integração ML |
+| `backend/` | Java 25 + Spring Boot 4.0.7 + Modulith (Maven) | API REST — domínio, casos de uso, persistência, integração ML |
 | `ingestion/` | Go 1.22 + kafka-go | Worker — webhooks ML, sync estoque/preço, consumer Kafka |
 | `frontend/` | React 19 + TypeScript 6 + Vite 8 + Tailwind v4 | SPA — catálogo, dashboard, gestão |
 
@@ -218,7 +220,7 @@ flowchart TB
     end
 
     subgraph data["Dados"]
-        PG[("PostgreSQL 15")]
+        PG[("PostgreSQL 16")]
         KFK[("Apache Kafka")]
     end
 
@@ -235,11 +237,13 @@ flowchart TB
     KFK --> GO
     GO --> WH
     GO --> SYNC
-    WH -->|"webhooks"| ML
+    ML -->|"webhooks HTTPS"| WH
     SYNC -->|"PUT /items"| ML
     MOD --> PG
     GO --> PG
 ```
+
+> Em produção, todo tráfego externo (navegador e webhooks do ML) entra pelo **Caddy** (ver [4.3](#43-ambiente-de-produção)); nenhum serviço interno é publicado diretamente.
 
 ### 4.2 Como cada componente se comunica
 
@@ -251,9 +255,66 @@ flowchart TB
 | Worker Go | ML API | HTTPS/JSON | OAuth 2.0 |
 | Worker Go | Kafka | TCP (kafka-go) | SASL (produção) |
 | Worker Go | PostgreSQL | TCP (lib pg) | Connection string |
-| ML API | Worker Go | HTTPS (webhooks) | Assinatura HMAC |
+| ML API | Worker Go | HTTPS (webhooks, via Caddy `/webhooks/*`) | Validação da notificação (ver [9.2](#92-recebimento-de-webhook-pedido-ml)) |
+| Internet | Caddy | HTTPS 443 (TLS automático) | Certificado via ACME |
+| Caddy | Frontend / Backend / Worker | HTTP na rede interna `ominicore` | — |
+
+> **Token do ML:** access token expira em horas e o refresh deve ter **um único dono** (backend *ou* worker), com o token persistido no PostgreSQL. Dois processos renovando o mesmo token podem invalidar um ao outro. Decisão a registrar em ADR próprio.
+<!-- VALIDAR na doc do ML: se o refresh token é de uso único. -->
 
 ### 4.3 Ambiente de produção
+
+Produção roda em **uma única VPS Oracle Ampere A1 (ARM64, Always Free)**, com Docker Compose (`infra/docker-compose.prod.yml`), imagens do GHCR e Caddy como único ponto de entrada. Decisões e roadmap: [ADR-0005](docs/sdd/adrs/ADR-0005-infra-cicd-docker-terraform.md).
+
+```mermaid
+flowchart TB
+    subgraph users["Externo"]
+        U["Navegador"]
+        ML_USERS["Mercado Livre<br/>(webhooks)"]
+    end
+
+    subgraph vps["VPS Oracle A1 (ARM64) · Docker Compose · rede interna 'ominicore'"]
+        CADDY["Caddy<br/>80/443 · TLS · &lt;ip&gt;.sslip.io"]
+
+        subgraph app["Aplicação"]
+            FE_BE["Frontend<br/>(Nginx :80)"]
+            BE["Backend<br/>:8080"]
+            ING["Worker Go<br/>:8081"]
+        end
+
+        subgraph stores["Dados (sem porta pública)"]
+            K["Kafka KRaft<br/>single-node"]
+            PG[("PostgreSQL 16")]
+        end
+    end
+
+    U -->|"/*"| CADDY
+    ML_USERS -->|"/webhooks/*"| CADDY
+    CADDY -->|"/*"| FE_BE
+    CADDY -->|"/api/*"| BE
+    CADDY -->|"/webhooks/*"| ING
+    BE --> K
+    ING --> K
+    K --> BE
+    K --> ING
+    BE --> PG
+    ING --> PG
+```
+
+**Roteamento no Caddy** (a ordem importa: as rotas específicas vêm antes do fallback):
+
+| Rota | Destino | Observação |
+| ---- | ------- | ---------- |
+| `/webhooks/*` | `ingestion:8081` | Entrada dos webhooks do ML |
+| `/api/*` | `backend:8080` | API REST. O actuator **não** é exposto |
+| demais | `frontend:80` | SPA |
+
+<!-- VALIDAR: conferir se o Caddyfile em infra/ já contém a rota /webhooks/* -->
+
+**Limitações assumidas (projeto de estudo, orçamento zero):** um único host (sem alta disponibilidade), Kafka com replication factor 1 (perda de eventos se o volume morrer; o Postgres é a fonte da verdade e os eventos são re-sincronizáveis a partir do marketplace) e SSH temporariamente aberto (ver [17](#17-build-e-cicd)).
+
+<details>
+<summary>Evolução futura — topologia com alta disponibilidade (não implementada)</summary>
 
 ```mermaid
 flowchart TB
@@ -301,6 +362,8 @@ flowchart TB
     PG_M --> PG_R
 ```
 
+</details>
+
 ---
 
 ## 5. Estrutura de pastas
@@ -309,10 +372,11 @@ flowchart TB
 
 ```
 OminiCore/
-├─ .github/workflows/      # CI/CD: build+testes, Docker build, deploy
+├─ .github/workflows/      # backend.yml · frontend.yml · ingestion.yml · deploy.yml (F4 pendente)
 ├─ backend/                # API Java (Spring Boot + Modulith)
 ├─ frontend/               # SPA React (Vite + Tailwind)
 ├─ ingestion/              # Worker Go (Kafka + webhooks ML)
+├─ infra/                  # Produção: docker-compose.prod.yml, Caddyfile, .env.example (Terraform na F3)
 ├─ docs/                   # SDD, ADRs, agents, skills, features
 ├─ .claude/                # Agents e skills (padrão EmpregaNet)
 │   ├─ agents/             # 8 agents com frontmatter
@@ -328,7 +392,7 @@ OminiCore/
 | ------- | ---------------- |
 | `pom.xml` | Dependências: Spring Boot 4.0.7, Modulith 2.1.0, Flyway, Kafka, Security, Sentry 8.53, OTel |
 | `Dockerfile` | Imagem multi-stage (JDK 25 → JRE) |
-| `docker-compose.yml` | Postgres, Kafka, API |
+| `docker-compose.yml` | Stack **de desenvolvimento** (Postgres, Kafka + Zookeeper, Kafdrop). Não é usado em produção |
 | `src/main/java/.../catalog/` | Catálogo: CRUD de produtos, categorias, imagens |
 | `src/main/java/.../catalog/api/` | Controllers REST do catálogo |
 | `src/main/java/.../catalog/internal/` | Services, repositories, entities do catálogo |
@@ -363,7 +427,17 @@ OminiCore/
 | `internal/worker/worker.go` | Lógica principal do worker |
 | `internal/worker/handlers.go` | Handlers de eventos/webhooks |
 | `internal/config/config.go` | Configuração via environment |
-| `Dockerfile` | Imagem multi-stage (Go builder → Alpine) |
+| `Dockerfile` | Imagem multi-stage multi-arch (Go builder → runtime mínimo) |
+<!-- VALIDAR: ADR-0005 cita distroless/scratch; confirmar a imagem final no Dockerfile -->
+
+### `infra/`
+
+| Caminho | Responsabilidade |
+| ------- | ---------------- |
+| `docker-compose.prod.yml` | Stack de produção: imagens do GHCR (`pull_policy: always`), Kafka KRaft, Postgres, Caddy. Nunca faz build |
+| `Caddyfile` | Reverse proxy + TLS; roteia `/webhooks/*`, `/api/*` e o frontend |
+| `.env.example` | Variáveis de produção (sem segredos) |
+| `terraform/` | *(F3, pendente)* VCN, security list, compute A1 e cloud-init |
 
 ---
 
@@ -373,7 +447,7 @@ OminiCore/
 
 | Tecnologia | Versão | Para que serve |
 | ---------- | ------ | -------------- |
-| Java | 21 (JDK 21 LTS) | Runtime |
+| Java | 25 (JDK 25) | Runtime |
 | Spring Boot | 4.0.7 | Framework web |
 | Spring Modulith | 2.1.0 | Modularidade (pacotes por domínio) |
 | Spring Data JPA + Hibernate | (via boot) | ORM e persistência |
@@ -384,7 +458,7 @@ OminiCore/
 | Spring Actuator | (via boot) | Health checks e métricas |
 | Micrometer + OTel | (via boot) | Observabilidade e tracing |
 | Sentry | 8.53.0 | Captura de erros |
-| PostgreSQL | 15+ | Banco relacional |
+| PostgreSQL | 16 | Banco relacional |
 
 ### Frontend
 
@@ -415,10 +489,15 @@ OminiCore/
 
 | Tecnologia | Para que serve |
 | ---------- | -------------- |
-| PostgreSQL 15 | Banco relacional |
-| Apache Kafka | Filas de eventos assíncronos |
-| Docker + Docker Compose | Stack local |
-| GitHub Actions | CI/CD |
+| PostgreSQL 16 | Banco relacional (fonte da verdade) |
+| Apache Kafka (KRaft, `apache/kafka:3.8.0`) | Filas de eventos assíncronos, sem Zookeeper em produção |
+| Docker + Docker Compose | Stack local (dev) e produção (`infra/`) |
+| GitHub Actions | CI nativo + publicação de imagens |
+| GHCR | Registry das imagens (`:latest` e `:sha-<commit>`, amd64+arm64) |
+| Caddy | Reverse proxy e TLS automático |
+| Terraform + HCP Terraform | *(F3)* Provisionamento da VPS; state gerenciado |
+| Oracle Cloud Ampere A1 | VPS ARM64 (Always Free) |
+| sslip.io | Domínio `<ip>.sslip.io` sem custo |
 
 ---
 
@@ -446,7 +525,7 @@ OminiCore/
 flowchart TB
     subgraph entrada["Entrada de Dados"]
         FE_REQ["Frontend → API"]
-        ML_WH["Webhooks ML"]
+        ML_WH["Webhooks ML<br/>(via worker Go)"]
         ML_SYNC["Sync estoque/preço"]
     end
 
@@ -473,12 +552,12 @@ flowchart TB
     FE_REQ --> CAT
     FE_REQ --> SAL
     FE_REQ --> INV
-    ML_WH --> MKT
+    ML_WH --> E3
+    E3 --> SAL
     ML_SYNC --> INV
 
     CAT --> E1
     INV --> E2
-    MKT --> E3
     INV --> E4
 
     CAT --> PG
@@ -526,7 +605,7 @@ erDiagram
     bigint product_id FK
     string marketplace_item_id
     string marketplace "ML | MAGALU | AMAZON"
-    string status "PUBLISHED | PENDING | ERROR"
+    string status "PENDING | PUBLISHED | SYNCING | ERROR | UNPUBLISHED"
     timestamptz last_sync
     timestamptz created_at
   }
@@ -571,6 +650,8 @@ erDiagram
 
 ### Ciclo de vida do produto (publicação ML)
 
+`DRAFT` é o produto ainda sem publicação (não há linha em `product_publications`). Os demais estados vivem em `product_publications.status`; o `marketplace_item_id` (ID do item no ML) também fica nessa tabela, não em `products`.
+
 ```mermaid
 stateDiagram-v2
     [*] --> DRAFT : Criação
@@ -584,12 +665,12 @@ stateDiagram-v2
 
     note right of PUBLISHED
         Produto visível no ML
-        ml_item_id preenchido
+        marketplace_item_id preenchido
     end note
 
     note right of SYNCING
         Worker Go consome Kafka
-        PUT /items/{ml_item_id}
+        PUT /items/{marketplace_item_id}
     end note
 ```
 
@@ -613,7 +694,7 @@ sequenceDiagram
     BE->>BE: Cria "PendingPublication"
     BE->>ML: POST /items
     ML-->>BE: item_id
-    BE->>BE: Atualiza produto (ml_item_id + Published)
+    BE->>BE: Grava product_publications (marketplace_item_id + PUBLISHED)
     BE->>K: Evento ProductPublished
     BE-->>FE: Confirmação
 ```
@@ -629,13 +710,23 @@ sequenceDiagram
     participant BE as Backend Java
     participant DB as PostgreSQL
 
-    ML->>W: POST /webhooks/orders
-    W->>W: Valida assinatura HMAC
-    W->>K: Evento OrderReceived
+    ML->>W: POST /webhooks/orders (via Caddy)
+    W->>W: Valida a notificação
+    W-->>ML: 200 OK
+    W->>ML: GET resource (ex.: /orders/{id}) com token
+    W->>K: Evento OrderReceived (worker é o producer)
     K->>BE: Consumer
     BE->>BE: Cria pedido (status Novo)
     BE->>DB: INSERT order + UPDATE stock
 ```
+
+<!-- VALIDAR na doc do ML: formato da notificação (normalmente traz só o `resource`), se há assinatura verificável e o prazo de resposta esperado. Ajustar "Valida a notificação" e ML_WEBHOOK_SECRET conforme confirmado. -->
+
+**Garantias esperadas (ao implementar):**
+
+- **Idempotência:** o ML pode reenviar a mesma notificação. O consumer deduplica por `orders.external_id` (índice único) e a chave de partição do tópico é o ID do pedido do ML.
+- **Resposta rápida:** o worker só valida e publica no Kafka; o processamento pesado acontece no backend.
+- **Falha no backend:** o evento fica retido no Kafka e é reprocessado quando o consumer voltar.
 
 ### 9.3 Sync de estoque
 
@@ -650,14 +741,16 @@ sequenceDiagram
     BE->>BE: Estoque muda (venda/ajuste/devolução)
     BE->>K: Evento StockChanged
     K->>W: Consumer
-    W->>ML: PUT /items/{ml_item_id}
+    W->>ML: PUT /items/{marketplace_item_id}
     alt Sucesso
         W->>W: Confirma sync
     else Falha (até 5x)
         W->>W: Retry com backoff exponencial
-        W->>ML: PUT /items/{ml_item_id}
+        W->>ML: PUT /items/{marketplace_item_id}
     end
 ```
+
+> O `PUT` envia a quantidade **absoluta** (não um delta), então reprocessar o mesmo `StockChanged` é seguro.
 
 ### 9.4 Fluxo de dados completo
 
@@ -721,7 +814,7 @@ flowchart TD
     NAOAUT["/unauthorized"]
 
     CAT_L --> CAT_D
-    CAT_D -->|"candidatar-se sem sessão"| LOGIN
+    CAT_D -->|"ação que exige sessão"| LOGIN
     LOGIN -->|"sucesso"| DASH
     REGISTER --> LOGIN
     MAIN -->|"sessão ausente/expirada"| LOGIN
@@ -760,7 +853,7 @@ sequenceDiagram
     P->>C: publishToMl(id)
     C->>S: publishProduct(product)
     S->>S: Chama ML API: POST /items
-    S->>DB: Atualiza produto (ml_item_id, status)
+    S->>DB: Atualiza publicação (product_publications)
     S->>K: Evento ProductPublished
     S-->>C: PublicationResult
     C-->>AX: 200 OK
@@ -771,20 +864,29 @@ sequenceDiagram
 
 ### 11.2 Leitura pública (catálogo de produtos)
 
+O frontend é uma **SPA (Vite + React Router)**: o HTML é estático e os dados vêm da API no navegador, via TanStack Query.
+
 ```mermaid
 sequenceDiagram
     autonumber
     participant U as Navegador
-    participant RSC as Server Component
+    participant SPA as SPA React (CatalogPage)
+    participant Q as TanStack Query (useQuery)
     participant API as GET /api/catalog/products
     participant DB as PostgreSQL
 
-    U->>RSC: GET /catalog
-    RSC->>API: fetch products
-    API->>DB: SELECT (is_deleted=false)
-    DB-->>API: products[]
-    API-->>RSC: 200 JSON
-    RSC-->>U: HTML renderizado
+    U->>SPA: navega para /catalog
+    SPA->>Q: useQuery(productsKeys.list())
+    alt cache válido (staleTime 60 s)
+        Q-->>SPA: dados do cache
+    else cache vazio ou stale
+        Q->>API: axios GET
+        API->>DB: SELECT (is_deleted=false)
+        DB-->>API: products[]
+        API-->>Q: 200 JSON
+        Q-->>SPA: dados
+    end
+    SPA-->>U: renderiza a lista
 ```
 
 ---
@@ -795,16 +897,17 @@ sequenceDiagram
 
 ```mermaid
 flowchart TB
-    A["RootLayout<br/>html lang=pt-BR"] --> B["AppProviders"]
-    B --> C["QueryProvider<br/>QueryClient por montagem"]
+    A["main.tsx<br/>createRoot + StrictMode"] --> B["AppProviders"]
+    B --> C["QueryClientProvider<br/>QueryClient criado uma vez"]
     C --> D["AuthProvider<br/>Context API (localStorage)"]
     D --> E["ThemeProvider (tailwind)"]
-    E --> F["ToasterProvider"]
-    F --> G["children"]
-    G --> H["Layout do grupo de rota"]
-    H --> I["AppShell → Sidebar → Header"]
-    I --> J["Página → componente da feature"]
+    E --> F["Toaster"]
+    F --> G["RouterProvider / Routes<br/>(react-router)"]
+    G --> H["Layout route → AppShell<br/>Sidebar + Header + Outlet"]
+    H --> J["Página → componente da feature"]
 ```
+
+<!-- VALIDAR: conferir a ordem real dos providers em main.tsx/App.tsx -->
 
 ### Hierarquia de estado
 
@@ -847,14 +950,14 @@ flowchart TB
         TOPIC4["price.synced"]
     end
 
-    subgraph consumers["Consumers"]
+    subgraph consumers["Consumers e producer do webhook"]
         W["Worker Go<br/>(ingestion)"]
         BE_C["Backend Java<br/>(events module)"]
     end
 
     BE --> TOPIC1
     BE --> TOPIC2
-    BE --> TOPIC3
+    W -->|"webhook ML"| TOPIC3
     BE --> TOPIC4
 
     TOPIC1 --> W
@@ -865,6 +968,15 @@ flowchart TB
     W -->|"PUT /items"| ML["ML API"]
     BE_C -->|"Cria pedido"| DB[("PostgreSQL")]
 ```
+
+| Tópico | Producer | Consumer | Chave de partição |
+| ------ | -------- | -------- | ----------------- |
+| `product.published` | Backend | Worker | `product_id` |
+| `stock.changed` | Backend | Worker | `product_id` (mantém a ordem por produto) |
+| `order.received` | **Worker** (webhook do ML) | Backend | ID do pedido no ML |
+| `price.synced` | Backend | Worker | `product_id` |
+
+> Hoje os tópicos são criados automaticamente (`auto.create.topics=true`, ADR-0005). Evolução recomendada: criar os tópicos de forma explícita (partições e retenção) e adicionar tópicos DLQ para mensagens que esgotarem os 5 retries.
 
 ---
 
@@ -897,8 +1009,8 @@ flowchart TB
     MUT -->|Mutation| REPORT["reportMutationApiError<br/>toast + Alert"]
     MUT -->|Query| BOUND["ApiQueryBoundary<br/>ErrorFallback"]
     ERR --> RENDER{"Erro de renderização?"}
-    RENDER -->|Sim| BOUNDARY["ErrorBoundary"]
-    RENDER -->|Não| NF["not-found.tsx"]
+    RENDER -->|Sim| BOUNDARY["ErrorBoundary / errorElement"]
+    ROUTE{"URL sem rota?"} -->|Sim| NF["NotFoundPage (rota *)"]
 ```
 
 ---
@@ -909,7 +1021,7 @@ flowchart TB
 
 | Ferramenta | Versão | Necessário para |
 | ---------- | ------ | --------------- |
-| JDK | 21+ | Backend |
+| JDK | 25+ | Backend |
 | Node.js | 20+ | Frontend |
 | Go | 1.22+ | Ingestion |
 | Docker + Docker Compose | recente | Stack local |
@@ -923,11 +1035,13 @@ flowchart TB
 git clone <url-do-repositorio> && cd OminiCore
 ```
 
-**2. Subir infraestrutura**
+**2. Subir infraestrutura (stack de desenvolvimento)**
 
 ```bash
-docker compose up -d postgres kafka
+docker compose -f backend/docker-compose.yml up -d postgres kafka
 ```
+
+<!-- VALIDAR: nomes dos serviços em backend/docker-compose.yml (o Kafka de dev depende do Zookeeper) -->
 
 **3. Backend**
 
@@ -961,6 +1075,10 @@ go run ./cmd/worker
 | PostgreSQL | 5432 |
 | Kafka | 9092 |
 | Worker Go | 8081 |
+| Kafdrop (dev) | 9000 |
+
+> As portas acima valem para **desenvolvimento**. Em produção só `80` e `443` (Caddy) são públicas; `5432`, `9092`, `8080` e `8081` ficam na rede interna `ominicore`.
+<!-- VALIDAR: porta do Kafdrop e do Zookeeper no compose de dev -->
 
 ### Variáveis de ambiente
 
@@ -981,24 +1099,36 @@ go run ./cmd/worker
 |----------|-----------|
 | `KAFKA_BROKERS` | Endereço do Kafka |
 | `ML_WEBHOOK_SECRET` | Secret para validação de webhooks |
-| `ML_ACCESS_TOKEN` | Token de acesso à API do ML |
+| `KAFKA_GROUP_ID` | Consumer group do worker (produção: `ml-ingestion`) |
+| `ML_ACCESS_TOKEN` | Token inicial de acesso à API do ML. Em runtime o token deve viver no PostgreSQL, com um único dono do refresh (ver [4.2](#42-como-cada-componente-se-comunica)) |
 | `DATABASE_URL` | Connection string do PostgreSQL |
+
+**Produção** (`infra/.env`, a partir de `infra/.env.example`; nunca commitar):
+
+| Variável | Descrição |
+|----------|-----------|
+| `KAFKA_BROKERS` / `KAFKA_GROUP_ID` | Kafka interno e consumer group do worker |
+| `JPA_DDL_AUTO` | Hoje `create` (**zera o schema a cada restart do backend**). Trocar para `validate` quando as migrations existirem |
+| `FLYWAY_ENABLED` | Hoje desligado; ligar junto com `JPA_DDL_AUTO=validate` |
+| `BACKEND_TAG` · `INGESTION_TAG` · `FRONTEND_TAG` | *(planejado, F4)* Tag da imagem por serviço, para rollback independente. Padrão: `latest` |
+
+<!-- VALIDAR: nomes exatos das variáveis em infra/.env.example -->
 
 ---
 
 ## 16. Executando o projeto
 
-### Opção A — Docker Compose (tudo junto)
+### Opção A — Docker Compose (stack de desenvolvimento)
 
 ```bash
-docker compose up --build
+docker compose -f backend/docker-compose.yml up --build
 ```
 
 ### Opção B — Desenvolvimento local (recomendado)
 
 Terminal 1 — Infra:
 ```bash
-docker compose up -d postgres kafka
+docker compose -f backend/docker-compose.yml up -d postgres kafka
 ```
 
 Terminal 2 — Backend:
@@ -1017,6 +1147,10 @@ cd ingestion && go run ./cmd/worker
 ```
 
 Acesse: `http://localhost:5173`
+
+### Opção C — Produção
+
+Produção **não** é operada manualmente: o CI publica as imagens no GHCR e a VPS apenas as baixa (`docker compose -f infra/docker-compose.prod.yml pull && up -d`). O deploy automatizado é a fase F4 (ver [17](#17-build-e-cicd)).
 
 ---
 
@@ -1047,6 +1181,125 @@ flowchart LR
 | `deploy.yml` | apenas `workflow_dispatch` | Deploy legado desativado; será reescrito na F4 — ver [ADR-0005](docs/sdd/adrs/ADR-0005-infra-cicd-docker-terraform.md) |
 
 > O workflow `harness.yml` foi aposentado na F2 (redundante com os 3 workflows por módulo); o harness **local** (`harness.ps1`/`harness.sh`) permanece. Stack de produção: `infra/docker-compose.prod.yml` (ver ADR-0005).
+
+### Fluxo de Deployment e Infraestrutura de Produção
+
+O OminiCore adota a filosofia de **build imutável**: o código é testado e empacotado em imagens Docker no CI, garantindo que a mesma imagem validada no pipeline seja a que roda em produção.
+
+#### Fluxo de CI/CD (End-to-End)
+
+```mermaid
+flowchart LR
+    DEV["💻 Desenvolvedor"] -->|Push main| GHA["⚙️ GitHub Actions"]
+    
+    subgraph GHA_PIPELINE["Pipeline de CI"]
+        T["🧪 Testes Nativos<br/>(Maven/npm/Go)"] --> B["🐳 Docker Buildx<br/>(amd64 + arm64)"]
+    end
+    
+    GHA --> T
+    B --> GHCR["📦 GHCR<br/>(Registry)"]
+    
+    GHCR -->|Pull Image| VPS["☁️ VPS Oracle ARM64"]
+    
+    subgraph PROD_SERVER["Servidor de Produção"]
+        Caddy["🌐 Caddy<br/>(Reverse Proxy + TLS)"]
+        Compose["🐳 Docker Compose<br/>(Orchestrator)"]
+        Apps["🚀 Containers<br/>(BE, FE, Worker)"]
+        Data["💾 Data Store<br/>(Postgres, Kafka)"]
+        
+        Caddy --> Compose
+        Compose --> Apps
+        Apps --> Data
+    end
+    
+    GHA -.->|"SSH Deploy (F4, pendente)"| Compose
+    Compose -->|docker compose pull| GHCR
+```
+
+
+# Fluxo de Infraestrutura e CI/CD - OminiCore
+
+```mermaid
+flowchart TD
+    Start([Repo Push]) --> GHA{GitHub Actions}
+
+    subgraph GHA_Block [GitHub Actions]
+        GHA --> APP_Flow
+        GHA --> INFRA_Flow
+
+        subgraph APP_Flow [Caminho APP]
+            CI[CI Testes] --> Build[Build Multi-arch]
+            Build --> PushGHCR[Push GHCR]
+            PushGHCR --> Deploy[Deploy via SSH/Runner Compose Pull]
+            Deploy --> Smoke[Smoke Tests]
+        end
+
+        subgraph INFRA_Flow [Caminho INFRA]
+            TFPlan[Terraform Plan] --> TFApply[Terraform Apply]
+            TFApply --> TFState[Update State HCP]
+        end
+    end
+
+    PushGHCR --> GHCR[(GHCR Images :latest / :sha)]
+
+    subgraph VPS [VPS Oracle Prod]
+        Caddy[Caddy Proxy 80/443]
+        
+        subgraph InternalNet [Rede Interna omnicore]
+            subgraph AppsGroup [Grupo APPS]
+                Backend[Backend]
+                Frontend[Frontend]
+                Ingestion[Ingestion]
+            end
+            
+            subgraph InfraGroup [Grupo INFRA]
+                Postgres[(Postgres)]
+                Kafka[(Kafka)]
+            end
+        end
+        Caddy --> AppsGroup
+        Caddy --> InfraGroup
+    end
+
+    User([Usuário]) -->|HTTPS| Caddy
+```
+
+#### Composição da Infraestrutura
+
+A infraestrutura de produção é desenhada para custo zero (Oracle Always Free) e máxima simplicidade operacional:
+
+1.  **Compute**: VPS Oracle Cloud **Ampere A1 (ARM64)**, provisionada via **Terraform** com state gerenciado no **HCP Terraform**.
+2.  **Edge & Segurança**:
+    *   **Caddy**: Atua como reverse proxy único. Gerencia automaticamente certificados TLS via **sslip.io** (DNS dinâmico baseado no IP).
+    *   **Isolamento**: Apenas as portas `80` e `443` são expostas. Todos os demais serviços (`backend`, `postgres`, `kafka`, `ingestion`) residem em uma rede Docker interna isolada (`ominicore`).
+3.  **Runtime**:
+    *   **Docker Compose**: Orquestra a stack de produção definida em `infra/docker-compose.prod.yml`.
+    *   **Imagens**: Consumidas do **GHCR (GitHub Container Registry)** com `pull_policy: always`, evitando builds dentro do servidor de produção.
+4.  **Persistência & Mensageria**:
+    *   **PostgreSQL 16**: Fonte da verdade para todos os módulos.
+    *   **Apache Kafka (KRaft)**: Operando em modo *single-node* para comunicação assíncrona entre backend e worker de ingestão.
+
+
+#### Roadmap e dívidas técnicas (ADR-0005)
+
+| Fase | Escopo | Status |
+| ---- | ------ | ------ |
+| F1 | Dockerfiles multi-arch, compose de produção, Caddyfile, `.env.example` | Concluída |
+| F2 | CI por módulo com job `image` e GHCR multi-arch | Concluída |
+| F3 | Terraform OCI (VCN, security list, compute A1, cloud-init) com state no HCP Terraform | Pendente |
+| F4 | `deploy.yml`: deploy via Actions sem build na VPS | Pendente |
+| F5 | TLS + `<ip>.sslip.io` + hardening (SSH, UFW, atualizações automáticas) | Pendente |
+
+| Dívida / risco | Situação | Encaminhamento |
+| -------------- | -------- | -------------- |
+| SSH (22) aberto a `0.0.0.0/0` | Risco aceito (IP dinâmico). Acesso só por chave | Resolver na F5. Atenção: o deploy da F4 também precisa entrar por SSH, então decidir junto (whitelist, Tailscale ou deploy por *pull*) |
+| `ddl-auto=create` em produção | Cada restart do backend recria o schema | Criar `V1__baseline.sql`, ligar Flyway e usar `validate` |
+| Kafka com RF=1 e limite de 768M | Perda de eventos se o volume morrer; heap padrão pode estourar o limite | Definir `KAFKA_HEAP_OPTS` (ex.: `-Xms512m -Xmx512m`) ou subir o limite |
+| IP público da VM | Se a VM for recriada, o IP e o `<ip>.sslip.io` mudam | IP reservado no Terraform (F3) |
+| Tag única no deploy | Os workflows têm path filter: nem todo commit gera `:sha-<commit>` dos três serviços | Tag por serviço (`*_TAG`) na F4 |
+| Reclaim da VM Always Free | A Oracle pode recolher instâncias ociosas | Recriar com `terraform apply` + `compose pull/up`; conferir a política atual da Oracle |
+
+**Rollback (após a F4):** apontar o serviço afetado para a tag anterior, por exemplo `BACKEND_TAG=sha-<commit-anterior>`, e rodar `docker compose up -d`. Não há rebuild.
 
 ### Harness de validação
 
@@ -1132,8 +1385,8 @@ cd ingestion && go build -o worker ./cmd/worker
 | Workflow dos agents | `docs/agents/README.md` | Pipeline de execução |
 | SDD Orchestrator | `docs/sdd/SDD-ORCHESTRATOR.md` | Nova feature (PRD → spec) |
 | ADRs | `docs/sdd/adrs/README.md` | Decisões arquiteturais |
+| ADR-0003 | `docs/sdd/adrs/` | Ingestão em Go com Kafka (worker separado) |
+| ADR-0005 | `docs/sdd/adrs/ADR-0005-infra-cicd-docker-terraform.md` | CI/CD, GHCR, Terraform e VPS Oracle (roadmap F1–F5) |
 | Feature ML | `docs/features/ml-integration/` | Integração Mercado Livre |
 | Feature Dashboard | `docs/features/dashboard/` | Dashboard de gestão |
 | Skills | `docs/skills/README.md` | Conhecimento especializado |
-
-
