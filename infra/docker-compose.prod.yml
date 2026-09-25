@@ -38,7 +38,7 @@ services:
     networks:
       - ominicore
 
-  # --- API Spring Boot (somente rede interna; nao publica porta) ---
+  # --- API Spring Boot ---
   backend:
     image: ghcr.io/${GHCR_OWNER}/ominicore-backend:latest
     pull_policy: always
