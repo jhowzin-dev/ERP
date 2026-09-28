@@ -80,3 +80,11 @@ docs/sprints/
 *.orig
 .cache/
 .parcel-cache/
+
+# Python / evals (harness)
+__pycache__/
+*.pyc
+evals/results.json
+evals/results-before.json
+evals/trigger_results.json
+evals/SKILL.candidate.md

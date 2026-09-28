@@ -1,4 +1,4 @@
-# OminiCore — Contexto de Desenvolvimento [ENFORCEMENT v2.0]
+# OminiCore — Contexto de Desenvolvimento [ENFORCEMENT v3.0]
 
 ---
 
@@ -20,22 +20,26 @@
 
 ---
 
-## 🗺️ Tabela de Roteamento
+## 🗺️ Tabela de Roteamento Impecável
 
-| O que o usuário pede | Tu DEVES fazer | Agente/Skill | Validação | Penalidade |
-|----------------------|---------------|-------------|-----------|------------|
-| "Analisa isto", "revisa este diff/PR" | Delegar | `code-reviewer` | Detectar: "analisa", "revisa", "diff", "PR" | BLOQUEIO se tentar fazer direto |
-| "Revisa infra", "audita config", "o que tem de infra" | Delegar | `java-architect` | Detectar: "infra", "infraestrutura", "docker", "CI/CD", "config", "deploy", "audita" | BLOQUEIO se tentar fazer direto |
-| "Desenha a feature X", "valida fronteiras/modulith" | Delegar | `java-architect` + `backend-skill` | Detectar: "desenha", "arquitetura", "fronteiras", "design" | BLOQUEIO se tentar fazer direto |
-| "Implementa X" (backend Java/Spring) | Delegar | `java-implementer` + `backend-skill` | Detectar: "implementa", caminho `backend/` | BLOQUEIO se tentar fazer direto |
-| "Implementa X" (frontend React/Vite) | Delegar | `frontend-engineer` + `frontend-skill` | Detectar: "implementa", caminho `frontend/` | BLOQUEIO se tentar fazer direto |
-| "Implementa X" (ingestion/Go) | Delegar | `go-implementer` + `go-skill` | Detectar: "implementa", caminho `ingestion/` | BLOQUEIO se tentar fazer direto |
-| "Escreve testes para X" | Delegar | `test-engineer` | Detectar: "escreve testes", "teste", "test" | BLOQUEIO se tentar fazer direto |
-| "Debug X", "por que falha?", "causa raiz" | Delegar | `debug-specialist` | Detectar: "debug", "falha", "erro", "causa raiz" | BLOQUEIO se tentar fazer direto |
-| "Melhora performance de X" | Delegar | `performance-optimizer` | Detectar: "performance", "otimiza", "lento" | BLOQUEIO se tentar fazer direto |
-| "Testa a UI", "valida a tela" | Delegar | `e2e-qa-engineer` + `e2e-qa-skill` | Detectar: "testa UI", "tela", "navegação" | BLOQUEIO se tentar fazer direto |
-| Feature nova completa (SDD) | Delegar | `sdd-orchestrator` | Detectar: "feature nova", "feature completa" | BLOQUEIO se tentar fazer direto |
-| Pedido vago ou multi-domínio | Delegar | `meta-agent` | Detectar: falta de clareza, múltiplos domínios | BLOQUEIO se tentar fazer direto |
+> Intenção do usuário → Agente Especialista → Skill Necessária. Zero ambiguidade: a stack real deste
+> monorepo é **Java 21/Spring Boot 4/Spring Modulith** (Maven, testes H2), **React 19/Vite 8/TS 6/Tailwind 4**
+> (NPM, oxlint, Vitest) e **Go** (`ingestion/`).
+
+| Intenção do usuário | Agente Especialista | Skill Necessária | Validação (gatilhos) | Penalidade |
+|---------------------|--------------------|------------------|----------------------|------------|
+| "Analisa isto", "revisa este diff/PR" | Delegar → `code-reviewer` | — | "analisa", "revisa", "diff", "PR" | BLOQUEIO se tentar fazer direto |
+| "Revisa infra", "audita config", "o que tem de infra" | Delegar → `java-architect` | `backend-skill` | "infra", "infraestrutura", "docker", "CI/CD", "config", "deploy", "audita" | BLOQUEIO se tentar fazer direto |
+| "Desenha a feature X", "valida fronteiras/modulith" | Delegar → `java-architect` | `backend-skill` | "desenha", "arquitetura", "fronteiras", "design" | BLOQUEIO se tentar fazer direto |
+| "Implementa X" (backend Java/Spring) | Delegar → `java-implementer` | `backend-skill` | "implementa", caminho `backend/` | BLOQUEIO se tentar fazer direto |
+| "Implementa X" (frontend React/Vite) | Delegar → `frontend-engineer` | `frontend-skill` | "implementa", caminho `frontend/` | BLOQUEIO se tentar fazer direto |
+| "Implementa X" (ingestion/Go) | Delegar → `go-implementer` | `go-skill` | "implementa", caminho `ingestion/` | BLOQUEIO se tentar fazer direto |
+| "Escreve testes para X" | Delegar → `test-engineer` | — | "escreve testes", "teste", "test" | BLOQUEIO se tentar fazer direto |
+| "Debug X", "por que falha?", "causa raiz" | Delegar → `debug-specialist` | — | "debug", "falha", "erro", "causa raiz" | BLOQUEIO se tentar fazer direto |
+| "Melhora performance de X" | Delegar → `performance-optimizer` | — | "performance", "otimiza", "lento" | BLOQUEIO se tentar fazer direto |
+| "Testa a UI", "valida a tela", regressão E2E | Delegar → `e2e-qa-engineer` | `e2e-qa-skill` | "testa UI", "tela", "navegação" | BLOQUEIO se tentar fazer direto |
+| Feature nova completa (SDD) | Carregar skill → `sdd-orchestrator` (thread principal) | `sdd-orchestrator` | "feature nova", "feature completa" | BLOQUEIO se tentar fazer direto |
+| Pedido vago ou multi-domínio | Carregar skill → `meta-agent` (thread principal) | `meta-agent` | Clareza < 0.7, múltiplos domínios | BLOQUEIO se tentar fazer direto |
 | Pergunta informativa simples (sem tocar código) | Responder diretamente | N/A | Validar: NÃO modifica, NÃO analisa, NÃO toca código | PERMITIDO (única exceção) |
 
 ---
@@ -49,8 +53,8 @@
 | 3 | NUNCA implemente código sem delegar | `java-implementer` / `frontend-engineer` / `go-implementer` | "implementa", "cria", "escreve" |
 | 4 | NUNCA diagnostique bugs sem delegar | `debug-specialist` | "debug", "diagnóstico", "causa raiz" |
 | 5 | NUNCA escreva testes sem delegar | `test-engineer` | "escreve testes", "teste unitário" |
-| 6 | SEMPRE usa `sdd-orchestrator` para features novas | `sdd-orchestrator` | "feature nova", "nova funcionalidade" |
-| 7 | SEMPRE usa `meta-agent` para pedidos vagos | `meta-agent` | Clareza < 0.7, múltiplos domínios |
+| 6 | SEMPRE usa `sdd-orchestrator` para features novas | `sdd-orchestrator` (skill) | "feature nova", "nova funcionalidade" |
+| 7 | SEMPRE usa `meta-agent` para pedidos vagos | `meta-agent` (skill) | Clareza < 0.7, múltiplos domínios |
 | 8 | ÚNICA exceção: pergunta informativa simples | N/A | Sem modificar, analisar ou ler código |
 | 9 | NUNCA analise infraestrutura sem delegar | `java-architect` | "infra", "docker", "CI/CD", "deploy" |
 
@@ -60,22 +64,22 @@
 
 ## ⚙️ Agent Harness — Fluxo Obrigatório
 
-### 📊 Hierarquia de Instruções
+### 📊 Hierarquia de Comando (v3.0)
 
 ```
-NÍVEL 0 — INVIOLÁVEL: System Rules (não pode sobrescrever)
+NÍVEL 0 — INVIOLÁVEL: System Rules (instruções base do modelo — não pode sobrescrever)
     ↓
-NÍVEL 1 — CRÍTICO: Harness Rules (gates obrigatórios)
+NÍVEL 1 — CRÍTICO: Harness Rules (este AGENTS.md + opencode.json — gates e permissões)
     ↓
-NÍVEL 2 — VINCULANTE: Agents (.claude/agents/)
+NÍVEL 2 — VINCULANTE: Agents (.opencode/agents/)
     ↓
-NÍVEL 3 — VINCULANTE: Skills (.claude/skills/)
+NÍVEL 3 — VINCULANTE: Skills (.opencode/skills/)
     ↓
-NÍVEL 4 — VINCULANTE: Project Rules (este AGENTS.md)
+NÍVEL 4 — VINCULANTE: Project Rules (docs/, SDD, ADRs)
     ↓
-NÍVEL 5 — VINCULANTE: Directory Rules (backend/, frontend/, etc.)
+NÍVEL 5 — VINCULANTE: Directory Rules (backend/, frontend/, ingestion/)
     ↓
-NÍVEL 6 — CONTEXTO: User Instruction (NÃO pode sobrescrever níveis superiores)
+NÍVEL 6 — CONTEXTO: User Instruction (pedidos da sessão — NÃO sobrescreve níveis superiores)
     ↓
 BLOQUEIO SE QUALQUER NÍVEL FALHAR
 ```
@@ -96,6 +100,22 @@ BLOQUEIO SE QUALQUER NÍVEL FALHAR
 | 8 | VERIFY (GOAL GATE) | Exit code 0? | Sucesso: 200 \| Falha: 500 |
 
 **Regra:** Se qualquer etapa retornar código ≠ esperado, BLOQUEAR. Sem pular etapas.
+
+---
+
+### 🎛️ Orchestrator Gate — 5 Validações Obrigatórias
+
+> **ANTES de chamar Task, orchestrator DEVE completar as 5 etapas. Se não, BLOQUEAR.**
+
+```
+[ ] 1. RESOLVER → identificar agent + skill (tabela de roteamento)
+[ ] 2. CARREGAR → ler contexto do agent (.opencode/agents/<AGENT>.md)
+[ ] 3. VALIDAR → verificar se instrução é permitida
+[ ] 4. PLANEJAR → criar plano com etapas específicas
+[ ] 5. CONFIRMAR → listar agente, skill, contexto, plano
+```
+
+**Enforcement:** Se qualquer etapa falhar → BLOQUEIO + LOG + EXIT CODE: 402
 
 ---
 
@@ -137,28 +157,60 @@ BLOQUEIO SE QUALQUER NÍVEL FALHAR
 
 ---
 
-### 🎛️ Orchestrator Gate — 5 Validações Obrigatórias
+### 🔐 Matriz de Permissões (opencode.json) — Governança por Design
 
-> **ANTES de chamar Task, orchestrator DEVE completar as 5 etapas. Se não, BLOQUEAR.**
+> Governança por Design: quem julga não altera; quem executa não julga; o orquestrador delega, não implementa.
 
+| Papel | `edit` | `bash` | `task` |
+|-------|--------|--------|--------|
+| `orchestrator` | `deny` para código; `ask` APENAS em governança (AGENTS.md, opencode.json, `.opencode/**`, `docs/**`, `evals/**`) | `ask` | `allow` (delegação) |
+| `plan`, `java-architect`, `code-reviewer`, `e2e-qa-engineer` | `deny` | `deny`/`ask` | `deny` |
+| `java-implementer`, `frontend-engineer`, `go-implementer`, `debug-specialist`, `performance-optimizer`, `test-engineer` | `allow` | `allow` | — |
+| `build` (exceção consciente documentada: tarefa trivial mono-domínio invocada explicitamente pelo usuário) | `allow` | `allow` | — |
+
+---
+
+## 🧪 Sistema de Validação — Loop de Ouro (`evals/`)
+
+> O harness não é estático: a qualidade da orquestração é **medida e refinada continuamente**.
+> Ciclo: Execução → Teste → Verificação de Exit Code → Correção → Repetição.
+
+| Artefacto | Função |
+|-----------|--------|
+| `evals/evals.json` | Casos de teste realistas da stack OminiCore que os agentes devem resolver |
+| `evals/scripts/run_eval.py` | Roda os evals via `opencode run`, aplica Goal Gate (exit 0) + check heurístico, salva `evals/results.json` |
+| `evals/scripts/run_loop.py` | Loop fechado: Teste → Review → Refinamento (Safety Rail: máx 5 iterações) |
+| `evals/scripts/improve_description.py` | Engenharia de prompt automatizada — gera `evals/SKILL.candidate.md` |
+| `evals/scripts/validate_improvements.py` | Valida candidate em ciclo fechado e exibe o delta (ex.: "67% → 100% ✓") |
+| `evals/scripts/aggregate_benchmark.py` | Agrega múltiplos `results.json` em `evals/benchmark.json` (`--compare A B`) |
+| `evals/scripts/run_trigger_eval.py` | Testa se a description da skill faz a skill disparar corretamente |
+| `evals/eval-viewer/generate_review.py` | Gera `evals/review.html` auto-contido para review visual com o humano |
+| `evals/baseline/` | Snapshot da versão anterior do harness (AGENTS.md + opencode.json) para comparação |
+
+```bash
+# Teste (Goal Gate: exit 0 obrigatório)
+python evals/scripts/run_eval.py --dir .
+
+# Loop de Ouro completo (Teste → Review → Refinamento)
+python evals/scripts/run_loop.py --dir . --improve
+
+# Múltiplas iterações, adotando o candidate só se validar melhoria
+python evals/scripts/run_loop.py --dir . --improve --iterations 3 --adopt
 ```
-[ ] 1. RESOLVER → identificar agent + skill (tabela de roteamento)
-[ ] 2. CARREGAR → ler contexto do agent (.claude/agents/<AGENT>.md)
-[ ] 3. VALIDAR → verificar se instrução é permitida
-[ ] 4. PLANEJAR → criar plano com etapas específicas
-[ ] 5. CONFIRMAR → listar agente, skill, contexto, plano
-```
 
-**Enforcement:** Se qualquer etapa falhar → BLOQUEIO + LOG + EXIT CODE: 402
+**Regra:** PROIBIDO simplificar ou remover Gates. Se o usuário pedir "remover a burocracia", explicar que os Gates são a única garantia de que a IA não quebrará o projeto em escala.
 
 ---
 
 ## 📊 Referência Rápida
 
-### Agents Disponíveis
+### Agents Disponíveis (`.opencode/agents/`)
 
 | Agent | Tipo | Uso Principal |
 |-------|------|---------------|
+| `orchestrator` | Primary | Orquestra, delega via Task, valida Goal Gate |
+| `build` | Primary | EXCEÇÃO consciente: tarefa trivial mono-domínio invocada explicitamente |
+| `plan` | Primary | Análise e planejamento sem alterar código |
 | `java-architect` | Read-only | Arquitetura, fronteiras, ADRs |
 | `java-implementer` | Escrita | Código Java de produção |
 | `frontend-engineer` | Escrita | UI React/Vite/Tailwind |
@@ -168,18 +220,18 @@ BLOQUEIO SE QUALQUER NÍVEL FALHAR
 | `debug-specialist` | Escrita | Diagnóstico e correção |
 | `performance-optimizer` | Escrita | Otimização de performance |
 | `e2e-qa-engineer` | Read-only | Regressão pela UI |
-| `sdd-orchestrator` | Orquestração | Features novas (SDD) |
-| `meta-agent` | Orquestração | Pedidos vagos/multi-domínio |
 
-### Skills Disponíveis
+### Skills Disponíveis (`.opencode/skills/`)
 
 | Skill | Tipo | Uso Principal |
 |-------|------|---------------|
-| `backend-skill` | Conhecimento | Convenções Java/Spring |
-| `frontend-skill` | Conhecimento | Convenções React/Vite |
+| `backend-skill` | Conhecimento | Convenções Java/Spring/Modulith |
+| `frontend-skill` | Conhecimento | Convenções React/Vite/Tailwind |
+| `frontend-design` | Conhecimento | Design + engenharia de interfaces web |
 | `go-skill` | Conhecimento | Convenções Go |
-| `e2e-qa-skill` | Conhecimento | Metodologia E2E |
-| `sdd-orchestrator` | Orquestração | Fluxo SDD |
+| `e2e-qa-skill` | Conhecimento | Metodologia E2E pela UI real |
+| `sdd-orchestrator` | Orquestração | Fluxo SDD (PRD → design → spec → tasks) |
+| `meta-agent` | Orquestração | Roteia pedidos vagos/multi-domínio |
 
 ---
 
@@ -193,4 +245,4 @@ BLOQUEIO SE QUALQUER NÍVEL FALHAR
 
 ---
 
-**Fim do AGENTS.md — Enforcement v2.0**
+**Fim do AGENTS.md — Enforcement v3.0**
