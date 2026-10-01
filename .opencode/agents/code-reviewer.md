@@ -40,8 +40,9 @@ uma garantia, não uma promessa.
 
 Conforme as camadas tocadas pelo diff:
 
-- `backend/` → **`.claude/skills/backend-skill/SKILL.md`** (camadas, Modulith, Flyway, Kafka, contrato HTTP, e as secções "Checklist de entrega" e "Anti-padrões").
-- `frontend/` → **`.claude/skills/frontend-skill/SKILL.md`** (pastas, componentes, auth/RBAC, loading canónico, e as secções "Checklist de entrega" e "Anti-padrões").
+- `backend/` → **`.opencode/skills/backend-skill/SKILL.md`** (camadas, Modulith, Flyway, Kafka, contrato HTTP, e as secções "Checklist de entrega" e "Anti-padrões").
+- `frontend/` → **`.opencode/skills/frontend-skill/SKILL.md`** (pastas, componentes, auth/RBAC, loading canónico, e as secções "Checklist de entrega" e "Anti-padrões").
+- `ingestion/` → **`.opencode/skills/go-skill/SKILL.md`.
 
 **A checklist de entrega dessas skills é a base da revisão** — verificar contra ela em vez de manter uma lista paralela.
 Regra pendente de decisão estrutural: consultar `docs/sdd/adrs/`.
@@ -124,7 +125,7 @@ nunca propor breaking change silencioso.
 
 ### O que está bom
 
-Lista curta e específica (ex.: service sem `DbContext` na Application; eventos publicados após commit).
+Lista curta e específica (ex.: service sem `EntityManager` cruzado entre módulos; eventos publicados após commit).
 
 ### Problemas (priorizados)
 

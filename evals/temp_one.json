@@ -1,0 +1,18 @@
+{
+  "evals": [
+    {
+      "id": 1,
+      "task": "Revisar diff/PR que altera backend/src/modules/catalogo com service e controller novos, verificar contrato HTTP camelCase e uso de Flyway.",
+      "runtime": "backend",
+      "expected": {
+        "expect_agent": "code-reviewer",
+        "expect_no_edit": true,
+        "expect_files": [],
+        "expect_exit_0": false,
+        "forbidden_substrings": [
+          ".claude/"
+        ]
+      }
+    }
+  ]
+}

@@ -1,7 +1,7 @@
-ï»¿# Agents â€” Ãndice
+# Agents — Índice
 
-> Runbook do sistema de agentes do OminiCore. Cada agent Ã© um especialista
-> com escopo definido. OrquestraÃ§Ã£o vive em skills (nÃ£o em agents).
+> Runbook do sistema de agentes do OminiCore. Cada agent é um especialista
+> com escopo definido. Orquestração vive em skills (não em agents).
 >
 > **SDD:** Fluxo completo em `../sdd/OMINICORE-SDD.md`. Agents participam nas fases B-E.
 
@@ -9,93 +9,93 @@
 
 | Agente | Responsabilidade | Escrita? |
 | ------ | ---------------- | -------- |
-| [`java-architect`](../../.claude/agents/java-architect.md) | Fronteiras de camada, forma da API, estrutura de mÃ³dulos, contrato de dados | NÃ£o â€” read-only |
-| [`java-implementer`](../../.claude/agents/java-implementer.md) | CÃ³digo Java de produÃ§Ã£o, com build e testes | Sim |
-| [`frontend-engineer`](../../.claude/agents/frontend-engineer.md) | UI React, com lint, testes e build | Sim |
-| [`test-engineer`](../../.claude/agents/test-engineer.md) | Testes automatizados (xUnit, Cucumber) | Sim, sÃ³ testes |
-| [`code-reviewer`](../../.claude/agents/code-reviewer.md) | RevisÃ£o de diff: corretude, seguranÃ§a, fronteiras | NÃ£o â€” read-only |
-| [`debug-specialist`](../../.claude/agents/debug-specialist.md) | Causa raiz e correÃ§Ã£o mÃ­nima verificada | Sim |
-| [`performance-optimizer`](../../.claude/agents/performance-optimizer.md) | Gargalos medidos e otimizaÃ§Ã£o verificada | Sim |
-| [`e2e-qa-engineer`](../../.claude/agents/e2e-qa-engineer.md) | RegressÃ£o pela UI real, via Browser pane | NÃ£o altera cÃ³digo |
+| [`java-architect`](../../.opencode/agents/java-architect.md) | Fronteiras de camada, forma da API, estrutura de módulos, contrato de dados | Não — read-only |
+| [`java-implementer`](../../.opencode/agents/java-implementer.md) | Código Java de produção, com build e testes | Sim |
+| [`frontend-engineer`](../../.opencode/agents/frontend-engineer.md) | UI React, com lint, testes e build | Sim |
+| [`test-engineer`](../../.opencode/agents/test-engineer.md) | Testes automatizados (JUnit 5/Mockito, Vitest) | Sim, só testes |
+| [`code-reviewer`](../../.opencode/agents/code-reviewer.md) | Revisão de diff: corretude, segurança, fronteiras | Não — read-only |
+| [`debug-specialist`](../../.opencode/agents/debug-specialist.md) | Causa raiz e correção mínima verificada | Sim |
+| [`performance-optimizer`](../../.opencode/agents/performance-optimizer.md) | Gargalos medidos e otimização verificada | Sim |
+| [`e2e-qa-engineer`](../../.opencode/agents/e2e-qa-engineer.md) | Regressão pela UI real, via Browser pane | Não altera código |
 
-OrquestraÃ§Ã£o **nÃ£o** Ã© agente: um subagent nÃ£o tem acesso Ã  ferramenta Agent e por isso sÃ³ conseguiria
-recomendar, nÃ£o delegar. Vive como skill â€” ver [`../skills/README.md`](../skills/README.md).
+Orquestração **não** é agente: um subagent não tem acesso à ferramenta Agent e por isso só conseguiria
+recomendar, não delegar. Vive como skill — ver [`../skills/README.md`](../skills/README.md).
 
 ---
 
-## SeparaÃ§Ã£o de responsabilidades
+## Separação de responsabilidades
 
-| PreocupaÃ§Ã£o | Onde vive |
+| Preocupação | Onde vive |
 | ----------- | --------- |
-| **OrquestraÃ§Ã£o** â€” rotear e encadear | skills `meta-agent`, `sdd-orchestrator` (thread principal, tem a Agent tool) |
-| **Conhecimento** â€” convenÃ§Ãµes e fatos do projeto | skills `backend-skill`, `frontend-skill`, `e2e-qa-skill` |
-| **ExecuÃ§Ã£o** â€” produzir a mudanÃ§a | agents `java-implementer`, `frontend-engineer`, `test-engineer`, `debug-specialist`, `performance-optimizer` |
-| **ValidaÃ§Ã£o** â€” julgar sem alterar | agents `code-reviewer`, `java-architect`, `e2e-qa-engineer` (read-only ou sem escrita em cÃ³digo) |
+| **Orquestração** — rotear e encadear | skills `meta-agent`, `sdd-orchestrator` (thread principal, tem a Agent tool) |
+| **Conhecimento** — convenções e fatos do projeto | skills `backend-skill`, `frontend-skill`, `e2e-qa-skill` |
+| **Execução** — produzir a mudança | agents `java-implementer`, `frontend-engineer`, `test-engineer`, `debug-specialist`, `performance-optimizer` |
+| **Validação** — julgar sem alterar | agents `code-reviewer`, `java-architect`, `e2e-qa-engineer` (read-only ou sem escrita em código) |
 
-**Regra de ouro:** um agent nunca repete no seu prompt o que uma skill jÃ¡ fixa.
-Cada agent declara `## Contexto obrigatÃ³rio` com o caminho da skill e **lÃª** esse arquivo no arranque â€”
-subagents nÃ£o tÃªm a ferramenta Skill, mas tÃªm `Read`. Uma fonte, dois caminhos de acesso.
+**Regra de ouro:** um agent nunca repete no seu prompt o que uma skill já fixa.
+Cada agent declara `## Contexto obrigatório` com o caminho da skill e **lê** esse arquivo no arranque —
+subagents não têm a ferramenta Skill, mas têm `Read`. Uma fonte, dois caminhos de acesso.
 
 ---
 
-## PadrÃ£o obrigatÃ³rio de um agent
+## Padrão obrigatório de um agent
 
-Frontmatter â€” apenas campos que o Claude Code consome:
+Frontmatter — apenas campos que o Claude Code consome:
 
 ```yaml
 ---
 name: <kebab-case, igual ao nome do arquivo>
-description: <o que faz Â· quando usar Â· quando NÃƒO usar e para quem encaminhar>
-tools: <allowlist explÃ­cita â€” a ausÃªncia de Edit/Write Ã© o que garante "read-only">
+description: <o que faz · quando usar · quando NÃO usar e para quem encaminhar>
+tools: <allowlist explícita — a ausência de Edit/Write é o que garante "read-only">
 model: inherit | sonnet | opus
 ---
 ```
 
-Corpo, nesta ordem, sem secÃ§Ãµes vazias:
+Corpo, nesta ordem, sem secções vazias:
 
-| SecÃ§Ã£o | ConteÃºdo |
+| Secção | Conteúdo |
 | ------ | -------- |
-| `## Papel` | 2â€“3 linhas. Quem Ã© e o que entrega. |
-| `## Use quando` / `## NÃ£o use quando` | Gatilhos, e tabela de encaminhamento para os casos que nÃ£o sÃ£o dele. |
-| `## Contexto obrigatÃ³rio` | Skills a ler no arranque. NÃ£o recopiar o conteÃºdo delas. |
-| `## Entradas necessÃ¡rias` | O que precisa; o que fazer quando falta (perguntar vs assumir e declarar). |
-| `## Processo` | Passos numerados e determinÃ­sticos. |
-| `## Regras inviolÃ¡veis` | RestriÃ§Ãµes duras, redigidas como proibiÃ§Ãµes verificÃ¡veis. |
-| `## ValidaÃ§Ã£o` | Como prova o prÃ³prio resultado â€” **comandos reais**, nÃ£o boas intenÃ§Ãµes. |
+| `## Papel` | 2–3 linhas. Quem é e o que entrega. |
+| `## Use quando` / `## Não use quando` | Gatilhos, e tabela de encaminhamento para os casos que não são dele. |
+| `## Contexto obrigatório` | Skills a ler no arranque. Não recopiar o conteúdo delas. |
+| `## Entradas necessárias` | O que precisa; o que fazer quando falta (perguntar vs assumir e declarar). |
+| `## Processo` | Passos numerados e determinísticos. |
+| `## Regras invioláveis` | Restrições duras, redigidas como proibições verificáveis. |
+| `## Validação` | Como prova o próprio resultado — **comandos reais**, não boas intenções. |
 | `## Falhas e escalonamento` | O que fazer quando bloqueia, e para quem passa. |
-| `## Formato de saÃ­da` | Contrato de output. |
+| `## Formato de saída` | Contrato de output. |
 
-Anti-padrÃµes ao escrever um agent:
+Anti-padrões ao escrever um agent:
 
-- Repetir convenÃ§Ãµes que jÃ¡ estÃ£o numa skill.
-- MÃ©tricas fabricadas (score 0â€“100, notas Aâ€“F) sem critÃ©rio objetivo por trÃ¡s.
-- SecÃ§Ãµes "opcionais" que o prÃ³prio texto diz nÃ£o ser obrigatÃ³rio usar.
+- Repetir convenções que já estão numa skill.
+- Métricas fabricadas (score 0–100, notas A–F) sem critério objetivo por trás.
+- Secções "opcionais" que o próprio texto diz não ser obrigatório usar.
 - Campos de frontmatter inventados que nada consomem.
-- Dar `Edit`/`Write` a um agent cuja funÃ§Ã£o Ã© julgar.
-- Referenciar uma regra que nÃ£o estÃ¡ definida em lado nenhum.
-- ReferÃªncia entre arquivos por nÃºmero de secÃ§Ã£o (`SKILL.md Â§10`) â€” usar o tÃ­tulo entre aspas.
+- Dar `Edit`/`Write` a um agent cuja função é julgar.
+- Referenciar uma regra que não está definida em lado nenhum.
+- Referência entre arquivos por número de secção (`SKILL.md §10`) — usar o título entre aspas.
 
 ---
 
-## ConvenÃ§Ãµes
+## Convenções
 
-- **Idioma:** respostas e artefactos em portuguÃªs (Brasil); identificadores de cÃ³digo em inglÃªs.
-- **Modelo:** `inherit` por omissÃ£o. Fixar um modelo sÃ³ com motivo (o `e2e-qa-engineer` usa `sonnet` por ser execuÃ§Ã£o longa e mecÃ¢nica).
-- **Ao adicionar um agent:** criar em `.claude/agents/`, seguir o padrÃ£o acima, e acrescentar linha na tabela deste Ã­ndice, na de [`../skills/README.md`](../skills/README.md) se houver skill associada, na tabela de roteamento do `meta-agent` e no [`AGENTS.md`](../../AGENTS.md).
+- **Idioma:** respostas e artefactos em português (Brasil); identificadores de código em inglês.
+- **Modelo:** `inherit` por omissão. Fixar um modelo só com motivo (o `e2e-qa-engineer` usa `sonnet` por ser execução longa e mecânica).
+- **Ao adicionar um agent:** criar em `.opencode/agents/`, seguir o padrão acima, e acrescentar linha na tabela deste índice, na de [`../skills/README.md`](../skills/README.md) se houver skill associada, na tabela de roteamento do `meta-agent` e no [`AGENTS.md`](../../AGENTS.md).
 
 ---
 
-## Harness de validaÃ§Ã£o
+## Harness de validação
 
-Scripts executÃ¡veis na raiz do repositÃ³rio:
+Scripts executáveis na raiz do repositório:
 
-- `harness.ps1` â€” Windows (PowerShell 5.1+)
-- `harness.sh` â€” Linux/macOS/CI
+- `harness.ps1` — Windows (PowerShell 5.1+)
+- `harness.sh` — Linux/macOS/CI
 
 Uso: `.\harness.ps1` (todos) ou `.\harness.ps1 frontend` / `backend` / `ingestion`.
-Sai com exit code `0` se tudo passou, `1` se alguma etapa falhou, `2` se o mÃ³dulo for invÃ¡lido.
+Sai com exit code `0` se tudo passou, `1` se alguma etapa falhou, `2` se o módulo for inválido.
 
-**Ambiente antes de rodar:** backend usa H2 in-memory nos testes (nÃ£o exige Postgres;
+**Ambiente antes de rodar:** backend usa H2 in-memory nos testes (não exige Postgres;
 compose de DEV em `backend/docker-compose.yml`, compose de PROD em `infra/`);
 `ingestion` exige Go instalado.
 
@@ -104,11 +104,11 @@ compose de DEV em `backend/docker-compose.yml`, compose de PROD em `infra/`);
 ## Fluxo operacional
 
 ```
-VocÃª (pedido) â”€â”€â–º meta-agent â”€â”€â–º java-architect â”€â”€â–º java-implementer / frontend-engineer â”€â”€â–º code-reviewer â”€â”€â–º e2e-qa-engineer
-                      â”‚                  â”‚                   â”‚                        â”‚                    â”‚
-                      â”‚  roteia          â”‚  planeja          â”‚  implementa            â”‚  revisa            â”‚  valida UI
-                      â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â–º PASS/FAIL
+Você (pedido) --? meta-agent --? java-architect --? java-implementer / frontend-engineer --? code-reviewer --? e2e-qa-engineer
+                      ¦                  ¦                   ¦                        ¦                    ¦
+                      ¦  roteia          ¦  planeja          ¦  implementa            ¦  revisa            ¦  valida UI
+                      +---------------------------------------------------------------------------------------? PASS/FAIL
 
-VocÃª (feature nova) â”€â”€â–º sdd-orchestrator â”€â”€â–º PRD â†’ design â†’ spec â†’ tasks â†’ implementaÃ§Ã£o
+Você (feature nova) --? sdd-orchestrator --? PRD ? design ? spec ? tasks ? implementação
 ```
 

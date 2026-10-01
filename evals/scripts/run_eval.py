@@ -53,7 +53,7 @@ def run_single(eval_case, skill_dir, project_dir, timeout, session_id=None):
             cmd, capture_output=True, text=True, encoding="utf-8", errors="replace",
             timeout=timeout, cwd=project_dir or Path.cwd()
         )
-        output = result.stdout
+        output = (result.stdout or "") + "\n" + (result.stderr or "")
         exit_code = result.returncode
         error = result.stderr[-2000:] if result.returncode != 0 else ""
     except subprocess.TimeoutExpired:
@@ -88,8 +88,8 @@ def main():
     ap.add_argument("--skip-passed", action="store_true", help="Skip evals that passed in the last results (cache)")
     args = ap.parse_args()
 
-    skill_dir = Path(__file__).parent.parent
-    evals_path = Path(args.evals) if args.evals else skill_dir / "evals" / "evals.json"
+    skill_dir = Path(__file__).parent.parent  # repo-root evals/
+    evals_path = Path(args.evals) if args.evals else skill_dir / "evals.json"
     eval_cases = load_evals(evals_path)
     out_path = Path(args.out) if args.out else skill_dir / "evals" / "results.json"
 

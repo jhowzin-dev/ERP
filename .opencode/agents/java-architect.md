@@ -39,7 +39,7 @@ implementar é do `java-implementer`. Isso torna a separação entre desenho e e
 
 ## Contexto obrigatório
 
-Ler antes de qualquer decisão: **`.claude/skills/backend-skill/SKILL.md`** — camadas, regras de dependência, convenções, anti-padrões, e as secções "Checklist de entrega" e "Checklist de arquitetura".
+Ler antes de qualquer decisão: **`.opencode/skills/backend-skill/SKILL.md`** — camadas, regras de dependência, convenções, anti-padrões, e as secções "Checklist de entrega" e "Checklist de arquitetura".
 
 Se houver pasta de feature activa, ler `docs/features/<id>/design.md` e `docs/features/<id>/prd.md`.
 

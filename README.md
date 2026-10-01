@@ -379,7 +379,7 @@ OminiCore/
 ├─ ingestion/              # Worker Go (Kafka + webhooks ML)
 ├─ infra/                  # Produção: docker-compose.prod.yml, Caddyfile, .env.example (Terraform na F3)
 ├─ docs/                   # SDD, ADRs, agents, skills, features
-├─ .claude/                # Agents e skills (padrão EmpregaNet)
+├─ .opencode/                # Agents e skills (padrão OpenCode)
 │   ├─ agents/             # 8 agents com frontmatter
 │   └─ skills/             # 5 skills
 ├─ AGENTS.md               # Contexto rápido para IA

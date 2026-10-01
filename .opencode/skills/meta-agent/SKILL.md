@@ -38,6 +38,7 @@ description: Roteador de pedidos vagos, ambíguos ou multi-domínio. Analisa o p
 | Arquitetura, padrões, fronteiras | `java-architect` | `backend-skill` |
 | Código backend Java/Spring | `java-implementer` | `backend-skill` |
 | Código frontend React/Vite | `frontend-engineer` | `frontend-skill` |
+| Código ingestion Go | `go-implementer` | `go-skill` |
 | Testes automatizados | `test-engineer` | — |
 | Debug, causa raiz | `debug-specialist` | — |
 | Performance, gargalos | `performance-optimizer` | — |
@@ -117,6 +118,7 @@ O meta-agent não tem comandos próprios. A validação é indireta:
 
 | Versão | Mudança |
 | ------ | ------- |
-| 3.0.0 | Movida para `.claude/skills/` (passa a ser carregável); formato alinhado ao EmpregaNetAPI |
+| 3.1.0 | Paths `.opencode/`; roteamento `go-implementer` |
+| 3.0.0 | Skill carregável |
 | 2.0.0 | Expansão: mapa de roteamento, processo, anti-padrões |
 | 1.0.0 | Versão inicial básica |

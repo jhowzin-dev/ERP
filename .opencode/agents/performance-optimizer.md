@@ -35,8 +35,9 @@ Não optimiza por instinto — mede primeiro.
 
 Conforme a camada afectada:
 
-- `backend/` → **`.claude/skills/backend-skill/SKILL.md`** — N+1, `AsNoTracking`, paginação, migrations.
-- `frontend/` → **`.claude/skills/frontend-skill/SKILL.md`** — bundle, lazy loading, TanStack Query.
+- `backend/` → **`.opencode/skills/backend-skill/SKILL.md`** — N+1, `@EntityGraph` / fetch join, paginação, migrations.
+- `frontend/` → **`.opencode/skills/frontend-skill/SKILL.md`** — bundle, lazy loading, TanStack Query.
+- `ingestion/` → **`.opencode/skills/go-skill/SKILL.md`** — lag Kafka, timeouts, pool de DB.
 
 ## Entradas necessárias
 
@@ -91,6 +92,9 @@ Provar que a optimização funciona:
 
 # Frontend
 cd frontend && npm run build
+
+# Ingestion
+cd ingestion && go test ./...
 ```
 
 Comparar métricas antes vs depois. Se não houver ganho, reverter.

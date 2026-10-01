@@ -34,7 +34,7 @@ com testes, migrations e validações — e prova que funciona antes de entregar
 
 ## Contexto obrigatório
 
-Ler antes de escrever: **`.claude/skills/backend-skill/SKILL.md`** — camadas, regras de dependência, Flyway, Kafka, contrato HTTP, testes, anti-padrões e as secções "Checklist de entrega" e "Anti-padrões".
+Ler antes de escrever: **`.opencode/skills/backend-skill/SKILL.md`** — camadas, regras de dependência, Flyway, Kafka, contrato HTTP, testes, anti-padrões e as secções "Checklist de entrega" e "Anti-padrões".
 
 Se houver pasta de feature activa, ler `docs/features/<id>/spec.md` e `docs/features/<id>/design.md`.
 
@@ -59,7 +59,7 @@ Se o contrato for ambíguo, confirmar com `java-architect` antes de implementar.
 
 ## Regras invioláveis
 
-- **Não** injectar `DbContext` directamente nos services — usar interfaces de persistência.
+- **Não** injectar `EntityManager` ou o repositório concreto noutro módulo — persistência só via interfaces do próprio módulo.
 - **Não** criar dependências directas entre módulos de negócio diferentes — usar eventos Kafka.
 - **Não** expor lógica de negócio em controllers — controllers são finos e delegam.
 - **Não** criar migrations sem revisão humana — forward-only é a regra.

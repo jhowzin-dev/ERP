@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Impeccable Harness — Eval Review</title>
+<style>
+ body{font-family:system-ui,sans-serif;max-width:960px;margin:2rem auto;padding:0 1rem;background:#0f1117;color:#e6e6e6}
+ .card{background:#171a23;border:1px solid #2a2f3d;border-radius:10px;padding:1rem 1.25rem;margin:1rem 0}
+ .pass{border-left:4px solid #3fb96f}.fail{border-left:4px solid #e05252}.gate{border-left:4px solid #e0a52e}
+ h1{font-size:1.4rem}h2{font-size:1.05rem;margin:.2rem 0}
+ .meta{color:#8b93a7;font-size:.85rem}
+ pre{background:#0b0d12;padding:.75rem;border-radius:6px;overflow:auto;font-size:.8rem;white-space:pre-wrap}
+ .pill{display:inline-block;padding:.1rem .5rem;border-radius:999px;font-size:.75rem;background:#2a2f3d}
+</style></head><body>
+<h1>Impeccable Harness — Eval Review</h1>
+<p class="meta">11/12 passed (91%) — C:\Users\jhona\ERP\evals\evals\results.json</p>
+<div class="card pass"><h2>Eval 1 <span class="pill">PASS</span></h2><p>Revisar diff/PR que altera backend/src/modules/catalogo com service e controller novos, verificar contrato HTTP camelCase e uso de Flyway.</p><p class="meta">Esperado:  · exit=0 · 108.1s</p><pre>
+[0m
+&gt; orchestrator · meta/muse-glimmer-30b
+[0m
+[0m→ [0mRead .opencode/agents/code-reviewer.md
+[0m→ [0mSkill &quot;backend-skill&quot;
+[93m[1m! [0mpermission requested: bash (git status); auto-rejecting
+[0m✗ [0mgit status failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
+</pre></div>
+<div class="card pass"><h2>Eval 2 <span class="pill">PASS</span></h2><p>Definir arquitetura Modulith para novo bounded context pedidos, descrever fronteiras e ADR, sem alterar código.</p><p class="meta">Esperado:  · exit=0 · 64.8s</p><pre>
+[0m
+&gt; orchestrator · meta/muse-glimmer-30b
+[0m
+[0m→ [0mRead .opencode/agents/java-architect.md
+[0m→ [0mRead .opencode/skills/backend-skill/SKILL.md
+[0m✱ [0mGlob &quot;docs/features/*&quot;[90m 1 match[0m
+[0m✱ [0mGlob &quot;backend/src/main/java/com/ominicore/backend/**/*.java&quot;[90m in backend/src · 0 matches[0m
+[0m→ [0mRead backend/src
+[0m→ [0mRead backend/src/main
+[93m[1m! [0mpermission requested: bash (Get-ChildItem -LiteralPath &quot;C:\Users\jhona\ERP\backend\src\main\java&quot; -Directory, Select-Object -ExpandProperty Name); auto-rejecting
+[0m✗ [0mGet-ChildItem -LiteralPath &quot;C:\Users\jhona\ERP\backend\src\main\java&quot; -Directory | Select-Object -ExpandProperty Name failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
+</pre></div>
+<div class="card pass"><h2>Eval 3 <span class="pill">PASS</span></h2><p>Criar tela de listagem de produtos em frontend/src com react-query, formulário RHF+Zod, i18n pt-BR e Tailwind consumindo GET/POST /api/produtos.</p><p class="meta">Esperado:  · exit=0 · 60.1s</p><pre>
+[0m
+&gt; orchestrator · meta/muse-glimmer-30b
+[0m
+[0m→ [0mRead .opencode/agents/frontend-engineer.md
+[0m→ [0mRead .opencode/skills/frontend-skill/SKILL.md
+[0m→ [0mRead frontend/src
+[0m✱ [0mGlob &quot;**/*&quot;[90m in frontend/src/features · 0 matches[0m
+[93m[1m! [0mpermission requested: bash (Get-ChildItem -LiteralPath &quot;C:\Users\jhona\ERP\frontend\src\features&quot; -Recurse, Select-Object -Property Name,FullName); auto-rejecting
+[0m✗ [0mGet-ChildItem -LiteralPath &quot;C:\Users\jhona\ERP\frontend\src\features&quot; -Recurse | Select-Object -Property Name,FullName failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
+</pre></div>
+<div class="card pass"><h2>Eval 4 <span class="pill">PASS</span></h2><p>Implementar consumer Kafka em ingestion/ para eventos de atualização de estoque com retry/backoff e persistência PostgreSQL.</p><p class="meta">Esperado:  · exit=0 · 15.6s</p><pre>
+[0m
+&gt; orchestrator · meta/muse-glimmer-30b
+[0m
+[0m✱ [0mGlob &quot;.opencode/agents/*.md&quot;[90m in . · 0 matches[0m
+[93m[1m! [0mpermission requested: bash (Get-ChildItem -LiteralPath &quot;C:\Users\jhona\ERP\.opencode\agents&quot; -File, Select-Object -ExpandProperty Name); auto-rejecting
+[0m✗ [0mGet-ChildItem -LiteralPath &quot;C:\Users\jhona\ERP\.opencode\agents&quot; -File | Select-Object -ExpandProperty Name failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
+</pre></div>
+<div class="card pass"><h2>Eval 5 <span class="pill">PASS</span></h2><p>Debug: mvnw test falha com NullPointerException no service de pedidos após último merge. Diagnosticar causa raiz e corrigir.</p><p class="meta">Esperado:  · exit=0 · 65.6s</p><pre>
+[0m
+&gt; orchestrator · meta/muse-glimmer-30b
+[0m
+[0m→ [0mRead .opencode/agents
+[0m→ [0mRead .opencode/agents/debug-specialist.md
+[0m→ [0mSkill &quot;backend-skill&quot;
+[0m✱ [0mGlob &quot;**/pedidos*&quot;[90m in backend/src · 0 matches[0m
+[0m✱ [0mGlob &quot;**/*pedido*&quot;[90m in backend/src · 0 matches[0m
+[0m✱ [0mGlob &quot;**/sales/**&quot;[90m in backend/src · 3 matches[0m
+[0m✱ [0mGlob &quot;**/*.java&quot;[90m in backend/src/main/java/com/sgmultidia/backend/sales · 3 matches[0m
+[0m→ [0mRead backend/src/main/java/com/sgmultidia/backend/sales
+[93m[1m! [0mpermission requested: bash (Get-ChildItem -Recurse -Filter *.java &quot;C:\Users\jhona\ERP\backend\src\main\java\com\sgmultidia\backend\sales&quot;, Select-Object FullName); auto-rejecting
+[0m✗ [0mGet-ChildItem -Recurse -Filter *.java &quot;C:\Users\jhona\ERP\backend\src\main\java\com\sgmultidia\backend\sales&quot; | Select-Object FullName failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
+</pre></div>
+<div class="card pass"><h2>Eval 6 <span class="pill">PASS</span></h2><p>Executar regressão End-to-End exploratória do módulo de pedidos pela UI real, validar fluxo criação e listagem.</p><p class="meta">Esperado:  · exit=0 · 115.8s</p><pre>
+[0m
+&gt; orchestrator · meta/muse-glimmer-30b
+[0m
+[0m→ [0mRead .opencode/agents
+[0m→ [0mRead .opencode/agents/e2e-qa-engineer.md
+[0m→ [0mRead .opencode/skills/e2e-qa-skill/SKILL.md
+[93m[1m! [0mpermission requested: bash (Get-Process -Name node -ErrorAction SilentlyContinue, Select-Object Id,ProcessName); auto-rejecting
+[0m✗ [0mGet-Process -Name node -ErrorAction SilentlyContinue | Select-Object Id,ProcessName failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
+</pre></div>
+<div class="card pass"><h2>Eval 7 <span class="pill">PASS</span></h2><p>Feature nova: PRD para dashboard financeiro com design, spec e tasks, seguindo fluxo Spec-Driven Development.</p><p class="meta">Esperado:  · exit=0 · 108.8s</p><pre>
+[0m
+&gt; orchestrator · meta/muse-glimmer-30b
+[0m
+[0m✱ [0mGlob &quot;.opencode/agents/*.md&quot;[90m in . · 0 matches[0m
+[0m→ [0mRead .opencode
+[0m→ [0mRead .opencode/agents
+[0m→ [0mRead .opencode/skills
+[0m✱ [0mGlob &quot;**/sdd-orchestrator*&quot;[90m in .opencode · 0 matches[0m
+[0m→ [0mRead .opencode/skills/sdd-orchestrator
+[0m→ [0mRead .opencode/skills/sdd-orchestrator/SKILL.md
+[0m→ [0mRead docs/sdd
+[0m→ [0mRead docs/sdd/SDD-ORCHESTRATOR.md
+[0m→ [0mRead docs/features
+[0m→ [0mRead docs/features/dashboard
+[0m→ [0mRead docs/features/dashboard/prd.md
+[93m[1m! [0mpermission requested: bash (Test-Path -LiteralPath &quot;C:\Users\jhona\ERP\docs\features\dashboard-financeiro&quot;); auto-rejecting
+[0m✗ [0mTest-Path -LiteralPath &quot;C:\Users\jhona\ERP\docs\features\dashboard-financeiro&quot; failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
+</pre></div>
+<div class="card gate"><h2>Eval 8 <span class="pill">GATE-FAIL</span></h2><p>Pedido vago: melhorar performance do ERP. Envolve backend, frontend e ingestion sem detalhes claros.</p><p class="meta">Esperado:  · exit=124 · 120.1s</p><pre>timeout after 120s</pre></div>
+<div class="card pass"><h2>Eval 9 <span class="pill">PASS</span></h2><p>Infra: configurar Docker Compose e pipeline CI/CD para backend, atualizar config de deploy sem mudar código de domínio.</p><p class="meta">Esperado:  · exit=0 · 68.3s</p><pre>
+[0m
+&gt; orchestrator · meta/muse-glimmer-30b
+[0m
+[0m→ [0mRead .opencode/agents
+[0m→ [0mRead .opencode/agents/java-architect.md
+[0m→ [0mRead .opencode/skills/backend-skill/SKILL.md
+[0m
+[0m# [0mTodos
+[•] Identificar agent e skill para infra Docker/CI-CD backend
+[ ] Ler agente java-architect e skill backend-skill
+[ ] Delegar ao java-architect definição de Docker Compose e pipeline CI/CD
+[ ] Validar Goal Gate conforme checklist
+[0m
+[0m# [0mTodos
+[✓] Identificar agent e skill para infra Docker/CI-CD backend
+[✓] Ler agente java-architect e skill backend-skill
+[•] Delegar ao java-architect definição de Docker Compose e pipeline CI/CD
+[ ] Validar Goal Gate conforme checklist
+[0m
+[0m✱ [0mGlob &quot;docker-compose*.yml&quot;[90m 2 matches[0m
+[0m✱ [0mGlob &quot;*.yml&quot;[90m in . · 2 matches[0m
+[0m✱ [0mGlob &quot;**/.github/workflows/*.yml&quot;[90m 0 matches[0m
+[0m✱ [0mGlob &quot;.github/**&quot;[90m 0 matches[0m
+[93m[1m! [0mpermission requested: bash (Get-ChildItem -LiteralPath C:\Users\jhona\ERP -Recurse -Filter *.yml, Select-Object -First 20 FullName); auto-rejecting
+[0m✗ [0mGet-ChildItem -LiteralPath C:\Users\jhona\ERP -Recurse -Filter *.yml | Select-Object -First 20 FullName failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
+</pre></div>
+<div class="card pass"><h2>Eval 10 <span class="pill">PASS</span></h2><p>Pergunta conceitual: qual a diferença entre Modulith e microserviços no OminiCore?</p><p class="meta">Esperado:  · exit=0 · 18.9s</p><pre>&lt;atem:parameter name=&quot;filePath&quot;&gt;C:\Users\jhona\ERP\docs&lt;/atem:parameter&gt;
+&lt;/atem:invoke&gt;
+&lt;/atem:function_calls&gt;
+
+[0m
+&gt; orchestrator · meta/muse-glimmer-30b
+[0m
+</pre></div>
+<div class="card pass"><h2>Eval 11 <span class="pill">PASS</span></h2><p>Revisar PR frontend que altera componentes de autenticação em frontend/src, validar a11y e uso de hooks.</p><p class="meta">Esperado:  · exit=0 · 24.7s</p><pre>
+[0m
+&gt; orchestrator · meta/muse-glimmer-30b
+[0m
+[0m→ [0mRead .opencode/agents/code-reviewer.md
+[0m→ [0mRead .opencode/skills/frontend-skill/SKILL.md
+[93m[1m! [0mpermission requested: bash (git log --oneline -10); auto-rejecting
+[93m[1m! [0mpermission requested: bash (git status); auto-rejecting
+[0m✗ [0mgit log --oneline -10 failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
+[0m✗ [0mgit status failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
+</pre></div>
+<div class="card pass"><h2>Eval 12 <span class="pill">PASS</span></h2><p>Validar não-regressão de paths: garantir que nenhuma tarefa de implementação toca arquivos fora da camada e que .claude/ não é referenciado.</p><p class="meta">Esperado:  · exit=0 · 71.6s</p><pre>
+[0m
+&gt; orchestrator · meta/muse-glimmer-30b
+[0m
+[0m✗ [0mInvalid Tool
+The arguments provided to the tool are invalid: Model tried to call unavailable tool &#x27;grep.pattern&#x27;. Available tools: bash, edit, glob, grep, invalid, playwright_browser_click, playwright_browser_close, playwright_browser_console_messages, playwright_browser_drag, playwright_browser_drop, playwright_browser_emulate_media, playwright_browser_evaluate, playwright_browser_file_upload, playwright_browser_fill_form, playwright_browser_find, playwright_browser_handle_dialog, playwright_browser_hover, playwright_browser_navigate, playwright_browser_navigate_back, playwright_browser_network_request, playwright_browser_network_requests, playwright_browser_press_key, playwright_browser_resize, playwright_browser_run_code_unsafe, playwright_browser_select_option, playwright_browser_snapshot, playwright_browser_tabs, playwright_browser_take_screenshot, playwright_browser_type, playwright_browser_wait_for, read, skill, task, todowrite, webfetch, write.
+[0m
+[0m✱ [0mGrep &quot;\.claude&quot;[90m in . · 23 matches[0m
+[0m✱ [0mGrep &quot;\.claude&quot;[90m in .opencode · 1 match[0m
+[0m✱ [0mGlob &quot;.opencode/agents/*.md&quot;[90m in . · 0 matches[0m
+[93m[1m! [0mpermission requested: bash (Get-ChildItem -LiteralPath &quot;C:\Users\jhona\ERP\.opencode\agents&quot; -Name); auto-rejecting
+[0m✗ [0mGet-ChildItem -LiteralPath &quot;C:\Users\jhona\ERP\.opencode\agents&quot; -Name failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
+</pre></div>
+</body></html>

@@ -19,8 +19,8 @@ docs/
 │   └── dashboard/               ← MVP: Dashboard
 └── skills/                      ← índice de skills
 
-.claude/
-├── agents/                      ← agent files com frontmatter
+.opencode/
+├── agents/                      ← agent files com frontmatter (inclui orchestrator, plan, build)
 └── skills/                      ← skill files (conhecimento + orquestração)
 ```
 
@@ -31,7 +31,7 @@ docs/
 | 1 | `../AGENTS.md` | Visão geral do projeto, stack, navegação |
 | 2 | `sdd/OMINICORE-SDD.md` | SDD completo: filosofia, visão, pipeline, convenções |
 | 3 | `agents/README.md` | Workflow completo dos agentes, harness, regras transversais |
-| 4 | `../.claude/skills/backend-skill/SKILL.md` | Convenções Java/Spring/Modulith |
+| 4 | `../.opencode/skills/backend-skill/SKILL.md` | Convenções Java/Spring/Modulith |
 | 5 | `sdd/SDD-ORCHESTRATOR.md` | Fluxo SDD para features novas |
 
 ## SDD e especificações por feature

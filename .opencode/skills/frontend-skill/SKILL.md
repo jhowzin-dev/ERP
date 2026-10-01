@@ -190,6 +190,7 @@ Copy de utilizador final em **português (Brasil)**; identificadores de código 
 
 | Versão | Mudança |
 | ------ | ------- |
-| 3.0.0 | Movida para `.claude/skills/` (passa a ser carregável); separada de comportamento (agents); formato alinhado ao EmpregaNetAPI |
+| 3.1.0 | Paths `.opencode/` |
+| 3.0.0 | Skill carregável; separada de comportamento (agents) |
 | 2.0.0 | Expansão: seções completas, anti-padrões, checklist |
 | 1.0.0 | Versão inicial básica |

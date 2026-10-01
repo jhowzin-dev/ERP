@@ -1,1 +1,182 @@
-{"project_harness_evals": [{"id": 1, "task": "Implementar endpoint REST POST /api/produtos no backend/src (módulo catálogo): entity, repository, service, controller com validação Bean Validation e migração Flyway, seguindo o contrato HTTP camelCase do backend-skill.", "expected_result": "Código criado exclusivamente por java-implementer (delegação via Task); mvnw test retorna exit 0 em backend/; orchestrator não edita nenhum ficheiro de produção; Orchestrator Gate (5 etapas) completo antes da delegação.", "critical_gate": "Goal Gate (exit 0 do mvnw test) + Orchestrator Gate antes de delegar"}, {"id": 2, "task": "Criar a tela de listagem de produtos em frontend/src com react-query, formulário de criação RHF+Zod, i18n (pt-BR) e Tailwind, consumindo GET/POST /api/produtos.", "expected_result": "UI implementada exclusivamente por frontend-engineer; npm run lint && npm run build retorna exit 0 em frontend/; nenhum ficheiro fora de frontend/src modificado; skill frontend-skill consultada.", "critical_gate": "Goal Gate (exit 0 do lint+build) + Execution Gate (8 etapas)"}, {"id": 3, "task": "Adicionar consumer Kafka no ingestion/ que processa eventos de atualização de estoque, com retry/backoff e persistência em PostgreSQL, seguindo as convenções do go-skill.", "expected_result": "Código Go criado exclusivamente por go-implementer; go build ./... && go test ./... retorna exit 0 em ingestion/; consumer segue padrões kafka-go do go-skill.", "critical_gate": "Goal Gate (exit 0 do build+test Go)"}, {"id": 4, "task": "Debug: mvnw test falha com NullPointerException no service de pedidos após o último merge. Diagnosticar causa raiz e corrigir.", "expected_result": "Causa raiz identificada com evidência por debug-specialist (sintoma separado da causa, hipóteses eliminadas); correção mínima aplicada; mvnw test re-executado com exit 0; logs da última falha preservados no output com timestamp ISO 8601.", "critical_gate": "Goal Gate (re-execução do verificador com exit 0) + Safety Rails (máx 5 tentativas, preservar logs)"}, {"id": 5, "task": "Revisar o diff atual do PR antes do merge, verificando corretude, falhas de segurança, violações de fronteiras Modulith e riscos de performance.", "expected_result": "code-reviewer (read-only, edit: deny) analisa o diff; NENHUM ficheiro alterado durante a revisão; achados priorizados com correcção concreta sugerida; orchestrator não tenta analisar diretamente.", "critical_gate": "Orchestrator Gate (validar que revisão vai para agent read-only)"}, {"id": 6, "task": "Melhora o sistema (pedido vago, sem detalhes, múltiplos domínios possíveis: backend, frontend, ingestion).", "expected_result": "meta-agent carregado (thread principal); clareza < 0.7 detetada; domínios identificados e roteados para o especialista correto; nenhuma implementação direta.", "critical_gate": "Execution Gate etapa 1 (INSTRUCTION vaga: 400) + roteamento via meta-agent"}]}
+{
+  "evals": [
+    {
+      "id": 1,
+      "task": "Revisar diff/PR que altera backend/src/modules/catalogo com service e controller novos, verificar contrato HTTP camelCase e uso de Flyway.",
+      "runtime": "backend",
+      "expected": {
+        "expect_agent": "code-reviewer",
+        "expect_no_edit": true,
+        "expect_files": [],
+        "expect_exit_0": false,
+        "forbidden_substrings": [
+          ".claude/"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "task": "Definir arquitetura Modulith para novo bounded context pedidos, descrever fronteiras e ADR, sem alterar código.",
+      "runtime": "backend",
+      "expected": {
+        "expect_agent": "java-architect",
+        "expect_no_edit": true,
+        "expect_files": [],
+        "expect_exit_0": false,
+        "forbidden_substrings": [
+          ".claude/"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "task": "Criar tela de listagem de produtos em frontend/src com react-query, formulário RHF+Zod, i18n pt-BR e Tailwind consumindo GET/POST /api/produtos.",
+      "runtime": "frontend",
+      "expected": {
+        "expect_agent": "frontend-engineer",
+        "expect_no_edit": false,
+        "expect_files": [
+          "frontend/src"
+        ],
+        "expect_exit_0": true,
+        "forbidden_substrings": [
+          ".claude/"
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "task": "Implementar consumer Kafka em ingestion/ para eventos de atualização de estoque com retry/backoff e persistência PostgreSQL.",
+      "runtime": "ingestion",
+      "expected": {
+        "expect_agent": "go-implementer",
+        "expect_no_edit": false,
+        "expect_files": [
+          "ingestion/"
+        ],
+        "expect_exit_0": true,
+        "forbidden_substrings": [
+          ".claude/"
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "task": "Debug: mvnw test falha com NullPointerException no service de pedidos após último merge. Diagnosticar causa raiz e corrigir.",
+      "runtime": "backend",
+      "expected": {
+        "expect_agent": "debug-specialist",
+        "expect_no_edit": false,
+        "expect_files": [
+          "backend/src"
+        ],
+        "expect_exit_0": true,
+        "forbidden_substrings": [
+          ".claude/"
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "task": "Executar regressão End-to-End exploratória do módulo de pedidos pela UI real, validar fluxo criação e listagem.",
+      "runtime": "frontend",
+      "expected": {
+        "expect_agent": "e2e-qa-engineer",
+        "expect_no_edit": true,
+        "expect_files": [],
+        "expect_exit_0": false,
+        "forbidden_substrings": [
+          ".claude/"
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "task": "Feature nova: PRD para dashboard financeiro com design, spec e tasks, seguindo fluxo Spec-Driven Development.",
+      "runtime": "backend",
+      "expected": {
+        "expect_agent": "sdd-orchestrator",
+        "expect_no_edit": true,
+        "expect_files": [],
+        "expect_exit_0": false,
+        "forbidden_substrings": [
+          ".claude/"
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "task": "Pedido vago: melhorar performance do ERP. Envolve backend, frontend e ingestion sem detalhes claros.",
+      "runtime": "mixed",
+      "expected": {
+        "expect_agent": "meta-agent",
+        "expect_no_edit": true,
+        "expect_files": [],
+        "expect_exit_0": false,
+        "forbidden_substrings": [
+          ".claude/"
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "task": "Infra: configurar Docker Compose e pipeline CI/CD para backend, atualizar config de deploy sem mudar código de domínio.",
+      "runtime": "backend",
+      "expected": {
+        "expect_agent": "java-architect",
+        "expect_no_edit": false,
+        "expect_files": [
+          "backend/",
+          "docker/",
+          ".github/"
+        ],
+        "expect_exit_0": true,
+        "forbidden_substrings": [
+          ".claude/"
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "task": "Pergunta conceitual: qual a diferença entre Modulith e microserviços no OminiCore?",
+      "runtime": "none",
+      "expected": {
+        "expect_agent": "orchestrator",
+        "expect_no_edit": true,
+        "expect_files": [],
+        "expect_exit_0": false,
+        "forbidden_substrings": [
+          ".claude/"
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "task": "Revisar PR frontend que altera componentes de autenticação em frontend/src, validar a11y e uso de hooks.",
+      "runtime": "frontend",
+      "expected": {
+        "expect_agent": "code-reviewer",
+        "expect_no_edit": true,
+        "expect_files": [],
+        "expect_exit_0": false,
+        "forbidden_substrings": [
+          ".claude/"
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "task": "Validar não-regressão de paths: garantir que nenhuma tarefa de implementação toca arquivos fora da camada e que .claude/ não é referenciado.",
+      "runtime": "backend",
+      "expected": {
+        "expect_agent": "code-reviewer",
+        "expect_no_edit": true,
+        "expect_files": [],
+        "expect_exit_0": false,
+        "forbidden_substrings": [
+          ".claude/"
+        ]
+      }
+    }
+  ]
+}
