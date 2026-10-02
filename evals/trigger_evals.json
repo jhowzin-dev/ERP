@@ -1,0 +1,52 @@
+﻿[
+    {
+        "query":  "Como refatorar o serviço de pagamento no backend/src usando Spring Modulith?",
+        "should_trigger":  true,
+        "skill_name":  "backend-skill"
+    },
+    {
+        "query":  "Crie um endpoint REST para listar clientes em backend/src com contrato HTTP camelCase",
+        "should_trigger":  true,
+        "skill_name":  "backend-skill"
+    },
+    {
+        "query":  "Adicione testes JUnit 5 e Mockito para o domínio de pedidos em backend/src",
+        "should_trigger":  true,
+        "skill_name":  "backend-skill"
+    },
+    {
+        "query":  "Configure Flyway migrations para a tabela de inventário no backend",
+        "should_trigger":  true,
+        "skill_name":  "backend-skill"
+    },
+    {
+        "query":  "Preciso criar um componente React para tabela de produtos em frontend/src com Tailwind",
+        "should_trigger":  true,
+        "skill_name":  "frontend-skill"
+    },
+    {
+        "query":  "Como implementar autenticação RBAC no frontend React/Vite usando hooks",
+        "should_trigger":  true,
+        "skill_name":  "frontend-skill"
+    },
+    {
+        "query":  "Crie um hook useQuery para buscar dados de clientes no frontend/src/services",
+        "should_trigger":  true,
+        "skill_name":  "frontend-skill"
+    },
+    {
+        "query":  "Estilize um modal acessível com SCSS Modules em frontend/src",
+        "should_trigger":  true,
+        "skill_name":  "frontend-skill"
+    },
+    {
+        "query":  "Explique o conceito de microserviços de forma geral",
+        "should_trigger":  false,
+        "skill_name":  "backend-skill"
+    },
+    {
+        "query":  "Qual a receita de bolo de chocolate?",
+        "should_trigger":  false,
+        "skill_name":  "frontend-skill"
+    }
+]

@@ -33,7 +33,7 @@ sem sobre-abstracção, e verificada por lint/test/build.
 
 ## Contexto obrigatório
 
-Ler antes de escrever: **`.claude/skills/frontend-skill/SKILL.md`** — pastas, `service/` por feature,
+Ler antes de escrever: **`.opencode/skills/frontend-skill/SKILL.md`** (e `frontend-design` se o pedido for craft visual) — pastas, `service/` por feature,
 componentes, hooks, SCSS Modules, auth por cookie httpOnly, política de rotas,
 componentes canónicos de loading, infra de testes e anti-padrões.
 

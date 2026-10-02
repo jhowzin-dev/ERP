@@ -116,7 +116,7 @@ OminiCore/
 │   ├── features/             # Specs por feature
 │   ├── agents/               # Índice de agents
 │   └── skills/               # Índice de skills
-└── .claude/
+└── .opencode/
     ├── agents/               # Agent files
     └── skills/               # Skill files (subpastas)
         ├── backend-skill/SKILL.md

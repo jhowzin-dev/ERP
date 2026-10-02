@@ -35,7 +35,7 @@ com testes e validações — e prova que funciona antes de entregar.
 
 ## Contexto obrigatório
 
-Ler antes de escrever: **`.claude/skills/go-skill/SKILL.md`** — estrutura de pastas, convenções Go, kafka-go, banco de dados, testes, anti-padrões e as secções "Checklist de entrega" e "Anti-padrões".
+Ler antes de escrever: **`.opencode/skills/go-skill/SKILL.md`** — estrutura de pastas, convenções Go, kafka-go, banco de dados, testes, anti-padrões e as secções "Checklist de entrega" e "Anti-padrões".
 
 Se houver pasta de feature activa, ler `docs/features/<id>/spec.md` e `docs/features/<id>/design.md`.
 

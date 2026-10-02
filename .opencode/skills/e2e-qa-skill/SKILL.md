@@ -1,6 +1,6 @@
 ---
 name: e2e-qa-skill
-description: Executa uma regressão End-to-End exploratória do frontend do OminiCore pela UI real (Browser pane), delegando a execução ao subagent e2e-qa-engineer módulo a módulo e consolidando um relatório versionado. Contém a metodologia canónica — pré-condições de ambiente, matriz de cenários, priorização, escala de severidade e templates de defeito e de relatório. Use quando o utilizador pedir para "testar o frontend", "rodar regressão", "fazer QA de X", "validar essa tela antes de mergear" ou reproduzir um bug relatado, e depois de alterar algo em frontend/src. Não use para testes Cucumber (é código — test-engineer) nem para revisão estática de diff (code-reviewer).
+description: Executa uma regressão End-to-End exploratória do frontend do OminiCore pela UI real (Browser pane), delegando a execução ao subagent e2e-qa-engineer módulo a módulo e consolidando um relatório versionado. Contém a metodologia canónica — pré-condições de ambiente, matriz de cenários, priorização, escala de severidade e templates de defeito e de relatório. Use quando o utilizador pedir para "testar o frontend", "rodar regressão", "fazer QA de X", "validar essa tela antes de mergear" ou reproduzir um bug relatado, e depois de alterar algo em frontend/src. Não use para testes unitários ou de integração (é código — test-engineer) nem para revisão estática de diff (code-reviewer).
 ---
 
 # Regressão E2E — OminiCore (frontend)
@@ -26,7 +26,7 @@ Vazio = regressão completa.
 | Validar uma feature nova ponta-a-ponta (acesso → operação → confirmação) | Sim |
 | Reproduzir um bug relatado, navegando o fluxo real | Sim |
 | Auditoria de UX: consistência visual, estados, responsividade | Sim |
-| Escrever/correr teste unitário, integração ou Cucumber | Não — agent `test-engineer` |
+| Escrever/correr teste unitário, integração ou Vitest | Não — agent `test-engineer` |
 | Revisar apenas um diff/PR | Não — agent `code-reviewer` |
 | Diagnosticar a causa raiz de um bug já reproduzido | Não — agent `debug-specialist` |
 
@@ -193,6 +193,6 @@ Relatório e comunicação em **português (Brasil)**; IDs de cenário em format
 
 | Versão | Mudança |
 | ------ | ------- |
-| 3.0.0 | Movida para `.claude/skills/` (passa a ser carregável); formato alinhado ao EmpregaNetAPI com metodologia completa |
+| 3.0.0 | Movida para `.opencode/skills/` (passa a ser carregável); formato alinhado ao EmpregaNetAPI com metodologia completa |
 | 2.0.0 | Expansão: princípios, cenários, relatório |
 | 1.0.0 | Versão inicial básica |

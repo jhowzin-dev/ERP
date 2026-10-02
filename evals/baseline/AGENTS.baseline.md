@@ -67,9 +67,9 @@ NÍVEL 0 — INVIOLÁVEL: System Rules (não pode sobrescrever)
     ↓
 NÍVEL 1 — CRÍTICO: Harness Rules (gates obrigatórios)
     ↓
-NÍVEL 2 — VINCULANTE: Agents (.claude/agents/)
+NÍVEL 2 — VINCULANTE: Agents (.opencode/agents/)
     ↓
-NÍVEL 3 — VINCULANTE: Skills (.claude/skills/)
+NÍVEL 3 — VINCULANTE: Skills (.opencode/skills/)
     ↓
 NÍVEL 4 — VINCULANTE: Project Rules (este AGENTS.md)
     ↓
@@ -143,7 +143,7 @@ BLOQUEIO SE QUALQUER NÍVEL FALHAR
 
 ```
 [ ] 1. RESOLVER → identificar agent + skill (tabela de roteamento)
-[ ] 2. CARREGAR → ler contexto do agent (.claude/agents/<AGENT>.md)
+[ ] 2. CARREGAR → ler contexto do agent (.opencode/agents/<AGENT>.md)
 [ ] 3. VALIDAR → verificar se instrução é permitida
 [ ] 4. PLANEJAR → criar plano com etapas específicas
 [ ] 5. CONFIRMAR → listar agente, skill, contexto, plano

@@ -5,6 +5,7 @@ Usage: python generate_review.py [results.json]
 Output: evals/review.html (self-contained, open in a browser).
 """
 
+import argparse
 import html
 import json
 import sys
@@ -51,7 +52,13 @@ def load_delta(results_path: Path) -> str:
 
 
 def main():
-    results_path = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parent.parent / "evals" / "results.json"
+    parser = argparse.ArgumentParser(description="Generate review HTML from eval results")
+    parser.add_argument("--results", type=Path, help="Path to results JSON")
+    parser.add_argument("--out", type=Path, help="Output HTML path")
+    parser.add_argument("results_pos", nargs="?", type=Path, help="Positional results JSON path")
+    args = parser.parse_args()
+
+    results_path = args.results or args.results_pos or Path(__file__).parent.parent / "evals" / "results.json"
     results = load_results(results_path)
     total = len(results)
     passed = sum(1 for r in results if isinstance(r, dict) and r.get("passed"))
@@ -73,9 +80,10 @@ def main():
         "{summary}",
         f"{passed}/{total} passed ({100 * passed // max(total, 1)}%) — {results_path}{load_delta(results_path)}",
     ).replace("{cards}", "\n".join(cards))
-    out = results_path.parent / "review.html"
-    out.write_text(html_out, encoding="utf-8")
-    print(f"Review generated: {out}")
+    out_path = args.out or (results_path.parent / "review.html")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(html_out, encoding="utf-8")
+    print(f"Review generated: {out_path}")
 
 
 if __name__ == "__main__":

@@ -34,8 +34,9 @@ justificadas por evidência**.
 
 Conforme a camada onde a falha se manifesta:
 
-- `backend/` → **`.claude/skills/backend-skill/SKILL.md`**
-- `frontend/` → **`.claude/skills/frontend-skill/SKILL.md`**
+- `backend/` → **`.opencode/skills/backend-skill/SKILL.md`**
+- `frontend/` → **`.opencode/skills/frontend-skill/SKILL.md`**
+- `ingestion/` → **`.opencode/skills/go-skill/SKILL.md`**
 
 Armadilhas conhecidas destas skills são candidatas a hipótese antes de qualquer teoria nova — por exemplo:
 dependência entre módulos onde não deveria haver, `@Transactional` em falta, eventos Kafka não consumidos,
@@ -76,6 +77,9 @@ Provar a correcção com o comando relevante:
 
 # Frontend
 cd frontend && npm run test
+
+# Ingestion
+cd ingestion && go test ./...
 ```
 
 Se o bug não era coberto por teste, **acrescentar ou propor o teste que o teria apanhado** — uma correcção sem

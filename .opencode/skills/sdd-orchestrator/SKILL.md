@@ -16,8 +16,8 @@ description: Executor do fluxo Spec-Driven Development (PRD → design → spec 
 | Feature nova que precisa de planejamento completo | Sim |
 | Refactor significativo que impacta múltiplos módulos | Sim |
 | Integração nova (ex: novo marketplace) | Sim |
-| Bug simples ou ajuste pontual | **Não** — usar [`debug-specialist`](../debug-specialist/SKILL.md) |
-| Melhoria de performance pontual | **Não** — usar [`performance-optimizer`](../performance-optimizer/SKILL.md) |
+| Bug simples ou ajuste pontual | **Não** — usar agent [`debug-specialist`](../../agents/debug-specialist.md) |
+| Melhoria de performance pontual | **Não** — usar agent [`performance-optimizer`](../../agents/performance-optimizer.md) |
 | Pedido claro e mono-domínio | **Não** — usar agent específico |
 
 **Nota**: Fase E pode rodar em paralelo se sem sobreposição de arquivos. Fases A–D: sempre sequencial.
@@ -183,6 +183,6 @@ Perguntas informativas, pequenos ajustes de doc, ou esclarecimentos não passam 
 
 | Versão | Mudança |
 | ------ | ------- |
-| 3.0.0 | Movida para `.claude/skills/` (passa a ser carregável); formato alinhado ao EmpregaNetAPI |
+| 3.0.0 | Movida para `.opencode/skills/` (passa a ser carregável); formato alinhado ao EmpregaNetAPI |
 | 2.0.0 | Expansão: gates detalhados, prompts, anti-padrões |
 | 1.0.0 | Versão inicial básica |

@@ -1,6 +1,6 @@
 ---
 name: backend-skill
-description: Convenções canónicas do backend Java/Spring do OminiCore — Spring Modulith, camadas por domínio (api/internal), Flyway, Kafka, contrato HTTP camelCase, testes JUnit 5/Mockito com fixture H2 in-memory. Use ao ler, escrever ou revisar qualquer coisa em backend/src ou backend/tests, ou ao definir contratos HTTP consumidos pelo frontend. Não use para trabalho de UI (frontend-skill) nem para especificação de feature antes de código (sdd-orchestrator).
+description: Backend Java/Spring OminiCore. Use para ler/escrever backend/src, backend/tests, Flyway, Kafka e contratos HTTP.
 ---
 
 # Backend (Java/Spring — OminiCore API)
@@ -164,6 +164,15 @@ refactor estrutural só com tarefa explícita ou ADR quando for transversal.
 
 ---
 
+## 11.1 Checklist de arquitetura
+
+1. [ ] Módulos afectados nomeados; comunicação entre módulos de negócio só via Kafka ou API pública do Modulith — sem import de `internal` alheio.
+2. [ ] Contrato HTTP (path, DTO camelCase, status, erro padronizado) definido antes do implementer.
+3. [ ] Dependência nova justificada; alternativa rejeitada documentada se for transversal (ADR).
+4. [ ] Soft delete e Flyway alinhados ao modelo; `rename`/`drop` em duas fases.
+
+---
+
 ## 12. Anti-padrões
 
 | Evitar | Porquê |
@@ -189,6 +198,6 @@ Mensagens de utilizador e logs de negócio: **português (Brasil)**. Identificad
 
 | Versão | Mudança |
 | ------ | ------- |
-| 3.0.0 | Movida para `.claude/skills/` (passa a ser carregável); separada de comportamento (agents); formato alinhado ao EmpregaNetAPI |
+| 3.0.0 | Movida para `.opencode/skills/` (passa a ser carregável); separada de comportamento (agents); formato alinhado ao EmpregaNetAPI |
 | 2.0.0 | Expansão: seções completas, anti-padrões, checklist |
 | 1.0.0 | Versão inicial básica |

@@ -1,7 +1,6 @@
 ---
 description: Executa regressão End-to-End do OminiCore pela UI real (Browser pane), módulo a módulo, seguindo a metodologia canónica da skill e2e-qa-skill.
 mode: subagent
-model: anthropic/claude-sonnet-4-20250514
 permission:
   edit: deny
   bash: ask
@@ -16,7 +15,7 @@ permission:
 Engenheiro de QA E2E. Navega a aplicação **como um utilizador real** pela interface visual,
 valida cenários, regista defeitos com evidência e consolida relatório.
 
-Este agent é o **executor** da metodologia definida em `.claude/skills/e2e-qa-skill/SKILL.md`.
+Este agent é o **executor** da metodologia definida em `.opencode/skills/e2e-qa-skill/SKILL.md`.
 Lê essa skill no arranque — não repetir a metodologia aqui.
 
 ## Use quando
@@ -38,7 +37,7 @@ Lê essa skill no arranque — não repetir a metodologia aqui.
 
 ## Contexto obrigatório
 
-Ler antes de executar: **`.claude/skills/e2e-qa-skill/SKILL.md`** — pré-condições, matriz de cenários, priorização, template de defeito, template de relatório.
+Ler antes de executar: **`.opencode/skills/e2e-qa-skill/SKILL.md`** — pré-condições, matriz de cenários, priorização, template de defeito, template de relatório.
 
 ## Entradas necessárias
 

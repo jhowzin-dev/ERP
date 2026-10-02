@@ -35,8 +35,9 @@ cobrindo risco real, não only happy-path — e valida que passam antes de entre
 
 Conforme a camada a testar:
 
-- `backend/` → **`.claude/skills/backend-skill/SKILL.md`** — stack de testes (JUnit 5, Mockito, H2), convenções de naming, anti-padrões.
-- `frontend/` → **`.claude/skills/frontend-skill/SKILL.md`** — stack de testes (Vitest, RTL, MSW), convenções.
+- `backend/` → **`.opencode/skills/backend-skill/SKILL.md`** — stack de testes (JUnit 5, Mockito, H2), convenções de naming, anti-padrões.
+- `frontend/` → **`.opencode/skills/frontend-skill/SKILL.md`** — stack de testes (Vitest, RTL, MSW), convenções.
+- `ingestion/` → **`.opencode/skills/go-skill/SKILL.md`** — `go test ./...`.
 
 ## Entradas necessárias
 
@@ -76,6 +77,12 @@ Se o código não tiver testes, listar o que falta e priorizar por risco.
 | Componente | Vitest + React Testing Library | `*.test.tsx` |
 | Mock de API | MSW | `handlers.ts` |
 
+### Ingestion
+
+| Tipo | Stack | Naming |
+|------|-------|--------|
+| Unit / Integration | `go test` | `*_test.go` |
+
 ## Validação (obrigatória antes de entregar)
 
 ```bash
@@ -85,6 +92,9 @@ Se o código não tiver testes, listar o que falta e priorizar por risco.
 
 # Frontend
 cd frontend && npm run test
+
+# Ingestion
+cd ingestion && go test ./...
 ```
 
 **Entregar sem correr estes comandos não é permitido.** Se algum não puder correr, dizê-lo no output.
