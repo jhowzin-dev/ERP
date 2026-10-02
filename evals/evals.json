@@ -106,7 +106,7 @@
     },
     {
       "id": 8,
-      "task": "Pedido vago: melhorar performance do ERP. Envolve backend, frontend e ingestion sem detalhes claros.",
+      "task": "Pedido vago: melhorar performance do ERP. Envolve backend, frontend e ingestion sem detalhes claros. Peça esclarecimentos.",
       "runtime": "mixed",
       "expected": {
         "expect_agent": "meta-agent",

@@ -1,6 +1,6 @@
 ---
 name: backend-skill
-description: Convenções canónicas do backend Java/Spring do OminiCore — Spring Modulith, camadas por domínio (api/internal), Flyway, Kafka, contrato HTTP camelCase, testes JUnit 5/Mockito com fixture H2 in-memory. Use ao ler, escrever ou revisar qualquer coisa em backend/src ou backend/tests, ou ao definir contratos HTTP consumidos pelo frontend. Não use para trabalho de UI (frontend-skill) nem para especificação de feature antes de código (sdd-orchestrator).
+description: Backend Java/Spring OminiCore. Use para ler/escrever backend/src, backend/tests, Flyway, Kafka e contratos HTTP.
 ---
 
 # Backend (Java/Spring — OminiCore API)

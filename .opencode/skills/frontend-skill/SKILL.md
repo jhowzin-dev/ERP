@@ -1,6 +1,6 @@
 ---
 name: frontend-skill
-description: Convenções canónicas do frontend React/Vite/Tailwind do OminiCore — componentes, hooks, services, SCSS Modules, react-query, i18n, auth/RBAC. Use ao ler, escrever ou revisar qualquer coisa em frontend/src, incluindo páginas, componentes, hooks, cliente HTTP, estilos e acessibilidade. Não use para backend Java/Spring (backend-skill) nem para regressão pela UI real (e2e-qa-skill).
+description: Frontend React/Vite/Tailwind OminiCore. Use para ler/escrever frontend/src: páginas, componentes, hooks, services, estilos e acessibilidade.
 ---
 
 # Frontend (React/Vite/Tailwind — OminiCore)
